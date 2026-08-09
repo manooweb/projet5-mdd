@@ -54,9 +54,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.scss"
-            ]
+            "styles": ["src/styles.scss"]
           },
           "configurations": {
             "production": {
@@ -97,8 +95,34 @@
           },
           "defaultConfiguration": "development"
         },
+        "build-e2e-coverage": {
+          "builder": "@angular-builders/custom-esbuild:application",
+          "options": {
+            "browser": "src/main.ts",
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": ["src/styles.scss"],
+            "outputPath": "dist/front-e2e-coverage",
+            "optimization": false,
+            "extractLicenses": false,
+            "sourceMap": true,
+            "plugins": ["./cypress/coverage.esbuild.cjs"]
+          }
+        },
         "test": {
           "builder": "@angular/build:unit-test"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+          }
         }
       }
     }

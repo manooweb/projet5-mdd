@@ -1,0 +1,5 @@
+/.angular
+/coverage
+/.nyc_output
+/node_modules
+/dist
