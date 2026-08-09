@@ -1,25 +1,44 @@
-# P6-Full-Stack-reseau-dev
+# MDD (Monde Du Dév)
 
-## Front
+MDD is a responsive social network MVP for developers. It provides authentication, themes and subscriptions, an article feed, comments, and profile management.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.3.
+## Repository layout
 
-Don't forget to install your node_modules before starting (`npm install`).
+| Directory | Purpose |
+|---|---|
+| [`front/`](front/README.md) | Angular single-page application |
+| `back/` | Spring Boot REST API |
 
-### Development server
+## Target technical baseline
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+The starter code is being modernized. The versions and tools below are the agreed project target; they do not describe the legacy scaffold currently present in `front/` and `back/`.
 
-### Build
+| Area | Target |
+|---|---|
+| Java | Eclipse Temurin 25.0.4 |
+| Build tool | Maven 3.9.16 with Maven Wrapper |
+| Backend | Spring Boot 4.1.0, Spring Data JPA, Flyway, Spring Security |
+| Database | MySQL 9.7.1 LTS |
+| API documentation | springdoc OpenAPI 3.x and Swagger UI |
+| Frontend | Angular 22, strict TypeScript, standalone components, zoneless change detection, SCSS |
+| Frontend UI | PrimeNG, subject to a focused validation spike; Angular Material is the fallback |
+| Backend testing | JUnit, Mockito, Spring Boot integration tests, MockMvc, and Testcontainers MySQL |
+| Frontend testing | Vitest and focused Cypress end-to-end tests |
+| API testing | Bruno with a cookie jar and CSRF support |
+| Quality | EditorConfig, formatter/linter, JaCoCo, Vitest coverage, and a manual SonarQube Cloud audit |
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Planned local URLs
 
-### Where to start
+These URLs will become available as the technical baseline is implemented.
 
-As you may have seen if you already started the app, a simple home page containing a logo, a title and a button is available. If you take a look at its code (in the `home.component.html`) you will see that an external UI library is already configured in the project.
+| Service | URL |
+|---|---|
+| Angular application | `http://localhost:4200/` |
+| REST API | `http://localhost:8080/api` |
+| Swagger UI | `http://localhost:8080/swagger-ui/index.html` |
 
-This library is `@angular/material`, it's one of the most famous in the angular ecosystem. As you can see on their docs (https://material.angular.io/), it contains a lot of highly customizable components that will help you design your interfaces quickly.
+## Documentation
 
-Note: I recommend to use material however it's not mandatory, if you prefer you can get rid of it.
+Detailed frontend setup and the currently available commands are documented in [`front/README.md`](front/README.md). Backend setup, database bootstrap, testing, and API documentation will be added as their respective technical foundations are implemented.
 
-Good luck!
+This README is a living document and will be updated with each completed technical milestone.
