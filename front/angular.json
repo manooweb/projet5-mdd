@@ -116,7 +116,32 @@
           }
         },
         "test": {
-          "builder": "@angular/build:unit-test"
+          "builder": "@angular/build:unit-test",
+          "configurations": {
+            "unit": {
+              "include": ["**/*.spec.ts"],
+              "exclude": ["**/*.integration.spec.ts"],
+              "watch": false,
+              "coverage": true,
+              "coverageInclude": ["src/**/*.ts"],
+              "coverageExclude": ["src/main.ts"],
+              "coverageReporters": ["html", "lcov", "text-summary", "json"],
+              "runnerConfig": "vitest.unit.config.ts",
+              "reporters": ["default", "json"],
+              "outputFile": "../coverage/front-vitest-unit/test-results.json"
+            },
+            "integration": {
+              "include": ["**/*.integration.spec.ts"],
+              "watch": false,
+              "coverage": true,
+              "coverageInclude": ["src/**/*.ts"],
+              "coverageExclude": ["src/main.ts"],
+              "coverageReporters": ["html", "lcov", "text-summary", "json"],
+              "runnerConfig": "vitest.integration.config.ts",
+              "reporters": ["default", "json"],
+              "outputFile": "../coverage/front-vitest-integration/test-results.json"
+            }
+          }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
