@@ -2,19 +2,15 @@
 
 This directory contains the Angular single-page application for MDD.
 
-## Target frontend baseline
+## Technical baseline
 
-The frontend will be modernized to Angular 22 with strict TypeScript, standalone components, zoneless change detection, and SCSS. PrimeNG will first be evaluated through a focused accessibility and responsive-navigation spike; Angular Material remains the fallback.
+The frontend uses Angular 22, strict TypeScript, standalone components, zoneless change detection, SCSS, and Vitest. The application is organized by feature: the current homepage is located in `src/app/home/`.
 
-The current scaffold still uses Angular 14 and Karma/Jasmine. Its commands remain available during the migration. Vitest will replace the current unit-test runner as part of the technical baseline work.
+PrimeNG will be evaluated through a focused accessibility and responsive-navigation spike. Angular Material is not part of the current frontend dependencies.
 
 ## Prerequisites
 
-Install a supported Node.js version before installing dependencies. The exact Node.js version will be documented when Angular 22 is installed.
-
-## Install dependencies
-
-Run the command from this directory:
+Use Node.js `22.22.3` or later in the 22.x line, then install dependencies from this directory.
 
 ```bash
 npm install
@@ -27,15 +23,18 @@ npm install
 | Start the development server | `npm start` | Runs the application with live reload |
 | Build the application | `npm run build` | Creates the production build in `dist/front/` |
 | Build continuously | `npm run watch` | Watches source files using the development configuration |
-| Run the current test suite | `npm test` | Runs the legacy Karma/Jasmine test suite until the Vitest migration |
+| Run unit tests | `npm test` | Runs the Vitest unit-test suite |
 
-## Important URLs
+## Development proxy
+
+The development server proxies requests beginning with `/api` to the local Spring Boot backend. This keeps development requests same-origin and avoids CORS configuration for the MVP.
 
 | Service | URL |
 |---|---|
 | Development application | `http://localhost:4200/` |
-| Planned backend API | `http://localhost:8080/api` |
-| Planned Swagger UI | `http://localhost:8080/swagger-ui/index.html` |
+| Backend API through the proxy | `http://localhost:4200/api` |
+| Local Spring Boot API | `http://localhost:8080/api` |
+| Local Swagger UI | `http://localhost:8080/swagger-ui/index.html` |
 
 ## Related documentation
 
