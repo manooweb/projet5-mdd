@@ -10,9 +10,9 @@ trim_trailing_whitespace = true
 indent_style = space
 indent_size = 2
 
-# Java follows the conventional four-space indentation.
+# Java follows Google Java Format indentation.
 [*.java]
-indent_size = 4
+	indent_size = 2
 
 # Backend configuration and container definitions.
 [*.{yml,yaml}]

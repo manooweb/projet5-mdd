@@ -1,3 +1,17 @@
 spring:
   application:
     name: mdd-api
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-components: always
+      show-details: never
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui/index.html

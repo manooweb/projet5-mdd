@@ -25,7 +25,7 @@ The starter code is being modernized. The versions and tools below are the agree
 | Backend testing | JUnit, Mockito, Spring Boot integration tests, MockMvc, and Testcontainers MySQL |
 | Frontend testing | Vitest and focused Cypress end-to-end tests |
 | API testing | Bruno with a cookie jar and CSRF support |
-| Quality | EditorConfig, formatter/linter, JaCoCo, Vitest coverage, and a manual SonarQube Cloud audit |
+| Quality | EditorConfig, Spotless formatting, JaCoCo, Vitest coverage, and a manual SonarQube Cloud audit |
 
 ## Planned local URLs
 
