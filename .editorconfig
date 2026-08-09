@@ -1,0 +1,46 @@
+# Editor configuration, see https://editorconfig.org
+root = true
+
+# Default rules for source code and configuration files.
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# Java follows the conventional four-space indentation.
+[*.java]
+indent_size = 4
+
+# Backend configuration and container definitions.
+[*.{yml,yaml}]
+indent_size = 2
+
+# Web source files, templates, and stylesheets.
+[*.{ts,tsx,js,mjs,cjs,html,scss,css}]
+indent_size = 2
+
+# Structured project and tool configuration.
+[*.{json,jsonc,xml}]
+indent_size = 2
+
+# Keep legacy Spring configuration readable until it is migrated to YAML.
+[*.properties]
+indent_size = 2
+
+# Documentation may intentionally contain trailing spaces for Markdown line breaks.
+[*.md]
+max_line_length = off
+trim_trailing_whitespace = false
+
+# Make requires tabs for recipe lines.
+[Makefile]
+indent_style = tab
+indent_size = tab
+
+# Generated and binary assets are not formatted by the editor.
+[*.{png,jpg,jpeg,gif,ico,pdf,woff,woff2,ttf,eot}]
+insert_final_newline = unset
+trim_trailing_whitespace = unset
