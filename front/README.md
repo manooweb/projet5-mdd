@@ -18,23 +18,23 @@ npm install
 
 ## Commands
 
-| Purpose | Command | Result |
-|---|---|---|
-| Start the development server | `npm start` | Runs the application with live reload |
-| Build the application | `npm run build` | Creates the production build in `dist/front/` |
-| Build continuously | `npm run watch` | Watches source files using the development configuration |
-| Run unit tests | `npm test` | Runs the Vitest unit-test suite |
+| Purpose                      | Command         | Result                                                   |
+| ---------------------------- | --------------- | -------------------------------------------------------- |
+| Start the development server | `npm start`     | Runs the application with live reload                    |
+| Build the application        | `npm run build` | Creates the production build in `dist/front/`            |
+| Build continuously           | `npm run watch` | Watches source files using the development configuration |
+| Run unit tests               | `npm test`      | Runs the Vitest unit-test suite                          |
 
 ## Development proxy
 
 The development server proxies requests beginning with `/api` to the local Spring Boot backend. This keeps development requests same-origin and avoids CORS configuration for the MVP.
 
-| Service | URL |
-|---|---|
-| Development application | `http://localhost:4200/` |
-| Backend API through the proxy | `http://localhost:4200/api` |
-| Local Spring Boot API | `http://localhost:8080/api` |
-| Local Swagger UI | `http://localhost:8080/swagger-ui/index.html` |
+| Service                       | URL                                           |
+| ----------------------------- | --------------------------------------------- |
+| Development application       | `http://localhost:4200/`                      |
+| Backend API through the proxy | `http://localhost:4200/api`                   |
+| Local Spring Boot API         | `http://localhost:8080/api`                   |
+| Local Swagger UI              | `http://localhost:8080/swagger-ui/index.html` |
 
 ## Related documentation
 
