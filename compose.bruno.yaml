@@ -1,0 +1,30 @@
+name: mdd-bruno
+
+services:
+  mysql:
+    image: mysql:9.7.1
+    environment:
+      MYSQL_DATABASE: mdd_bruno_db
+      MYSQL_PASSWORD: mdd_bruno_password
+      MYSQL_ROOT_PASSWORD: mdd_bruno_root_password
+      MYSQL_USER: mdd_bruno_user
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+
+  back:
+    build:
+      context: ./back
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_PASSWORD: mdd_bruno_password
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mdd_bruno_db
+      SPRING_DATASOURCE_USERNAME: mdd_bruno_user
+      SPRING_DOCKER_COMPOSE_ENABLED: "false"
+    ports:
+      - "127.0.0.1:8081:8080"

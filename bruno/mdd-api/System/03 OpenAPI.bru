@@ -1,0 +1,21 @@
+meta {
+  name: OpenAPI
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/v3/api-docs
+  body: none
+  auth: none
+}
+
+tests {
+  test("status is 200", function () {
+    expect(res.status).to.equal(200);
+  });
+
+  test("document has the MDD API title", function () {
+    expect(res.body.info.title).to.equal("MDD API");
+  });
+}
