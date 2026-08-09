@@ -1,0 +1,17 @@
+name: mdd
+
+services:
+  mysql:
+    image: 'mysql:9.7.1'
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:?Set MYSQL_DATABASE in .env}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Set MYSQL_PASSWORD in .env}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env}
+      MYSQL_USER: ${MYSQL_USER:?Set MYSQL_USER in .env}
+    ports:
+      - '3306'
+    volumes:
+      - 'db_data:/var/lib/mysql'
+
+volumes:
+  db_data:
