@@ -15,6 +15,11 @@ public class OpenApiConfig {
             new Info()
                 .title("MDD API")
                 .version("0.1.0")
-                .description("REST API for MDD (Monde Du Dév)."));
+                .description(
+                    """
+                    REST API for MDD (Monde Du Dév).
+
+                    <a href="/" target="_self">🏠 API home</a>
+                    """));
   }
 }

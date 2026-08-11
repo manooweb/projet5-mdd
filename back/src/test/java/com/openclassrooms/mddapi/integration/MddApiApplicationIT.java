@@ -1,6 +1,8 @@
 package com.openclassrooms.mddapi.integration;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -27,13 +29,26 @@ class MddApiApplicationIT {
 
     mockMvc.perform(get("/actuator/health/db")).andExpect(status().isOk());
 
-    mockMvc.perform(get("/v3/api-docs")).andExpect(status().isOk());
+    mockMvc
+        .perform(get("/v3/api-docs"))
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("🏠 API home")));
 
     mockMvc
         .perform(get("/swagger-ui/index.html"))
         .andExpect(status().isFound())
         .andExpect(redirectedUrl("/swagger-ui/swagger-ui/index.html"));
 
-    mockMvc.perform(get("/swagger-ui/swagger-ui/index.html")).andExpect(status().isOk());
+    mockMvc
+        .perform(get("/swagger-ui/swagger-ui/index.html"))
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("/js/swagger-home-link.js")));
+
+    mockMvc.perform(get("/")).andExpect(status().isOk());
+
+    mockMvc
+        .perform(get("/js/home-status.js"))
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("/actuator/health/db")));
   }
 }
