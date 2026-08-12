@@ -48,11 +48,20 @@ class SwaggerUiHomeLinkConfigTest {
         Arguments.of("/custom-path", "index.html"));
   }
 
-  @Test
-  void shouldLeaveNonSwaggerResourcesUnchanged() throws Exception {
-    Resource resource = resource("<html><body>Other page</body></html>", "other.html");
+  @ParameterizedTest
+  @MethodSource("nonSwaggerLocations")
+  void shouldLeaveNonSwaggerResourcesUnchanged(String requestUri, String filename)
+      throws Exception {
+    Resource resource = resource("<html><body>Other page</body></html>", filename);
 
-    assertSame(resource, transform("/custom-path", resource));
+    assertSame(resource, transform(requestUri, resource));
+  }
+
+  private static Stream<Arguments> nonSwaggerLocations() {
+    return Stream.of(
+        Arguments.of("/custom-path", "other.html"),
+        Arguments.of(null, "other.html"),
+        Arguments.of("/custom-path", null));
   }
 
   @Test
