@@ -19,7 +19,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
-@SpringBootTest
+@SpringBootTest(
+    properties = {
+      "mdd.authentication.jwt.secret=MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=",
+      "mdd.authentication.jwt.secure-cookie=false"
+    })
 @AutoConfigureMockMvc
 @Import(TestcontainersConfiguration.class)
 class AuthenticationCookieIT {
