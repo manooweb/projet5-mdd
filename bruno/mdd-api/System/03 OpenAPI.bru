@@ -18,4 +18,13 @@ tests {
   test("document has the MDD API title", function () {
     expect(res.body.info.title).to.equal("MDD API");
   });
+
+  test("authentication endpoints document the CSRF initialization", function () {
+    const register = res.body.paths["/api/auth/register"].post;
+    const csrf = res.body.paths["/api/auth/csrf"].get;
+    expect(register.summary).to.equal("Register a user");
+    expect(register.description).to.include("GET /api/auth/csrf");
+    expect(csrf.summary).to.equal("Initialize CSRF protection");
+    expect(csrf.responses["204"].description).to.equal("CSRF protection initialized.");
+  });
 }
