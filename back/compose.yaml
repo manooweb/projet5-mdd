@@ -9,7 +9,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env}
       MYSQL_USER: ${MYSQL_USER:?Set MYSQL_USER in .env}
     ports:
-      - '3306:3306'
+      - '33306:3306'
     volumes:
       - 'db_data:/var/lib/mysql'
 

@@ -9,6 +9,9 @@ spring:
         connectTimeout: 5000
         socketTimeout: 30000
 
+server:
+  port: 9001
+
 management:
   endpoints:
     web:
