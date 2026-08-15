@@ -4,7 +4,7 @@ set -euo pipefail
 
 readonly project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly compose_file="compose.bruno.yaml"
-readonly health_url="http://localhost:8081/actuator/health"
+readonly health_url="http://localhost:9002/actuator/health"
 readonly health_attempts=60
 
 cleanup() {

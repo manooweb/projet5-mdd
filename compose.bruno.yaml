@@ -26,5 +26,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mdd_bruno_db
       SPRING_DATASOURCE_USERNAME: mdd_bruno_user
       SPRING_DOCKER_COMPOSE_ENABLED: "false"
+      MDD_JWT_SECRET: pZKqpFKjg3VuxPc8kQGXyD1P5/lyyQ8lwd2yeGlXJUw=
+      MDD_JWT_SECURE_COOKIE: "false"
     ports:
-      - "127.0.0.1:8081:8080"
+      - "127.0.0.1:9002:9001"
