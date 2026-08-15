@@ -27,6 +27,7 @@ class HomePageMvcTest {
         .andExpect(content().string(containsString("MDD API")))
         .andExpect(content().string(containsString("Technical entry point for the MDD backend.")))
         .andExpect(content().string(containsString("/swagger-ui/index.html")))
+        .andExpect(content().string(containsString("http://localhost:8025")))
         .andExpect(content().string(containsString("/actuator/health")))
         .andExpect(content().string(containsString("/js/home-status.js")));
   }

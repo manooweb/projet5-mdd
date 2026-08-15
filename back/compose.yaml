@@ -13,5 +13,21 @@ services:
     volumes:
       - 'db_data:/var/lib/mysql'
 
+  mailpit:
+    image: 'axllent/mailpit:v1.30.0'
+    ports:
+      - '8025:8025'
+      - '1025:1025'
+    volumes:
+      - 'mailpit_data:/data'
+    environment:
+      MP_DATABASE: /data/mailpit.db
+    healthcheck:
+      test: ['CMD', '/mailpit', 'readyz']
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
 volumes:
   db_data:
+  mailpit_data:
