@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @WebMvcTest(controllers = SecurityConfigurationMvcTest.CsrfProbeController.class)
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, SecurityConfigurationMvcTest.CsrfProbeController.class})
 class SecurityConfigurationMvcTest {
 
   @Autowired private ApplicationContext applicationContext;
