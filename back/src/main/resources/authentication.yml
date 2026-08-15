@@ -1,0 +1,13 @@
+mdd:
+  authentication:
+    messages:
+      duplicate-identity: Username or email is already used.
+      validation:
+        invalid-request: The request contains an invalid value.
+        username-required: Username is required.
+        username-max-size: Username must not exceed %d characters.
+        email-required: Email is required.
+        email-invalid: Email must be valid.
+        email-max-size: Email must not exceed %d characters.
+        password-required: Password is required.
+        password-size: Password must contain between %d and %d characters.
