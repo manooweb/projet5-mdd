@@ -19,11 +19,21 @@ tests {
     expect(res.body.info.title).to.equal("MDD API");
   });
 
-  test("authentication endpoints document the CSRF initialization", function () {
+  test("authentication endpoints document CSRF initialization", function () {
     const register = res.body.paths["/api/auth/register"].post;
+    const login = res.body.paths["/api/auth/login"].post;
     const csrf = res.body.paths["/api/auth/csrf"].get;
     expect(register.summary).to.equal("Register a user");
     expect(register.description).to.include("GET /api/auth/csrf");
+    expect(login.summary).to.equal("Log in");
+    expect(login.description).to.include("GET /api/auth/csrf");
+    expect(login.responses["204"].description).to.equal(
+      "User authenticated and authentication cookie created."
+    );
+    expect(login.responses["401"].description).to.equal("Invalid credentials.");
+    expect(res.body.components.schemas.LoginRequest.properties.password.example).to.equal(
+      "stringstring"
+    );
     expect(csrf.summary).to.equal("Initialize CSRF protection");
     expect(csrf.responses["204"].description).to.equal("CSRF protection initialized.");
   });

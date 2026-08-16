@@ -77,20 +77,11 @@ class AuthenticationCookieIT {
   }
 
   @Test
-  void shouldCreateAnHttpOnlyJwtCookieWhenLoggingIn() throws Exception {
+  void shouldCreateAnHttpOnlyJwtCookieWhenLoggingInWithUsername() throws Exception {
     String identifier = uniqueIdentifier();
     register(identifier);
 
-    mockMvc
-        .perform(
-            post("/api/auth/login")
-                .contentType(APPLICATION_JSON)
-                .content(
-                    """
-                    {"login":"%s","password":"correct horse battery staple"}
-                    """
-                        .formatted(identifier))
-                .with(csrfToken()))
+    loginRequest(identifier, "correct horse battery staple")
         .andExpect(status().isNoContent())
         .andExpect(cookie().exists(AUTHENTICATION_COOKIE))
         .andExpect(cookie().value(AUTHENTICATION_COOKIE, not(emptyOrNullString())))
@@ -98,6 +89,31 @@ class AuthenticationCookieIT {
         .andExpect(cookie().secure(AUTHENTICATION_COOKIE, false))
         .andExpect(cookie().path(AUTHENTICATION_COOKIE, "/"))
         .andExpect(cookie().sameSite(AUTHENTICATION_COOKIE, "Lax"));
+  }
+
+  @Test
+  void shouldCreateAnHttpOnlyJwtCookieWhenLoggingInWithEmail() throws Exception {
+    String identifier = uniqueIdentifier();
+    register(identifier);
+
+    loginRequest(identifier + "@example.test", "correct horse battery staple")
+        .andExpect(status().isNoContent())
+        .andExpect(cookie().exists(AUTHENTICATION_COOKIE))
+        .andExpect(cookie().value(AUTHENTICATION_COOKIE, not(emptyOrNullString())))
+        .andExpect(cookie().httpOnly(AUTHENTICATION_COOKIE, true))
+        .andExpect(cookie().secure(AUTHENTICATION_COOKIE, false))
+        .andExpect(cookie().path(AUTHENTICATION_COOKIE, "/"))
+        .andExpect(cookie().sameSite(AUTHENTICATION_COOKIE, "Lax"));
+  }
+
+  @Test
+  void shouldRejectLoginWithAnInvalidPassword() throws Exception {
+    String identifier = uniqueIdentifier();
+    register(identifier);
+
+    loginRequest(identifier, "incorrect password")
+        .andExpect(status().isUnauthorized())
+        .andExpect(cookie().doesNotExist(AUTHENTICATION_COOKIE));
   }
 
   @Test
@@ -132,6 +148,18 @@ class AuthenticationCookieIT {
                 {"username":"%s","email":"%s","password":"correct horse battery staple"}
                 """
                     .formatted(username, email))
+            .with(csrfToken()));
+  }
+
+  private ResultActions loginRequest(String login, String password) throws Exception {
+    return mockMvc.perform(
+        post("/api/auth/login")
+            .contentType(APPLICATION_JSON)
+            .content(
+                """
+                {"login":"%s","password":"%s"}
+                """
+                    .formatted(login, password))
             .with(csrfToken()));
   }
 
