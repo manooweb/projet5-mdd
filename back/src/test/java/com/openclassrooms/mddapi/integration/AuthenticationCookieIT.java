@@ -17,6 +17,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 @SpringBootTest(
@@ -53,6 +54,26 @@ class AuthenticationCookieIT {
         .andExpect(cookie().secure(AUTHENTICATION_COOKIE, false))
         .andExpect(cookie().path(AUTHENTICATION_COOKIE, "/"))
         .andExpect(cookie().sameSite(AUTHENTICATION_COOKIE, "Lax"));
+  }
+
+  @Test
+  void shouldReturnConflictWhenRegisteringWithAnExistingUsername() throws Exception {
+    String existingIdentifier = uniqueIdentifier();
+    String newIdentifier = uniqueIdentifier();
+    register(existingIdentifier);
+
+    registerRequest(existingIdentifier, newIdentifier + "@example.test")
+        .andExpect(status().isConflict());
+  }
+
+  @Test
+  void shouldReturnConflictWhenRegisteringWithAnExistingEmail() throws Exception {
+    String existingIdentifier = uniqueIdentifier();
+    String newIdentifier = uniqueIdentifier();
+    register(existingIdentifier);
+
+    registerRequest(newIdentifier, existingIdentifier + "@example.test")
+        .andExpect(status().isConflict());
   }
 
   @Test
@@ -94,21 +115,24 @@ class AuthenticationCookieIT {
 
   private Cookie register(String identifier) throws Exception {
     MvcResult result =
-        mockMvc
-            .perform(
-                post("/api/auth/register")
-                    .contentType(APPLICATION_JSON)
-                    .content(
-                        """
-                        {"username":"%s","email":"%s@example.test","password":"correct horse battery staple"}
-                        """
-                            .formatted(identifier, identifier))
-                    .with(csrfToken()))
+        registerRequest(identifier, identifier + "@example.test")
             .andExpect(status().isCreated())
             .andExpect(cookie().exists(AUTHENTICATION_COOKIE))
             .andReturn();
 
     return result.getResponse().getCookie(AUTHENTICATION_COOKIE);
+  }
+
+  private ResultActions registerRequest(String username, String email) throws Exception {
+    return mockMvc.perform(
+        post("/api/auth/register")
+            .contentType(APPLICATION_JSON)
+            .content(
+                """
+                {"username":"%s","email":"%s","password":"correct horse battery staple"}
+                """
+                    .formatted(username, email))
+            .with(csrfToken()));
   }
 
   private RequestPostProcessor csrfToken() throws Exception {

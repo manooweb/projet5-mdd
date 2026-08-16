@@ -50,7 +50,8 @@ public class SecurityConfig {
                         "/swagger-ui/**",
                         "/v3/api-docs/**")
                     .permitAll()
-                    .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+                    .dispatcherTypeMatchers(DispatcherType.ERROR)
+                    .permitAll()
                     .anyRequest()
                     .authenticated())
         .csrf(
