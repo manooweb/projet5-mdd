@@ -2,6 +2,7 @@ mdd:
   authentication:
     messages:
       duplicate-identity: Username or email is already used.
+      invalid-credentials: Invalid credentials.
       validation:
         invalid-request: The request contains an invalid value.
         username-required: Username is required.

@@ -51,6 +51,10 @@ public class UserAccount {
     return username;
   }
 
+  public String getPassword() {
+    return password;
+  }
+
   public void initializeTimestamps() {
     Instant now = Instant.now();
     createdAt = now;

@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class AuthenticationMessagesProperties {
 
   private String duplicateIdentity;
+  private String invalidCredentials;
   private Validation validation = new Validation();
 
   @Getter
