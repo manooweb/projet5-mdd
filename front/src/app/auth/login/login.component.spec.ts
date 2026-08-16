@@ -1,13 +1,23 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
+import { of } from 'rxjs';
 import { getInput } from '../../../testing/dom';
+import { AuthenticationService } from '../authentication.service';
 import { LoginComponent } from './login.component';
 
 describe('LoginComponent', () => {
+  const authenticationService = {
+    login: vi.fn(() => of(void 0)),
+  };
+
   beforeEach(async () => {
+    authenticationService.login.mockClear();
     await TestBed.configureTestingModule({
       imports: [LoginComponent],
-      providers: [provideRouter([])],
+      providers: [
+        provideRouter([]),
+        { provide: AuthenticationService, useValue: authenticationService },
+      ],
     }).compileComponents();
   });
 
@@ -102,5 +112,24 @@ describe('LoginComponent', () => {
     expect(getComputedStyle(hostElement.querySelector('#password-feedback')!).display).toBe(
       'block',
     );
+  });
+
+  it('submits valid credentials and goes to the articles page on success', () => {
+    const fixture = TestBed.createComponent(LoginComponent);
+    const router = TestBed.inject(Router);
+    const navigateByUrl = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+    fixture.componentInstance.loginForm.setValue({
+      login: 'manu@example.com',
+      password: 'Password1!',
+    });
+    fixture.detectChanges();
+
+    fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit'));
+
+    expect(authenticationService.login).toHaveBeenCalledWith({
+      login: 'manu@example.com',
+      password: 'Password1!',
+    });
+    expect(navigateByUrl).toHaveBeenCalledWith('/posts');
   });
 });

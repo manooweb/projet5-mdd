@@ -1,11 +1,13 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AutoFocus } from 'primeng/autofocus';
 import { ButtonDirective } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { Password } from 'primeng/password';
 import { BackButtonComponent } from '../../shared/back-button/back-button.component';
 import { HeaderComponent } from '../../shared/header/header.component';
+import { AuthenticationService } from '../authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -23,6 +25,11 @@ import { HeaderComponent } from '../../shared/header/header.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
+  private readonly authenticationService = inject(AuthenticationService);
+  private readonly router = inject(Router);
+
+  readonly isSubmitting = signal(false);
+
   readonly loginForm = new FormGroup({
     login: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     password: new FormControl('', {
@@ -30,4 +37,17 @@ export class LoginComponent {
       validators: [Validators.required, Validators.minLength(8)],
     }),
   });
+
+  submit(): void {
+    if (this.loginForm.invalid || this.isSubmitting()) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    this.isSubmitting.set(true);
+    this.authenticationService.login(this.loginForm.getRawValue()).subscribe({
+      next: () => void this.router.navigateByUrl('/posts'),
+      error: () => this.isSubmitting.set(false),
+    });
+  }
 }

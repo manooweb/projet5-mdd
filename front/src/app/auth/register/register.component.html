@@ -10,7 +10,7 @@
   <section class="w-full max-w-sm">
     <h1 class="mb-8 text-center text-2xl font-bold text-black">Inscription</h1>
 
-    <form [formGroup]="registerForm" class="flex flex-col gap-5" novalidate>
+    <form [formGroup]="registerForm" class="flex flex-col gap-5" novalidate (ngSubmit)="submit()">
       <div class="flex flex-col gap-2">
         <label for="username" class="font-semibold text-black">Nom d’utilisateur</label>
         <input
@@ -74,7 +74,7 @@
         pButton
         class="mt-3 flex h-10 w-full justify-center rounded-lg bg-primary font-semibold text-white hover:bg-primary-700 active:bg-primary-800 disabled:cursor-not-allowed disabled:bg-primary-300"
         type="submit"
-        [disabled]="registerForm.invalid"
+        [disabled]="registerForm.invalid || isSubmitting()"
       >
         S’inscrire
       </button>

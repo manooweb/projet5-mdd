@@ -10,7 +10,7 @@
   <section class="w-full max-w-sm">
     <h1 class="mb-8 text-center text-2xl font-bold text-black">Se connecter</h1>
 
-    <form [formGroup]="loginForm" class="flex flex-col gap-5" novalidate>
+    <form [formGroup]="loginForm" class="flex flex-col gap-5" novalidate (ngSubmit)="submit()">
       <div class="flex flex-col gap-2">
         <label for="login" class="font-semibold text-black">E-mail ou nom d’utilisateur</label>
         <input
@@ -55,7 +55,7 @@
         pButton
         class="mt-3 flex h-10 w-full justify-center rounded-lg bg-primary font-semibold text-white hover:bg-primary-700 active:bg-primary-800 disabled:cursor-not-allowed disabled:bg-primary-300"
         type="submit"
-        [disabled]="loginForm.invalid"
+        [disabled]="loginForm.invalid || isSubmitting()"
       >
         Se connecter
       </button>

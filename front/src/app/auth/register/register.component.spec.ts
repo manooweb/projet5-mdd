@@ -1,13 +1,23 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
+import { of } from 'rxjs';
 import { getInput } from '../../../testing/dom';
+import { AuthenticationService } from '../authentication.service';
 import { RegisterComponent } from './register.component';
 
 describe('RegisterComponent', () => {
+  const authenticationService = {
+    register: vi.fn(() => of(void 0)),
+  };
+
   beforeEach(async () => {
+    authenticationService.register.mockClear();
     await TestBed.configureTestingModule({
       imports: [RegisterComponent],
-      providers: [provideRouter([])],
+      providers: [
+        provideRouter([]),
+        { provide: AuthenticationService, useValue: authenticationService },
+      ],
     }).compileComponents();
   });
 
@@ -131,5 +141,26 @@ describe('RegisterComponent', () => {
     passwordControl.setValue(`Password1!${'a'.repeat(63)}`);
 
     expect(passwordControl.hasError('maxlength')).toBe(true);
+  });
+
+  it('submits valid registration details and goes to the articles page on success', () => {
+    const fixture = TestBed.createComponent(RegisterComponent);
+    const router = TestBed.inject(Router);
+    const navigateByUrl = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+    fixture.componentInstance.registerForm.setValue({
+      username: 'manu',
+      email: 'manu@example.com',
+      password: 'Password1!',
+    });
+    fixture.detectChanges();
+
+    fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit'));
+
+    expect(authenticationService.register).toHaveBeenCalledWith({
+      username: 'manu',
+      email: 'manu@example.com',
+      password: 'Password1!',
+    });
+    expect(navigateByUrl).toHaveBeenCalledWith('/posts');
   });
 });

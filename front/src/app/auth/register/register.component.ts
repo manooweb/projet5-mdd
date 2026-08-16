@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -7,12 +7,14 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AutoFocus } from 'primeng/autofocus';
 import { ButtonDirective } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { Password } from 'primeng/password';
 import { BackButtonComponent } from '../../shared/back-button/back-button.component';
 import { HeaderComponent } from '../../shared/header/header.component';
+import { AuthenticationService } from '../authentication.service';
 
 const passwordComplexityValidator: ValidatorFn = (control): ValidationErrors | null =>
   /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])/.test(control.value)
@@ -35,6 +37,11 @@ const passwordComplexityValidator: ValidatorFn = (control): ValidationErrors | n
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterComponent {
+  private readonly authenticationService = inject(AuthenticationService);
+  private readonly router = inject(Router);
+
+  readonly isSubmitting = signal(false);
+
   readonly passwordStrengthRegex = '^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])(?=.{8,})';
 
   readonly registerForm = new FormGroup({
@@ -56,4 +63,17 @@ export class RegisterComponent {
       ],
     }),
   });
+
+  submit(): void {
+    if (this.registerForm.invalid || this.isSubmitting()) {
+      this.registerForm.markAllAsTouched();
+      return;
+    }
+
+    this.isSubmitting.set(true);
+    this.authenticationService.register(this.registerForm.getRawValue()).subscribe({
+      next: () => void this.router.navigateByUrl('/posts'),
+      error: () => this.isSubmitting.set(false),
+    });
+  }
 }
