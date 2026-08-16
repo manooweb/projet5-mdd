@@ -1,5 +1,6 @@
 package com.openclassrooms.mddapi.system.config;
 
+import jakarta.servlet.DispatcherType;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,6 +50,7 @@ public class SecurityConfig {
                         "/swagger-ui/**",
                         "/v3/api-docs/**")
                     .permitAll()
+                    .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                     .anyRequest()
                     .authenticated())
         .csrf(
