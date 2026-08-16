@@ -6,4 +6,4 @@ import jakarta.validation.constraints.Size;
 
 public record LoginRequest(
     @NotBlank @Size(max = 255) String login,
-    @Schema(example = "stringstring") @NotBlank @Size(max = 72) String password) {}
+    @Schema(example = "Pass1!wd") @NotBlank @Size(max = 72) String password) {}

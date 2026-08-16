@@ -43,7 +43,7 @@ class AuthenticationCookieIT {
                 .contentType(APPLICATION_JSON)
                 .content(
                     """
-                    {"username":"%s","email":"%s@example.test","password":"correct horse battery staple"}
+                    {"username":"%s","email":"%s@example.test","password":"Pass1!wd"}
                     """
                         .formatted(identifier, identifier))
                 .with(csrfToken()))
@@ -81,7 +81,7 @@ class AuthenticationCookieIT {
     String identifier = uniqueIdentifier();
     register(identifier);
 
-    loginRequest(identifier, "correct horse battery staple")
+    loginRequest(identifier, "Pass1!wd")
         .andExpect(status().isNoContent())
         .andExpect(cookie().exists(AUTHENTICATION_COOKIE))
         .andExpect(cookie().value(AUTHENTICATION_COOKIE, not(emptyOrNullString())))
@@ -96,7 +96,7 @@ class AuthenticationCookieIT {
     String identifier = uniqueIdentifier();
     register(identifier);
 
-    loginRequest(identifier + "@example.test", "correct horse battery staple")
+    loginRequest(identifier + "@example.test", "Pass1!wd")
         .andExpect(status().isNoContent())
         .andExpect(cookie().exists(AUTHENTICATION_COOKIE))
         .andExpect(cookie().value(AUTHENTICATION_COOKIE, not(emptyOrNullString())))
@@ -145,7 +145,7 @@ class AuthenticationCookieIT {
             .contentType(APPLICATION_JSON)
             .content(
                 """
-                {"username":"%s","email":"%s","password":"correct horse battery staple"}
+                {"username":"%s","email":"%s","password":"Pass1!wd"}
                 """
                     .formatted(username, email))
             .with(csrfToken()));

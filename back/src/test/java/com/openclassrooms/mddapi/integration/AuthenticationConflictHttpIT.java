@@ -66,7 +66,7 @@ class AuthenticationConflictHttpIT {
             .POST(
                 HttpRequest.BodyPublishers.ofString(
                     """
-                    {"username":"%s","email":"%s","password":"correct horse battery staple"}
+                    {"username":"%s","email":"%s","password":"Pass1!wd"}
                     """
                         .formatted(username, email)))
             .build();

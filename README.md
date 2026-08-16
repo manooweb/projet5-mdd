@@ -105,7 +105,7 @@ Swagger UI is the authoritative interactive API reference. The endpoints current
 | `GET` | `/actuator/health` | Returns the backend health status | `200 OK` |
 | `GET` | `/v3/api-docs` | Returns the generated OpenAPI specification | `200 OK` |
 
-For `register`, send `username`, `email`, and `password` in JSON. The password must contain 12 to 72 characters. For `login`, send `login` (username or email) and `password`. Call `GET /api/auth/csrf` before every state-changing authentication request.
+For `register`, send `username`, `email`, and `password` in JSON. The password must contain 8 to 72 characters. For `login`, send `login` (username or email) and `password`. Call `GET /api/auth/csrf` before every state-changing authentication request.
 
 ## Tests and quality checks
 

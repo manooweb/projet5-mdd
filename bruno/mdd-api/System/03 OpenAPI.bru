@@ -35,8 +35,11 @@ tests {
     expect(logout.summary).to.equal("Log out");
     expect(logout.description).to.include("GET /api/auth/csrf");
     expect(logout.responses["204"].description).to.equal("Authentication cookie cleared.");
+    expect(res.body.components.schemas.RegisterRequest.properties.password.example).to.equal(
+      "Pass1!wd"
+    );
     expect(res.body.components.schemas.LoginRequest.properties.password.example).to.equal(
-      "stringstring"
+      "Pass1!wd"
     );
     expect(csrf.summary).to.equal("Initialize CSRF protection");
     expect(csrf.responses["204"].description).to.equal("CSRF protection initialized.");
