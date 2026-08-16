@@ -1,5 +1,22 @@
-<main class="center">
-  <img class="logo" src="assets/logo_p6.png" alt="MDD logo" />
-  <h1>Welcome to MDD</h1>
-  <button class="primary-button" type="button" (click)="start()">Commencer</button>
+<main class="flex min-h-screen flex-col items-center justify-center gap-10 p-4">
+  <img class="h-auto w-full max-w-104" src="assets/logo_p6.png" alt="MDD logo" />
+
+  <nav class="flex flex-col gap-4 sm:flex-row sm:gap-16" aria-label="Authentification">
+    <a
+      pButton
+      class="flex h-10 w-40 justify-center rounded-lg border border-black bg-white text-base font-semibold text-black no-underline hover:border-primary hover:bg-primary-50 hover:text-primary active:bg-primary-100"
+      routerLink="/login"
+      variant="outlined"
+    >
+      Se connecter
+    </a>
+    <a
+      pButton
+      class="flex h-10 w-40 justify-center rounded-lg border border-black bg-white text-base font-semibold text-black no-underline hover:border-primary hover:bg-primary-50 hover:text-primary active:bg-primary-100"
+      routerLink="/register"
+      variant="outlined"
+    >
+      S’inscrire
+    </a>
+  </nav>
 </main>

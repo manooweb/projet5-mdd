@@ -41,6 +41,7 @@ testem.log
 __screenshots__/
 /cypress/screenshots
 /cypress/videos
+primeui-license.local.ts
 
 # System files
 .DS_Store
