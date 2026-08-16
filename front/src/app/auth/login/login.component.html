@@ -1,3 +1,47 @@
-<main>
-  <h1>Se connecter</h1>
+<app-header [authentication]="true" />
+
+<main
+  class="relative flex min-h-screen flex-col items-center justify-center gap-8 p-6 md:min-h-[calc(100vh-6rem)]"
+>
+  <app-back-button class="absolute top-4 left-4 md:top-8 md:left-8" />
+
+  <img class="h-auto w-full max-w-52 md:hidden" src="assets/logo_p6.png" alt="MDD logo" />
+
+  <section class="w-full max-w-sm">
+    <h1 class="mb-8 text-center text-2xl font-bold text-black">Se connecter</h1>
+
+    <form class="flex flex-col gap-5">
+      <div class="flex flex-col gap-2">
+        <label for="login" class="font-semibold text-black">E-mail ou nom d’utilisateur</label>
+        <input
+          pInputText
+          id="login"
+          name="login"
+          autocomplete="username"
+          class="h-10 w-full rounded-lg border border-black bg-white px-3 text-black"
+          type="text"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="password" class="font-semibold text-black">Mot de passe</label>
+        <input
+          pInputText
+          id="password"
+          name="password"
+          autocomplete="current-password"
+          class="h-10 w-full rounded-lg border border-black bg-white px-3 text-black"
+          type="password"
+        />
+      </div>
+
+      <button
+        pButton
+        class="mt-3 flex h-10 w-full justify-center rounded-lg bg-primary font-semibold text-white hover:bg-primary-600 active:bg-primary-700"
+        type="button"
+      >
+        Se connecter
+      </button>
+    </form>
+  </section>
 </main>

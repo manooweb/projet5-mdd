@@ -12,13 +12,14 @@ describe('BackButtonComponent', () => {
 
   it('links to its configured destination', () => {
     const fixture = TestBed.createComponent(BackButtonComponent);
-    fixture.componentRef.setInput('target', '/register');
-    fixture.componentRef.setInput('label', 'Retour à l’inscription');
+    fixture.componentRef.setInput('target', '/destination-de-test');
+    fixture.componentRef.setInput('label', 'Retour de test');
     fixture.detectChanges();
 
     const link = (fixture.nativeElement as HTMLElement).querySelector('a');
 
-    expect(link?.getAttribute('href')).toBe('/register');
-    expect(link?.getAttribute('aria-label')).toBe('Retour à l’inscription');
+    expect(link).not.toBeNull();
+    expect(link!.getAttribute('href')).toBe('/destination-de-test');
+    expect(link!.getAttribute('aria-label')).toBe('Retour de test');
   });
 });
