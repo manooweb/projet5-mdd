@@ -10,7 +10,7 @@
   <section class="w-full max-w-sm">
     <h1 class="mb-8 text-center text-2xl font-bold text-black">Inscription</h1>
 
-    <form class="flex flex-col gap-5">
+    <form [formGroup]="registerForm" class="flex flex-col gap-5" novalidate>
       <div class="flex flex-col gap-2">
         <label for="username" class="font-semibold text-black">Nom d’utilisateur</label>
         <input
@@ -19,8 +19,14 @@
           name="username"
           autocomplete="username"
           class="h-10 w-full rounded-lg border border-black bg-white px-3 text-black"
+          formControlName="username"
+          aria-describedby="username-feedback"
+          pAutoFocus
           type="text"
         />
+        <p id="username-feedback" class="invalid-feedback" aria-live="polite">
+          Le nom d’utilisateur est obligatoire.
+        </p>
       </div>
 
       <div class="flex flex-col gap-2">
@@ -31,26 +37,44 @@
           name="email"
           autocomplete="email"
           class="h-10 w-full rounded-lg border border-black bg-white px-3 text-black"
+          formControlName="email"
+          aria-describedby="email-feedback"
           type="email"
         />
+        <p id="email-feedback" class="invalid-feedback" aria-live="polite">
+          Une adresse e-mail valide est obligatoire.
+        </p>
       </div>
 
       <div class="flex flex-col gap-2">
         <label for="password" class="font-semibold text-black">Mot de passe</label>
-        <input
-          pInputText
-          id="password"
+        <p-password
+          inputId="password"
           name="password"
           autocomplete="new-password"
-          class="h-10 w-full rounded-lg border border-black bg-white px-3 text-black"
-          type="password"
+          inputStyleClass="h-10 w-full rounded-lg border border-black bg-white px-3 text-black"
+          [feedback]="true"
+          [fluid]="true"
+          [strongRegex]="passwordStrengthRegex"
+          [toggleMask]="true"
+          promptLabel="Saisissez un mot de passe"
+          weakLabel="Faible"
+          mediumLabel="Moyen"
+          strongLabel="Fort"
+          formControlName="password"
+          aria-describedby="password-feedback"
         />
+        <p id="password-feedback" class="invalid-feedback" aria-live="polite">
+          Le mot de passe doit comporter de 8 à 72 caractères, dont un chiffre, une minuscule, une
+          majuscule et un caractère spécial.
+        </p>
       </div>
 
       <button
         pButton
-        class="mt-3 flex h-10 w-full justify-center rounded-lg bg-primary font-semibold text-white hover:bg-primary-700 active:bg-primary-800"
-        type="button"
+        class="mt-3 flex h-10 w-full justify-center rounded-lg bg-primary font-semibold text-white hover:bg-primary-700 active:bg-primary-800 disabled:cursor-not-allowed disabled:bg-primary-300"
+        type="submit"
+        [disabled]="registerForm.invalid"
       >
         S’inscrire
       </button>

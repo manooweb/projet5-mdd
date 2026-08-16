@@ -8,3 +8,26 @@
 body {
   margin: 0;
 }
+
+.invalid-feedback {
+  display: none;
+  margin-top: 0.25rem;
+  color: var(--p-red-500);
+  font-size: 0.875rem;
+}
+
+.p-inputtext.ng-invalid.ng-dirty,
+.p-inputtext.ng-invalid.ng-touched,
+.p-textarea.ng-invalid.ng-dirty,
+.p-textarea.ng-invalid.ng-touched,
+p-select.ng-invalid.ng-dirty,
+p-select.ng-invalid.ng-touched,
+p-password.ng-invalid.ng-dirty .p-inputtext,
+p-password.ng-invalid.ng-touched .p-inputtext {
+  border-color: var(--p-inputtext-invalid-border-color);
+}
+
+.ng-invalid.ng-dirty + .invalid-feedback,
+.ng-invalid.ng-touched + .invalid-feedback {
+  display: block;
+}
