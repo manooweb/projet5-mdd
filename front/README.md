@@ -31,10 +31,10 @@ The development server proxies requests beginning with `/api` to the local Sprin
 
 | Service                       | URL                                           |
 | ----------------------------- | --------------------------------------------- |
-| Development application       | `http://localhost:4200/`                      |
-| Backend API through the proxy | `http://localhost:4200/api`                   |
-| Local Spring Boot API         | `http://localhost:8080/api`                   |
-| Local Swagger UI              | `http://localhost:8080/swagger-ui/index.html` |
+| Development application       | `http://localhost:4400/`                      |
+| Backend API through the proxy | `http://localhost:4400/api`                   |
+| Local Spring Boot API         | `http://localhost:9001/api`                   |
+| Local Swagger UI              | `http://localhost:9001/swagger-ui/index.html` |
 
 ## Related documentation
 
