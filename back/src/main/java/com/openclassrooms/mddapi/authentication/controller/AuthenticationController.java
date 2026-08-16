@@ -88,4 +88,29 @@ public class AuthenticationController {
     authenticationCookieService.addAuthenticationCookie(headers, token);
     return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
   }
+
+  @Operation(
+      summary = "Log out",
+      description =
+          """
+          Closes the current authenticated session.
+
+          Call `GET /api/auth/csrf` once before sending this request.
+          """)
+  @ApiResponse(
+      responseCode = "204",
+      description = "Authentication cookie cleared.",
+      headers =
+          @Header(
+              name = "Set-Cookie",
+              description = "Expires the HttpOnly MDD_AUTH_TOKEN authentication cookie.",
+              schema = @Schema(type = "string")))
+  @ApiResponse(responseCode = "403", description = "Missing or invalid CSRF token.")
+  @ApiResponse(responseCode = "500", description = "Unexpected server error.")
+  @PostMapping("/api/auth/logout")
+  ResponseEntity<Void> logout() {
+    HttpHeaders headers = new HttpHeaders();
+    authenticationCookieService.removeAuthenticationCookie(headers);
+    return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+  }
 }

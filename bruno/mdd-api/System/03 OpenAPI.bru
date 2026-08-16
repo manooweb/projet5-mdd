@@ -22,6 +22,7 @@ tests {
   test("authentication endpoints document CSRF initialization", function () {
     const register = res.body.paths["/api/auth/register"].post;
     const login = res.body.paths["/api/auth/login"].post;
+    const logout = res.body.paths["/api/auth/logout"].post;
     const csrf = res.body.paths["/api/auth/csrf"].get;
     expect(register.summary).to.equal("Register a user");
     expect(register.description).to.include("GET /api/auth/csrf");
@@ -31,6 +32,9 @@ tests {
       "User authenticated and authentication cookie created."
     );
     expect(login.responses["401"].description).to.equal("Invalid credentials.");
+    expect(logout.summary).to.equal("Log out");
+    expect(logout.description).to.include("GET /api/auth/csrf");
+    expect(logout.responses["204"].description).to.equal("Authentication cookie cleared.");
     expect(res.body.components.schemas.LoginRequest.properties.password.example).to.equal(
       "stringstring"
     );
