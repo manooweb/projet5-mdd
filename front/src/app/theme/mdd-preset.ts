@@ -17,4 +17,14 @@ export const MddPreset = definePreset(Aura, {
       950: '#221d3b',
     },
   },
+  components: {
+    progressspinner: {
+      root: {
+        colorOne: '{primary.500}',
+        colorTwo: '{primary.600}',
+        colorThree: '{primary.700}',
+        colorFour: '{primary.800}',
+      },
+    },
+  },
 });
