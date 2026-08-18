@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import java.io.IOException;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
@@ -54,15 +55,33 @@ class AuthenticationMessagesPropertiesTest {
             "validation.passwordSize");
   }
 
-  private AuthenticationMessagesProperties bindMessagesFromAuthenticationYaml() throws IOException {
-    PropertySource<?> source =
-        new YamlPropertySourceLoader()
-            .load("authentication.yml", new ClassPathResource("authentication.yml"))
-            .getFirst();
+  private AuthenticationMessagesProperties bindMessagesFromAuthenticationYaml() {
+    ClassPathResource resource = new ClassPathResource("authentication.yml");
+    if (!resource.exists()) {
+      throw new IllegalStateException(
+          "Authentication YAML resource 'authentication.yml' was not found on the test classpath.");
+    }
+
+    List<PropertySource<?>> sources;
+    try {
+      sources = new YamlPropertySourceLoader().load("authentication.yml", resource);
+    } catch (IOException exception) {
+      throw new IllegalStateException(
+          "Authentication YAML resource 'authentication.yml' could not be loaded.", exception);
+    }
+
+    if (sources.isEmpty()) {
+      throw new IllegalStateException(
+          "Authentication YAML resource 'authentication.yml' does not contain a YAML document.");
+    }
+
+    PropertySource<?> source = sources.getFirst();
 
     return new Binder(ConfigurationPropertySources.from(source))
         .bind("mdd.authentication.messages", Bindable.of(AuthenticationMessagesProperties.class))
         .orElseThrow(
-            () -> new IllegalStateException("Authentication messages must be configured."));
+            () ->
+                new IllegalStateException(
+                    "Configuration prefix 'mdd.authentication.messages' is missing from authentication.yml."));
   }
 }
