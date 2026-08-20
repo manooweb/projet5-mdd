@@ -6,6 +6,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import jakarta.servlet.http.Cookie;
@@ -127,6 +128,25 @@ class AuthenticationCookieIT {
         .andExpect(cookie().maxAge(AUTHENTICATION_COOKIE, 0))
         .andExpect(cookie().httpOnly(AUTHENTICATION_COOKIE, true))
         .andExpect(cookie().path(AUTHENTICATION_COOKIE, "/"));
+  }
+
+  @Test
+  void shouldReturnTheCurrentUserForAnAuthenticatedSession() throws Exception {
+    String identifier = uniqueIdentifier();
+    Cookie authenticationCookie = register(identifier);
+
+    mockMvc
+        .perform(get("/api/users/me").cookie(authenticationCookie))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").isNumber())
+        .andExpect(jsonPath("$.username").value(identifier))
+        .andExpect(jsonPath("$.email").value(identifier + "@example.test"))
+        .andExpect(jsonPath("$.password").doesNotExist());
+  }
+
+  @Test
+  void shouldRejectTheCurrentUserRequestWithoutAnAuthenticatedSession() throws Exception {
+    mockMvc.perform(get("/api/users/me")).andExpect(status().isUnauthorized());
   }
 
   private Cookie register(String identifier) throws Exception {

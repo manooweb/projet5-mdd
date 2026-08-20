@@ -2,11 +2,13 @@ package com.openclassrooms.mddapi.authentication.service;
 
 import com.openclassrooms.mddapi.authentication.config.JwtProperties;
 import com.openclassrooms.mddapi.authentication.domain.UserAccount;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.time.Instant;
 import java.util.Date; // NOSONAR: JJWT exposes Date for JWT temporal claims.
+import java.util.Optional;
 import javax.crypto.SecretKey;
 import org.springframework.stereotype.Service;
 
@@ -31,5 +33,20 @@ public class JwtService {
         .expiration(Date.from(now.plus(properties.expiration())))
         .signWith(signingKey)
         .compact();
+  }
+
+  public Optional<Long> findUserId(String token) {
+    try {
+      String subject =
+          Jwts.parser()
+              .verifyWith(signingKey)
+              .build()
+              .parseSignedClaims(token)
+              .getPayload()
+              .getSubject();
+      return Optional.of(Long.valueOf(subject));
+    } catch (JwtException | IllegalArgumentException _) {
+      return Optional.empty();
+    }
   }
 }
