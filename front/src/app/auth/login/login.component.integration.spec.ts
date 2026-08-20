@@ -1,0 +1,75 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import { provideLocationMocks } from '@angular/common/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter, Router } from '@angular/router';
+import { AppComponent } from '../../app.component';
+import { routes } from '../../app.routes';
+import { SessionService } from '../session.service';
+
+describe('LoginComponent integration', () => {
+  let fixture: ComponentFixture<AppComponent>;
+  let httpTesting: HttpTestingController;
+  let router: Router;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [AppComponent],
+      providers: [
+        provideRouter(routes),
+        provideLocationMocks(),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(AppComponent);
+    httpTesting = TestBed.inject(HttpTestingController);
+    router = TestBed.inject(Router);
+
+    fixture.detectChanges();
+    await router.navigateByUrl('/login');
+    fixture.detectChanges();
+  });
+
+  afterEach(() => httpTesting.verify());
+
+  it('restores the user session before displaying articles after a successful login', async () => {
+    const hostElement = fixture.nativeElement as HTMLElement;
+    const loginInput = hostElement.querySelector<HTMLInputElement>('#login');
+    const passwordInput = hostElement.querySelector<HTMLInputElement>('#password');
+    const form = hostElement.querySelector('form');
+
+    expect(loginInput).not.toBeNull();
+    expect(passwordInput).not.toBeNull();
+    expect(form).not.toBeNull();
+
+    loginInput!.value = 'manu@example.com';
+    loginInput!.dispatchEvent(new Event('input'));
+    passwordInput!.value = 'Pass1!wd';
+    passwordInput!.dispatchEvent(new Event('input'));
+    form!.dispatchEvent(new Event('submit'));
+
+    httpTesting.expectOne('/api/auth/csrf').flush(null, { status: 204, statusText: 'No Content' });
+
+    const loginRequest = httpTesting.expectOne('/api/auth/login');
+    expect(loginRequest.request.method).toBe('POST');
+    expect(loginRequest.request.body).toEqual({ login: 'manu@example.com', password: 'Pass1!wd' });
+    loginRequest.flush(null, { status: 204, statusText: 'No Content' });
+
+    await new Promise<void>((resolve) => setTimeout(resolve));
+
+    const currentUserRequest = httpTesting.expectOne('/api/users/me');
+    currentUserRequest.flush({ id: 1, username: 'manu', email: 'manu@example.com' });
+
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(TestBed.inject(SessionService).currentUser()).toEqual({
+      id: 1,
+      username: 'manu',
+      email: 'manu@example.com',
+    });
+    expect(hostElement.querySelector('h1')?.textContent?.trim()).toBe('Articles');
+  });
+});
