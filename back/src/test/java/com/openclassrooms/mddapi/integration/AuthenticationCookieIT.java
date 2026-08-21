@@ -9,8 +9,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.openclassrooms.mddapi.authentication.service.JwtService;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
+import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
+import javax.crypto.SecretKey;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,8 +38,11 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 class AuthenticationCookieIT {
 
   private static final String AUTHENTICATION_COOKIE = "MDD_AUTH_TOKEN";
+  private static final String JWT_SECRET = "MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=";
 
   @Autowired private MockMvc mockMvc;
+
+  @Autowired private JwtService jwtService;
 
   @Test
   void shouldCreateAnHttpOnlyJwtCookieWhenRegistering() throws Exception {
@@ -145,8 +155,26 @@ class AuthenticationCookieIT {
   }
 
   @Test
-  void shouldRejectTheCurrentUserRequestWithoutAnAuthenticatedSession() throws Exception {
+  void shouldRejectTheCurrentUserRequestWhenTheAuthenticationCookieIsMissingOrExpired()
+      throws Exception {
     mockMvc.perform(get("/api/users/me")).andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  void shouldRejectTheCurrentUserRequestWhenTheJwtHasExpired() throws Exception {
+    Cookie authenticationCookie = register(uniqueIdentifier());
+    Long userId = jwtService.findUserId(authenticationCookie.getValue()).orElseThrow();
+    SecretKey signingKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(JWT_SECRET));
+    String expiredToken =
+        Jwts.builder()
+            .subject(userId.toString())
+            .expiration(Date.from(Instant.now().minusSeconds(1)))
+            .signWith(signingKey)
+            .compact();
+
+    mockMvc
+        .perform(get("/api/users/me").cookie(new Cookie(AUTHENTICATION_COOKIE, expiredToken)))
+        .andExpect(status().isUnauthorized());
   }
 
   private Cookie register(String identifier) throws Exception {
