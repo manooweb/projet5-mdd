@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AutoFocus } from 'primeng/autofocus';
@@ -26,6 +27,7 @@ import { AuthenticationService } from '../authentication.service';
 })
 export class LoginComponent {
   private readonly authenticationService = inject(AuthenticationService);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
 
   readonly isSubmitting = signal(false);
@@ -45,9 +47,12 @@ export class LoginComponent {
     }
 
     this.isSubmitting.set(true);
-    this.authenticationService.login(this.loginForm.getRawValue()).subscribe({
-      next: () => void this.router.navigateByUrl('/posts'),
-      error: () => this.isSubmitting.set(false),
-    });
+    this.authenticationService
+      .login(this.loginForm.getRawValue())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => void this.router.navigateByUrl('/posts'),
+        error: () => this.isSubmitting.set(false),
+      });
   }
 }

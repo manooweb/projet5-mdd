@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
@@ -38,6 +39,7 @@ const passwordComplexityValidator: ValidatorFn = (control): ValidationErrors | n
 })
 export class RegisterComponent {
   private readonly authenticationService = inject(AuthenticationService);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
 
   readonly isSubmitting = signal(false);
@@ -71,9 +73,12 @@ export class RegisterComponent {
     }
 
     this.isSubmitting.set(true);
-    this.authenticationService.register(this.registerForm.getRawValue()).subscribe({
-      next: () => void this.router.navigateByUrl('/posts'),
-      error: () => this.isSubmitting.set(false),
-    });
+    this.authenticationService
+      .register(this.registerForm.getRawValue())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => void this.router.navigateByUrl('/posts'),
+        error: () => this.isSubmitting.set(false),
+      });
   }
 }

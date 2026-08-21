@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { Bars } from '@primeicons/angular/bars';
 import { AuthenticationService } from '../../auth/authentication.service';
@@ -13,6 +22,7 @@ import { SessionService } from '../../auth/session.service';
 })
 export class HeaderComponent {
   private readonly authenticationService = inject(AuthenticationService);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly sessionService = inject(SessionService);
 
@@ -27,12 +37,15 @@ export class HeaderComponent {
     }
 
     this.isLoggingOut.set(true);
-    this.authenticationService.logout().subscribe({
-      next: () => {
-        this.sessionService.clearSession();
-        void this.router.navigateByUrl('/login');
-      },
-      error: () => this.isLoggingOut.set(false),
-    });
+    this.authenticationService
+      .logout()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.sessionService.clearSession();
+          void this.router.navigateByUrl('/login');
+        },
+        error: () => this.isLoggingOut.set(false),
+      });
   }
 }
