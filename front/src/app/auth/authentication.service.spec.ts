@@ -47,4 +47,15 @@ describe('AuthenticationService', () => {
     });
     registerRequest.flush(null, { status: 201, statusText: 'Created' });
   });
+
+  it('gets a CSRF token before logging out', () => {
+    service.logout().subscribe();
+
+    httpTesting.expectOne('/api/auth/csrf').flush(null, { status: 204, statusText: 'No Content' });
+    const logoutRequest = httpTesting.expectOne('/api/auth/logout');
+
+    expect(logoutRequest.request.method).toBe('POST');
+    expect(logoutRequest.request.body).toBeNull();
+    logoutRequest.flush(null, { status: 204, statusText: 'No Content' });
+  });
 });

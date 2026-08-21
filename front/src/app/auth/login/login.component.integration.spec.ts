@@ -34,7 +34,7 @@ describe('LoginComponent integration', () => {
 
   afterEach(() => httpTesting.verify());
 
-  it('restores the user session before displaying articles after a successful login', async () => {
+  it('opens a session after login and closes it from the articles page', async () => {
     const hostElement = fixture.nativeElement as HTMLElement;
     const loginInput = hostElement.querySelector<HTMLInputElement>('#login');
     const passwordInput = hostElement.querySelector<HTMLInputElement>('#password');
@@ -71,5 +71,23 @@ describe('LoginComponent integration', () => {
       email: 'manu@example.com',
     });
     expect(hostElement.querySelector('h1')?.textContent?.trim()).toBe('Articles');
+
+    const logoutButton = hostElement.querySelector<HTMLButtonElement>(
+      'button[aria-label="Se déconnecter"]',
+    );
+    expect(logoutButton).not.toBeNull();
+    logoutButton!.click();
+
+    const csrfRequest = httpTesting.expectOne('/api/auth/csrf');
+    csrfRequest.flush(null, { status: 204, statusText: 'No Content' });
+    const logoutRequest = httpTesting.expectOne('/api/auth/logout');
+    expect(logoutRequest.request.method).toBe('POST');
+    logoutRequest.flush(null, { status: 204, statusText: 'No Content' });
+
+    await new Promise<void>((resolve) => setTimeout(resolve));
+    fixture.detectChanges();
+
+    expect(router.url).toBe('/login');
+    expect(TestBed.inject(SessionService).currentUser()).toBeNull();
   });
 });

@@ -2,11 +2,21 @@
   class="flex h-20 items-center border-b border-black bg-white px-4 sm:h-24 sm:px-8"
   [class.max-md:hidden]="authentication()"
 >
-  <a routerLink="/" aria-label="Accueil MDD">
+  <a [routerLink]="homeLink()" aria-label="Accueil MDD">
     <img class="h-auto w-32 sm:w-36 lg:w-40" src="assets/logo_p6.png" alt="MDD" />
   </a>
 
-  @if (!authentication()) {
+  @if (currentUser()) {
+    <button
+      class="ml-auto text-sm font-semibold text-red-500 hover:text-primary"
+      type="button"
+      aria-label="Se déconnecter"
+      [disabled]="isLoggingOut()"
+      (click)="logout()"
+    >
+      Se déconnecter
+    </button>
+  } @else if (!authentication()) {
     <button
       class="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-lg text-black lg:hidden"
       type="button"

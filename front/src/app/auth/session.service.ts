@@ -23,4 +23,8 @@ export class SessionService {
       }),
     );
   }
+
+  clearSession(): void {
+    this.currentUser.set(null);
+  }
 }

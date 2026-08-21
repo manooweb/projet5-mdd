@@ -29,6 +29,10 @@ export class AuthenticationService {
     );
   }
 
+  logout(): Observable<void> {
+    return this.csrfToken().pipe(switchMap(() => this.http.post<void>('/api/auth/logout', null)));
+  }
+
   private csrfToken(): Observable<void> {
     return this.http.get<void>('/api/auth/csrf');
   }
