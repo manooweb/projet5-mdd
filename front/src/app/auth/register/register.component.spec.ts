@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
+import { HttpErrorResponse } from '@angular/common/http';
 import { provideRouter, Router } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { getInput } from '../../../testing/dom';
 import { AuthenticationService } from '../authentication.service';
 import { RegisterComponent } from './register.component';
@@ -12,6 +13,7 @@ describe('RegisterComponent', () => {
 
   beforeEach(async () => {
     authenticationService.register.mockClear();
+    authenticationService.register.mockReturnValue(of(void 0));
     await TestBed.configureTestingModule({
       imports: [RegisterComponent],
       providers: [
@@ -162,5 +164,40 @@ describe('RegisterComponent', () => {
       password: 'Password1!',
     });
     expect(navigateByUrl).toHaveBeenCalledWith('/posts');
+  });
+
+  it('displays the API error when the registration is rejected', () => {
+    const fixture = TestBed.createComponent(RegisterComponent);
+    const router = TestBed.inject(Router);
+    const navigateByUrl = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+    authenticationService.register.mockReturnValue(
+      throwError(
+        () =>
+          new HttpErrorResponse({
+            status: 409,
+            error: {
+              status: 409,
+              error: 'Conflict',
+              message: 'Username or email is already used.',
+              path: '/api/auth/register',
+            },
+          }),
+      ),
+    );
+    fixture.componentInstance.registerForm.setValue({
+      username: 'manu',
+      email: 'manu@example.com',
+      password: 'Password1!',
+    });
+    fixture.detectChanges();
+
+    fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit'));
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.isSubmitting()).toBe(false);
+    expect(navigateByUrl).not.toHaveBeenCalled();
+    expect(fixture.nativeElement.querySelector('[role="alert"]')?.textContent?.trim()).toBe(
+      'Username or email is already used.',
+    );
   });
 });

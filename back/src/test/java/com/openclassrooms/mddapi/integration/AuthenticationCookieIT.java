@@ -74,7 +74,11 @@ class AuthenticationCookieIT {
     register(existingIdentifier);
 
     registerRequest(existingIdentifier, newIdentifier + "@example.test")
-        .andExpect(status().isConflict());
+        .andExpect(status().isConflict())
+        .andExpect(jsonPath("$.status").value(409))
+        .andExpect(jsonPath("$.error").value("Conflict"))
+        .andExpect(jsonPath("$.message").value("Username or email is already used."))
+        .andExpect(jsonPath("$.path").value("/api/auth/register"));
   }
 
   @Test
@@ -84,7 +88,32 @@ class AuthenticationCookieIT {
     register(existingIdentifier);
 
     registerRequest(newIdentifier, existingIdentifier + "@example.test")
-        .andExpect(status().isConflict());
+        .andExpect(status().isConflict())
+        .andExpect(jsonPath("$.status").value(409))
+        .andExpect(jsonPath("$.error").value("Conflict"))
+        .andExpect(jsonPath("$.message").value("Username or email is already used."))
+        .andExpect(jsonPath("$.path").value("/api/auth/register"));
+  }
+
+  @Test
+  void shouldRejectARegistrationPasswordThatDoesNotMeetThePasswordPolicy() throws Exception {
+    String identifier = uniqueIdentifier();
+
+    mockMvc
+        .perform(
+            post("/api/auth/register")
+                .contentType(APPLICATION_JSON)
+                .content(
+                    """
+                    {"username":"%s","email":"%s@example.test","password":"pass1!wd"}
+                    """
+                        .formatted(identifier, identifier))
+                .with(csrfToken()))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.status").value(400))
+        .andExpect(jsonPath("$.error").value("Bad Request"))
+        .andExpect(jsonPath("$.message").value("The request contains an invalid value."))
+        .andExpect(jsonPath("$.path").value("/api/auth/register"));
   }
 
   @Test
@@ -124,6 +153,10 @@ class AuthenticationCookieIT {
 
     loginRequest(identifier, "incorrect password")
         .andExpect(status().isUnauthorized())
+        .andExpect(jsonPath("$.status").value(401))
+        .andExpect(jsonPath("$.error").value("Unauthorized"))
+        .andExpect(jsonPath("$.message").value("Invalid credentials."))
+        .andExpect(jsonPath("$.path").value("/api/auth/login"))
         .andExpect(cookie().doesNotExist(AUTHENTICATION_COOKIE));
   }
 
@@ -157,7 +190,13 @@ class AuthenticationCookieIT {
   @Test
   void shouldRejectTheCurrentUserRequestWhenTheAuthenticationCookieIsMissingOrExpired()
       throws Exception {
-    mockMvc.perform(get("/api/users/me")).andExpect(status().isUnauthorized());
+    mockMvc
+        .perform(get("/api/users/me"))
+        .andExpect(status().isUnauthorized())
+        .andExpect(jsonPath("$.status").value(401))
+        .andExpect(jsonPath("$.error").value("Unauthorized"))
+        .andExpect(jsonPath("$.message").value("Authentication is required."))
+        .andExpect(jsonPath("$.path").value("/api/users/me"));
   }
 
   @Test

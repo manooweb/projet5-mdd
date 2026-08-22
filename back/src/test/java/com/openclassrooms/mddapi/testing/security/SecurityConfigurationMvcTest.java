@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.openclassrooms.mddapi.system.config.SecurityConfig;
@@ -54,7 +55,13 @@ class SecurityConfigurationMvcTest {
 
   @Test
   void shouldRejectAnAuthenticationWriteRequestWithoutACsrfToken() throws Exception {
-    mockMvc.perform(post("/api/auth/csrf-probe")).andExpect(status().isForbidden());
+    mockMvc
+        .perform(post("/api/auth/csrf-probe"))
+        .andExpect(status().isForbidden())
+        .andExpect(jsonPath("$.status").value(403))
+        .andExpect(jsonPath("$.error").value("Forbidden"))
+        .andExpect(jsonPath("$.message").value("Access is denied."))
+        .andExpect(jsonPath("$.path").value("/api/auth/csrf-probe"));
   }
 
   @Test
@@ -72,7 +79,24 @@ class SecurityConfigurationMvcTest {
 
   @Test
   void shouldRequireAuthenticationForPrivateApiEndpoints() throws Exception {
-    mockMvc.perform(get("/api/private-probe")).andExpect(status().isUnauthorized());
+    mockMvc
+        .perform(get("/api/private-probe"))
+        .andExpect(status().isUnauthorized())
+        .andExpect(jsonPath("$.status").value(401))
+        .andExpect(jsonPath("$.error").value("Unauthorized"))
+        .andExpect(jsonPath("$.message").value("Authentication is required."))
+        .andExpect(jsonPath("$.path").value("/api/private-probe"));
+  }
+
+  @Test
+  void shouldReturnAStandardizedResponseForUnexpectedErrors() throws Exception {
+    mockMvc
+        .perform(get("/api/auth/error-probe"))
+        .andExpect(status().isInternalServerError())
+        .andExpect(jsonPath("$.status").value(500))
+        .andExpect(jsonPath("$.error").value("Internal Server Error"))
+        .andExpect(jsonPath("$.message").value("An unexpected error occurred."))
+        .andExpect(jsonPath("$.path").value("/api/auth/error-probe"));
   }
 
   @RestController
@@ -86,6 +110,11 @@ class SecurityConfigurationMvcTest {
     @GetMapping("/api/private-probe")
     ResponseEntity<Void> privateProbe() {
       return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/api/auth/error-probe")
+    ResponseEntity<Void> errorProbe() {
+      throw new IllegalStateException("Probe exception");
     }
   }
 }

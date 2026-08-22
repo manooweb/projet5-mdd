@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
+import { HttpErrorResponse } from '@angular/common/http';
 import { provideRouter, Router } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { getInput } from '../../../testing/dom';
 import { AuthenticationService } from '../authentication.service';
 import { LoginComponent } from './login.component';
@@ -12,6 +13,7 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     authenticationService.login.mockClear();
+    authenticationService.login.mockReturnValue(of(void 0));
     await TestBed.configureTestingModule({
       imports: [LoginComponent],
       providers: [
@@ -131,5 +133,39 @@ describe('LoginComponent', () => {
       password: 'Password1!',
     });
     expect(navigateByUrl).toHaveBeenCalledWith('/posts');
+  });
+
+  it('displays the API error when the login is rejected', () => {
+    const fixture = TestBed.createComponent(LoginComponent);
+    const router = TestBed.inject(Router);
+    const navigateByUrl = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+    authenticationService.login.mockReturnValue(
+      throwError(
+        () =>
+          new HttpErrorResponse({
+            status: 401,
+            error: {
+              status: 401,
+              error: 'Unauthorized',
+              message: 'Invalid credentials.',
+              path: '/api/auth/login',
+            },
+          }),
+      ),
+    );
+    fixture.componentInstance.loginForm.setValue({
+      login: 'manu@example.com',
+      password: 'Password1!',
+    });
+    fixture.detectChanges();
+
+    fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit'));
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.isSubmitting()).toBe(false);
+    expect(navigateByUrl).not.toHaveBeenCalled();
+    expect(fixture.nativeElement.querySelector('[role="alert"]')?.textContent?.trim()).toBe(
+      'Invalid credentials.',
+    );
   });
 });
