@@ -4,11 +4,12 @@ import com.openclassrooms.mddapi.authentication.domain.UserAccount;
 import com.openclassrooms.mddapi.authentication.dto.RegisterRequest;
 import com.openclassrooms.mddapi.authentication.repository.UserAccountRepository;
 import com.openclassrooms.mddapi.system.config.MddProperties;
+import com.openclassrooms.mddapi.system.error.ApiErrorCode;
+import com.openclassrooms.mddapi.system.error.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class RegistrationService {
@@ -33,8 +34,10 @@ public class RegistrationService {
   public String register(RegisterRequest request) {
     if (userAccountRepository.existsByUsername(request.username())
         || userAccountRepository.existsByEmail(request.email())) {
-      throw new ResponseStatusException(
-          HttpStatus.CONFLICT, properties.getMessages().getDuplicateIdentity());
+      throw new ApiException(
+          HttpStatus.CONFLICT,
+          ApiErrorCode.DUPLICATE_IDENTITY,
+          properties.getMessages().getDuplicateIdentity());
     }
 
     UserAccount user =

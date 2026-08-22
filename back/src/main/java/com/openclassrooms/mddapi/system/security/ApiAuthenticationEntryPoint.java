@@ -1,6 +1,7 @@
 package com.openclassrooms.mddapi.system.security;
 
 import com.openclassrooms.mddapi.system.config.MddProperties;
+import com.openclassrooms.mddapi.system.error.ApiErrorCode;
 import com.openclassrooms.mddapi.system.error.ApiErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,6 +38,7 @@ public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
         new ApiErrorResponse(
             status.value(),
             status.getReasonPhrase(),
+            ApiErrorCode.AUTHENTICATION_REQUIRED.name(),
             properties.getMessages().getErrors().getAuthenticationRequired(),
             request.getRequestURI()));
   }

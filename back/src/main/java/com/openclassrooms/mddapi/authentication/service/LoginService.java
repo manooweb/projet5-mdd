@@ -4,11 +4,12 @@ import com.openclassrooms.mddapi.authentication.domain.UserAccount;
 import com.openclassrooms.mddapi.authentication.dto.LoginRequest;
 import com.openclassrooms.mddapi.authentication.repository.UserAccountRepository;
 import com.openclassrooms.mddapi.system.config.MddProperties;
+import com.openclassrooms.mddapi.system.error.ApiErrorCode;
+import com.openclassrooms.mddapi.system.error.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class LoginService {
@@ -37,8 +38,10 @@ public class LoginService {
             .filter(account -> passwordEncoder.matches(request.password(), account.getPassword()))
             .orElseThrow(
                 () ->
-                    new ResponseStatusException(
-                        HttpStatus.UNAUTHORIZED, properties.getMessages().getInvalidCredentials()));
+                    new ApiException(
+                        HttpStatus.UNAUTHORIZED,
+                        ApiErrorCode.INVALID_CREDENTIALS,
+                        properties.getMessages().getInvalidCredentials()));
 
     return jwtService.createToken(user);
   }

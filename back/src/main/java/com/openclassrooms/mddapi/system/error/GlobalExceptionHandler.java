@@ -9,7 +9,6 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @RestControllerAdvice
@@ -21,17 +20,18 @@ public class GlobalExceptionHandler {
     this.properties = properties;
   }
 
-  @ExceptionHandler(ResponseStatusException.class)
-  ResponseEntity<ApiErrorResponse> handleResponseStatusException(
-      ResponseStatusException exception, HttpServletRequest request) {
-    HttpStatus status = HttpStatus.valueOf(exception.getStatusCode().value());
-    return errorResponse(status, exception.getReason(), request);
+  @ExceptionHandler(ApiException.class)
+  ResponseEntity<ApiErrorResponse> handleApiException(
+      ApiException exception, HttpServletRequest request) {
+    return errorResponse(
+        exception.getStatus(), exception.getMessageCode(), exception.getMessage(), request);
   }
 
   @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
   ResponseEntity<ApiErrorResponse> handleInvalidRequest(HttpServletRequest request) {
     return errorResponse(
         HttpStatus.BAD_REQUEST,
+        ApiErrorCode.INVALID_REQUEST,
         properties.getMessages().getValidation().getInvalidRequest(),
         request);
   }
@@ -42,15 +42,20 @@ public class GlobalExceptionHandler {
     log.error("Unexpected error while processing request {}", request.getRequestURI(), exception);
     return errorResponse(
         HttpStatus.INTERNAL_SERVER_ERROR,
+        ApiErrorCode.UNEXPECTED_ERROR,
         properties.getMessages().getErrors().getUnexpected(),
         request);
   }
 
   private ResponseEntity<ApiErrorResponse> errorResponse(
-      HttpStatus status, String message, HttpServletRequest request) {
+      HttpStatus status, ApiErrorCode messageCode, String message, HttpServletRequest request) {
     return ResponseEntity.status(status)
         .body(
             new ApiErrorResponse(
-                status.value(), status.getReasonPhrase(), message, request.getRequestURI()));
+                status.value(),
+                status.getReasonPhrase(),
+                messageCode.name(),
+                message,
+                request.getRequestURI()));
   }
 }

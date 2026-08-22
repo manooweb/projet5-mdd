@@ -147,6 +147,7 @@ describe('LoginComponent', () => {
             error: {
               status: 401,
               error: 'Unauthorized',
+              messageCode: 'INVALID_CREDENTIALS',
               message: 'Invalid credentials.',
               path: '/api/auth/login',
             },
@@ -165,7 +166,7 @@ describe('LoginComponent', () => {
     expect(fixture.componentInstance.isSubmitting()).toBe(false);
     expect(navigateByUrl).not.toHaveBeenCalled();
     expect(fixture.nativeElement.querySelector('[role="alert"]')?.textContent?.trim()).toBe(
-      'Invalid credentials.',
+      'Identifiants incorrects.',
     );
   });
 });

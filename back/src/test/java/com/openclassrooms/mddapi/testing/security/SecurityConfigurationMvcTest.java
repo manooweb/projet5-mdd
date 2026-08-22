@@ -60,6 +60,7 @@ class SecurityConfigurationMvcTest {
         .andExpect(status().isForbidden())
         .andExpect(jsonPath("$.status").value(403))
         .andExpect(jsonPath("$.error").value("Forbidden"))
+        .andExpect(jsonPath("$.messageCode").value("ACCESS_DENIED"))
         .andExpect(jsonPath("$.message").value("Access is denied."))
         .andExpect(jsonPath("$.path").value("/api/auth/csrf-probe"));
   }
@@ -84,6 +85,7 @@ class SecurityConfigurationMvcTest {
         .andExpect(status().isUnauthorized())
         .andExpect(jsonPath("$.status").value(401))
         .andExpect(jsonPath("$.error").value("Unauthorized"))
+        .andExpect(jsonPath("$.messageCode").value("AUTHENTICATION_REQUIRED"))
         .andExpect(jsonPath("$.message").value("Authentication is required."))
         .andExpect(jsonPath("$.path").value("/api/private-probe"));
   }
@@ -95,6 +97,7 @@ class SecurityConfigurationMvcTest {
         .andExpect(status().isInternalServerError())
         .andExpect(jsonPath("$.status").value(500))
         .andExpect(jsonPath("$.error").value("Internal Server Error"))
+        .andExpect(jsonPath("$.messageCode").value("UNEXPECTED_ERROR"))
         .andExpect(jsonPath("$.message").value("An unexpected error occurred."))
         .andExpect(jsonPath("$.path").value("/api/auth/error-probe"));
   }

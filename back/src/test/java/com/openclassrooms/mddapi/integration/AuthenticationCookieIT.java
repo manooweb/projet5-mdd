@@ -77,6 +77,7 @@ class AuthenticationCookieIT {
         .andExpect(status().isConflict())
         .andExpect(jsonPath("$.status").value(409))
         .andExpect(jsonPath("$.error").value("Conflict"))
+        .andExpect(jsonPath("$.messageCode").value("DUPLICATE_IDENTITY"))
         .andExpect(jsonPath("$.message").value("Username or email is already used."))
         .andExpect(jsonPath("$.path").value("/api/auth/register"));
   }
@@ -91,6 +92,7 @@ class AuthenticationCookieIT {
         .andExpect(status().isConflict())
         .andExpect(jsonPath("$.status").value(409))
         .andExpect(jsonPath("$.error").value("Conflict"))
+        .andExpect(jsonPath("$.messageCode").value("DUPLICATE_IDENTITY"))
         .andExpect(jsonPath("$.message").value("Username or email is already used."))
         .andExpect(jsonPath("$.path").value("/api/auth/register"));
   }
@@ -112,6 +114,7 @@ class AuthenticationCookieIT {
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.status").value(400))
         .andExpect(jsonPath("$.error").value("Bad Request"))
+        .andExpect(jsonPath("$.messageCode").value("INVALID_REQUEST"))
         .andExpect(jsonPath("$.message").value("The request contains an invalid value."))
         .andExpect(jsonPath("$.path").value("/api/auth/register"));
   }
@@ -155,6 +158,7 @@ class AuthenticationCookieIT {
         .andExpect(status().isUnauthorized())
         .andExpect(jsonPath("$.status").value(401))
         .andExpect(jsonPath("$.error").value("Unauthorized"))
+        .andExpect(jsonPath("$.messageCode").value("INVALID_CREDENTIALS"))
         .andExpect(jsonPath("$.message").value("Invalid credentials."))
         .andExpect(jsonPath("$.path").value("/api/auth/login"))
         .andExpect(cookie().doesNotExist(AUTHENTICATION_COOKIE));
@@ -195,6 +199,7 @@ class AuthenticationCookieIT {
         .andExpect(status().isUnauthorized())
         .andExpect(jsonPath("$.status").value(401))
         .andExpect(jsonPath("$.error").value("Unauthorized"))
+        .andExpect(jsonPath("$.messageCode").value("AUTHENTICATION_REQUIRED"))
         .andExpect(jsonPath("$.message").value("Authentication is required."))
         .andExpect(jsonPath("$.path").value("/api/users/me"));
   }

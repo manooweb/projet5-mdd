@@ -1,6 +1,7 @@
 package com.openclassrooms.mddapi.system.security;
 
 import com.openclassrooms.mddapi.system.config.MddProperties;
+import com.openclassrooms.mddapi.system.error.ApiErrorCode;
 import com.openclassrooms.mddapi.system.error.ApiErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,11 +33,16 @@ public class ApiAccessDeniedHandler implements AccessDeniedHandler {
         request,
         response,
         HttpStatus.FORBIDDEN,
+        ApiErrorCode.ACCESS_DENIED,
         properties.getMessages().getErrors().getAccessDenied());
   }
 
   private void writeErrorResponse(
-      HttpServletRequest request, HttpServletResponse response, HttpStatus status, String message)
+      HttpServletRequest request,
+      HttpServletResponse response,
+      HttpStatus status,
+      ApiErrorCode messageCode,
+      String message)
       throws IOException {
     response.setStatus(status.value());
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -44,6 +50,10 @@ public class ApiAccessDeniedHandler implements AccessDeniedHandler {
     objectMapper.writeValue(
         response.getOutputStream(),
         new ApiErrorResponse(
-            status.value(), status.getReasonPhrase(), message, request.getRequestURI()));
+            status.value(),
+            status.getReasonPhrase(),
+            messageCode.name(),
+            message,
+            request.getRequestURI()));
   }
 }

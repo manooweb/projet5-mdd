@@ -41,6 +41,7 @@ describe('RegisterComponent integration', () => {
       {
         status: 409,
         error: 'Conflict',
+        messageCode: 'DUPLICATE_IDENTITY',
         message: 'Username or email is already used.',
         path: '/api/auth/register',
       },
@@ -51,7 +52,9 @@ describe('RegisterComponent integration', () => {
     const apiError = (fixture.nativeElement as HTMLElement).querySelector('app-api-error');
 
     expect(apiError).not.toBeNull();
-    expect(apiError?.textContent?.trim()).toBe('Username or email is already used.');
+    expect(apiError?.textContent?.trim()).toBe(
+      'Ce nom d’utilisateur ou cette adresse e-mail est déjà utilisé(e).',
+    );
     expect(router.url).toBe('/register');
   });
 

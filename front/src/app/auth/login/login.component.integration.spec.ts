@@ -108,6 +108,7 @@ describe('LoginComponent integration', () => {
       {
         status: 401,
         error: 'Unauthorized',
+        messageCode: 'INVALID_CREDENTIALS',
         message: 'Invalid credentials.',
         path: '/api/auth/login',
       },
@@ -118,7 +119,7 @@ describe('LoginComponent integration', () => {
     const apiError = hostElement.querySelector('app-api-error');
 
     expect(apiError).not.toBeNull();
-    expect(apiError?.textContent?.trim()).toBe('Invalid credentials.');
+    expect(apiError?.textContent?.trim()).toBe('Identifiants incorrects.');
     expect(router.url).toBe('/login');
   });
 });
