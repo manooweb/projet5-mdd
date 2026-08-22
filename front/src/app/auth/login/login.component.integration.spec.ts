@@ -90,4 +90,35 @@ describe('LoginComponent integration', () => {
     expect(router.url).toBe('/login');
     expect(TestBed.inject(SessionService).currentUser()).toBeNull();
   });
+
+  it('displays the standardized API error returned by a rejected login', () => {
+    const hostElement = fixture.nativeElement as HTMLElement;
+    const loginInput = hostElement.querySelector<HTMLInputElement>('#login');
+    const passwordInput = hostElement.querySelector<HTMLInputElement>('#password');
+    const form = hostElement.querySelector('form');
+
+    loginInput!.value = 'manu@example.com';
+    loginInput!.dispatchEvent(new Event('input'));
+    passwordInput!.value = 'Pass1!wd';
+    passwordInput!.dispatchEvent(new Event('input'));
+    form!.dispatchEvent(new Event('submit'));
+
+    httpTesting.expectOne('/api/auth/csrf').flush(null, { status: 204, statusText: 'No Content' });
+    httpTesting.expectOne('/api/auth/login').flush(
+      {
+        status: 401,
+        error: 'Unauthorized',
+        message: 'Invalid credentials.',
+        path: '/api/auth/login',
+      },
+      { status: 401, statusText: 'Unauthorized' },
+    );
+    fixture.detectChanges();
+
+    const apiError = hostElement.querySelector('app-api-error');
+
+    expect(apiError).not.toBeNull();
+    expect(apiError?.textContent?.trim()).toBe('Invalid credentials.');
+    expect(router.url).toBe('/login');
+  });
 });
