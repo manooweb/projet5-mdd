@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import jakarta.servlet.http.Cookie;
+import java.util.Arrays;
 import java.util.UUID;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -49,7 +50,14 @@ final class AuthenticationTestHelper {
     MvcResult csrfResult = mockMvc.perform(get("/api/auth/csrf")).andReturn();
     Cookie csrfCookie = csrfResult.getResponse().getCookie("XSRF-TOKEN");
     return request -> {
-      request.setCookies(csrfCookie);
+      Cookie[] cookies = request.getCookies();
+      if (cookies == null) {
+        request.setCookies(csrfCookie);
+      } else {
+        Cookie[] cookiesWithCsrfToken = Arrays.copyOf(cookies, cookies.length + 1);
+        cookiesWithCsrfToken[cookies.length] = csrfCookie;
+        request.setCookies(cookiesWithCsrfToken);
+      }
       request.addHeader("X-XSRF-TOKEN", csrfCookie.getValue());
       return request;
     };
