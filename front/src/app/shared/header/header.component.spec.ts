@@ -1,5 +1,6 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideLocationMocks } from '@angular/common/testing';
 import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { AuthenticationService } from '../../auth/authentication.service';
@@ -20,7 +21,8 @@ describe('HeaderComponent', () => {
     await TestBed.configureTestingModule({
       imports: [HeaderComponent],
       providers: [
-        provideRouter([]),
+        provideRouter([{ path: 'posts', component: HeaderComponent }]),
+        provideLocationMocks(),
         { provide: AuthenticationService, useValue: { logout } },
         { provide: SessionService, useValue: { currentUser, clearSession } },
       ],
@@ -44,6 +46,25 @@ describe('HeaderComponent', () => {
     expect((fixture.nativeElement as HTMLElement).querySelector('button')).toBeNull();
   });
 
+  it('renders the main navigation links and highlights the active route', async () => {
+    const fixture = TestBed.createComponent(HeaderComponent);
+    const router = TestBed.inject(Router);
+    fixture.detectChanges();
+
+    await router.navigateByUrl('/posts');
+    fixture.detectChanges();
+
+    const hostElement = fixture.nativeElement as HTMLElement;
+    const articlesLink = hostElement.querySelector<HTMLAnchorElement>('a[aria-label="Articles"]');
+    const topicsLink = hostElement.querySelector<HTMLAnchorElement>('a[aria-label="Thèmes"]');
+    const profileLink = hostElement.querySelector<HTMLAnchorElement>('a[aria-label="Mon profil"]');
+
+    expect(articlesLink?.getAttribute('href')).toBe('/posts');
+    expect(topicsLink?.getAttribute('href')).toBe('/topics');
+    expect(profileLink?.getAttribute('href')).toBe('/profile');
+    expect(articlesLink?.classList).toContain('text-primary');
+  });
+
   it('links the logo to posts and offers logout when a user is logged in', () => {
     currentUser.set({ id: 1, username: 'manu', email: 'manu@example.com' });
     const fixture = TestBed.createComponent(HeaderComponent);
@@ -58,6 +79,7 @@ describe('HeaderComponent', () => {
     expect(logoLink).not.toBeNull();
     expect(logoLink!.getAttribute('href')).toBe('/posts');
     expect(logoutButton?.textContent?.trim()).toBe('Se déconnecter');
+    expect(logoutButton?.closest('nav')).toBeNull();
   });
 
   it('clears the session and redirects to login after logout succeeds', () => {

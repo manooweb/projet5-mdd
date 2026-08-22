@@ -1,0 +1,11 @@
+@if (currentUser()) {
+  <button
+    class="text-sm font-semibold text-red-500 hover:text-primary"
+    type="button"
+    aria-label="Se déconnecter"
+    [disabled]="isLoggingOut()"
+    (click)="logout()"
+  >
+    Se déconnecter
+  </button>
+}

@@ -1,0 +1,44 @@
+<nav
+  [class]="
+    layout() === 'desktop'
+      ? 'flex items-center gap-5 text-base font-medium'
+      : 'flex h-full w-full flex-col items-end text-right text-lg font-medium'
+  "
+  aria-label="Navigation principale"
+>
+  <div
+    [class]="layout() === 'desktop' ? 'flex items-center gap-5' : 'flex flex-col items-end gap-3'"
+  >
+    <a
+      routerLink="/posts"
+      routerLinkActive="text-primary"
+      aria-label="Articles"
+      class="hover:text-primary"
+      (click)="onNavigationRequested()"
+    >
+      Articles
+    </a>
+    <a
+      routerLink="/topics"
+      routerLinkActive="text-primary"
+      aria-label="Thèmes"
+      class="hover:text-primary"
+      (click)="onNavigationRequested()"
+    >
+      Thèmes
+    </a>
+  </div>
+  <a
+    routerLink="/profile"
+    routerLinkActive="text-primary"
+    #profileLinkActive="routerLinkActive"
+    aria-label="Mon profil"
+    [class]="layout() === 'desktop' ? 'ml-2' : 'mt-auto'"
+    (click)="onNavigationRequested()"
+  >
+    <app-profile-icon
+      [class]="layout() === 'desktop' ? 'h-10 w-10' : 'h-12 w-12'"
+      [active]="profileLinkActive.isActive"
+    />
+  </a>
+</nav>

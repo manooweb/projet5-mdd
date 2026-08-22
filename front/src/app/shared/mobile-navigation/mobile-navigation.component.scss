@@ -1,0 +1,49 @@
+.mobile-navigation-panel {
+  position: fixed;
+  inset-block: 0;
+  inset-inline: auto 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  width: 18rem;
+  height: 100dvh;
+  max-height: none;
+  max-width: none;
+  margin: 0;
+  border: 0;
+  padding: 2rem;
+  box-sizing: border-box;
+  background: white;
+}
+
+.mobile-navigation-panel::backdrop {
+  background: rgb(0 0 0 / 20%);
+}
+
+.mobile-menu-enter {
+  animation: mobile-menu-enter 200ms ease-out;
+}
+
+.mobile-menu-leave {
+  animation: mobile-menu-leave 200ms ease-in forwards;
+}
+
+@keyframes mobile-menu-enter {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes mobile-menu-leave {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
+}

@@ -1,0 +1,33 @@
+<button
+  class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-black"
+  type="button"
+  aria-label="Ouvrir le menu de navigation"
+  [attr.aria-expanded]="isMenuOpen()"
+  aria-controls="mobile-navigation"
+  (click)="toggleMenu()"
+>
+  <app-burger-menu-icon class="h-4 w-6" />
+</button>
+
+@if (isMenuRendered()) {
+  <dialog
+    #menuDialog
+    id="mobile-navigation"
+    class="mobile-navigation-panel"
+    [class.mobile-menu-enter]="isMenuOpen()"
+    [class.mobile-menu-leave]="!isMenuOpen()"
+    aria-label="Navigation principale"
+    (cancel)="onDialogCancel($event)"
+    (click)="onDialogClick($event)"
+    (animationend)="onMenuAnimationEnd()"
+  >
+    <div class="flex h-full flex-col items-end gap-3 text-right text-lg font-medium">
+      <app-logout-button />
+      <app-navigation-links
+        class="flex w-full flex-1"
+        layout="mobile"
+        (navigationRequested)="closeMenu()"
+      />
+    </div>
+  </dialog>
+}

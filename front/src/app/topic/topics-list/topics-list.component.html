@@ -1,12 +1,12 @@
 <app-header />
 
 <main class="mx-auto w-full max-w-6xl p-6 md:p-8">
-  <h1 class="text-2xl font-bold text-black">Articles</h1>
+  <h1 class="text-2xl font-bold text-black">Thèmes</h1>
 
   @if (loading()) {
     <output class="flex min-h-64 flex-col items-center justify-center gap-4" aria-live="polite">
-      <p-progress-spinner ariaLabel="Chargement des articles" />
-      <span class="text-sm text-black">Chargement des articles...</span>
+      <p-progress-spinner ariaLabel="Chargement des thèmes" />
+      <span class="text-sm text-black">Chargement des thèmes...</span>
     </output>
   }
 </main>
