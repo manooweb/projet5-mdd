@@ -19,6 +19,7 @@
             [class.active:bg-primary-800]="!topic.subscribed"
             type="button"
             [disabled]="topic.subscribed"
+            (click)="subscribe(topic)"
           >
             {{ topic.subscribed ? 'Déjà abonné' : "S'abonner" }}
           </button>

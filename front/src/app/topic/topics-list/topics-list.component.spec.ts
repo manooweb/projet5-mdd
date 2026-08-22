@@ -20,7 +20,7 @@ describe('TopicsListComponent', () => {
     httpTesting.verify();
   });
 
-  it('loads and renders a card for every topic', () => {
+  it('loads and renders a card for every topic', async () => {
     const fixture = TestBed.createComponent(TopicsListComponent);
     const hostElement = fixture.nativeElement as HTMLElement;
     fixture.detectChanges();
@@ -43,6 +43,7 @@ describe('TopicsListComponent', () => {
         subscribed: true,
       },
     ]);
+    await fixture.whenStable();
     fixture.detectChanges();
 
     const cards = hostElement.querySelectorAll<HTMLElement>('article');
@@ -53,7 +54,7 @@ describe('TopicsListComponent', () => {
     expect(cards[0].querySelector('button')?.textContent?.trim()).toBe("S'abonner");
   });
 
-  it('renders an inactive already subscribed button for subscribed topics', () => {
+  it('renders an inactive already subscribed button for subscribed topics', async () => {
     const fixture = TestBed.createComponent(TopicsListComponent);
     const hostElement = fixture.nativeElement as HTMLElement;
     fixture.detectChanges();
@@ -67,6 +68,7 @@ describe('TopicsListComponent', () => {
         subscribed: true,
       },
     ]);
+    await fixture.whenStable();
     fixture.detectChanges();
 
     const button = hostElement.querySelector<HTMLButtonElement>('article button');
@@ -74,7 +76,7 @@ describe('TopicsListComponent', () => {
     expect(button?.disabled).toBe(true);
   });
 
-  it('subscribes to a topic and refreshes its subscription state', () => {
+  it('subscribes to a topic and refreshes its subscription state', async () => {
     const fixture = TestBed.createComponent(TopicsListComponent);
     const hostElement = fixture.nativeElement as HTMLElement;
     fixture.detectChanges();
@@ -87,6 +89,7 @@ describe('TopicsListComponent', () => {
         subscribed: false,
       },
     ]);
+    await fixture.whenStable();
     fixture.detectChanges();
 
     hostElement.querySelector<HTMLButtonElement>('article button')?.click();
@@ -94,6 +97,7 @@ describe('TopicsListComponent', () => {
     const request = httpTesting.expectOne('/api/topics/1/subscription');
     expect(request.request.method).toBe('POST');
     request.flush(null);
+    await fixture.whenStable();
     fixture.detectChanges();
 
     const button = hostElement.querySelector<HTMLButtonElement>('article button');

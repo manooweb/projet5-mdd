@@ -10,4 +10,8 @@ export class TopicService {
   getTopics(): Observable<Topic[]> {
     return this.http.get<Topic[]>('/api/topics');
   }
+
+  subscribe(topicId: number): Observable<void> {
+    return this.http.post<void>(`/api/topics/${topicId}/subscription`, null);
+  }
 }
