@@ -73,4 +73,31 @@ describe('TopicsListComponent', () => {
     expect(button?.textContent?.trim()).toBe('Déjà abonné');
     expect(button?.disabled).toBe(true);
   });
+
+  it('subscribes to a topic and refreshes its subscription state', () => {
+    const fixture = TestBed.createComponent(TopicsListComponent);
+    const hostElement = fixture.nativeElement as HTMLElement;
+    fixture.detectChanges();
+
+    httpTesting.expectOne('/api/topics').flush([
+      {
+        id: 1,
+        name: 'Java',
+        description: 'Discussions autour du langage Java.',
+        subscribed: false,
+      },
+    ]);
+    fixture.detectChanges();
+
+    hostElement.querySelector<HTMLButtonElement>('article button')?.click();
+
+    const request = httpTesting.expectOne('/api/topics/1/subscription');
+    expect(request.request.method).toBe('POST');
+    request.flush(null);
+    fixture.detectChanges();
+
+    const button = hostElement.querySelector<HTMLButtonElement>('article button');
+    expect(button?.textContent?.trim()).toBe('Déjà abonné');
+    expect(button?.disabled).toBe(true);
+  });
 });
