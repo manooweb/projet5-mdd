@@ -1,6 +1,8 @@
 package com.openclassrooms.mddapi.system.config;
 
 import com.openclassrooms.mddapi.authentication.security.JwtAuthenticationFilter;
+import com.openclassrooms.mddapi.system.security.ApiAccessDeniedHandler;
+import com.openclassrooms.mddapi.system.security.ApiAuthenticationEntryPoint;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,23 +10,24 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.filter.OncePerRequestFilter;
+import tools.jackson.databind.ObjectMapper;
 
 @Configuration(proxyBeanMethods = false)
+@EnableConfigurationProperties(MddProperties.class)
 public class SecurityConfig {
 
   @Bean
@@ -33,8 +36,23 @@ public class SecurityConfig {
   }
 
   @Bean
+  ApiAuthenticationEntryPoint apiAuthenticationEntryPoint(
+      ObjectMapper objectMapper, MddProperties properties) {
+    return new ApiAuthenticationEntryPoint(objectMapper, properties);
+  }
+
+  @Bean
+  ApiAccessDeniedHandler apiAccessDeniedHandler(
+      ObjectMapper objectMapper, MddProperties properties) {
+    return new ApiAccessDeniedHandler(objectMapper, properties);
+  }
+
+  @Bean
   SecurityFilterChain securityFilterChain(
-      HttpSecurity http, ObjectProvider<JwtAuthenticationFilter> jwtAuthenticationFilterProvider) {
+      HttpSecurity http,
+      ObjectProvider<JwtAuthenticationFilter> jwtAuthenticationFilterProvider,
+      ApiAuthenticationEntryPoint apiAuthenticationEntryPoint,
+      ApiAccessDeniedHandler apiAccessDeniedHandler) {
     // The CSRF token must be readable by the SPA to populate the X-XSRF-TOKEN header.
     // It is not an authentication credential; the JWT cookie remains HttpOnly.
     CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
@@ -73,8 +91,9 @@ public class SecurityConfig {
         .formLogin(AbstractHttpConfigurer::disable)
         .exceptionHandling(
             exceptionHandling ->
-                exceptionHandling.authenticationEntryPoint(
-                    new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+                exceptionHandling
+                    .authenticationEntryPoint(apiAuthenticationEntryPoint)
+                    .accessDeniedHandler(apiAccessDeniedHandler))
         .build();
   }
 

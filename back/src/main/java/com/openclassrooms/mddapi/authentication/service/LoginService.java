@@ -1,9 +1,9 @@
 package com.openclassrooms.mddapi.authentication.service;
 
-import com.openclassrooms.mddapi.authentication.config.AuthenticationMessagesProperties;
 import com.openclassrooms.mddapi.authentication.domain.UserAccount;
 import com.openclassrooms.mddapi.authentication.dto.LoginRequest;
 import com.openclassrooms.mddapi.authentication.repository.UserAccountRepository;
+import com.openclassrooms.mddapi.system.config.MddProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,17 +16,17 @@ public class LoginService {
   private final UserAccountRepository userAccountRepository;
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
-  private final AuthenticationMessagesProperties messages;
+  private final MddProperties properties;
 
   public LoginService(
       UserAccountRepository userAccountRepository,
       PasswordEncoder passwordEncoder,
       JwtService jwtService,
-      AuthenticationMessagesProperties messages) {
+      MddProperties properties) {
     this.userAccountRepository = userAccountRepository;
     this.passwordEncoder = passwordEncoder;
     this.jwtService = jwtService;
-    this.messages = messages;
+    this.properties = properties;
   }
 
   @Transactional(readOnly = true)
@@ -38,7 +38,7 @@ public class LoginService {
             .orElseThrow(
                 () ->
                     new ResponseStatusException(
-                        HttpStatus.UNAUTHORIZED, messages.getInvalidCredentials()));
+                        HttpStatus.UNAUTHORIZED, properties.getMessages().getInvalidCredentials()));
 
     return jwtService.createToken(user);
   }

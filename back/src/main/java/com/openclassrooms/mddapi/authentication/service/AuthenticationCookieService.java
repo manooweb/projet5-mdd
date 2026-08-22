@@ -1,6 +1,6 @@
 package com.openclassrooms.mddapi.authentication.service;
 
-import com.openclassrooms.mddapi.authentication.config.JwtProperties;
+import com.openclassrooms.mddapi.system.config.MddProperties;
 import java.time.Duration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -11,9 +11,9 @@ public class AuthenticationCookieService {
 
   public static final String COOKIE_NAME = "MDD_AUTH_TOKEN";
 
-  private final JwtProperties properties;
+  private final MddProperties properties;
 
-  public AuthenticationCookieService(JwtProperties properties) {
+  public AuthenticationCookieService(MddProperties properties) {
     this.properties = properties;
   }
 
@@ -21,10 +21,10 @@ public class AuthenticationCookieService {
     ResponseCookie cookie =
         ResponseCookie.from(COOKIE_NAME, token)
             .httpOnly(true)
-            .secure(properties.secureCookie())
+            .secure(properties.getJwt().isSecureCookie())
             .path("/")
             .sameSite("Lax")
-            .maxAge(properties.expiration())
+            .maxAge(properties.getJwt().getExpiration())
             .build();
     headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
   }
@@ -33,7 +33,7 @@ public class AuthenticationCookieService {
     ResponseCookie cookie =
         ResponseCookie.from(COOKIE_NAME, "")
             .httpOnly(true)
-            .secure(properties.secureCookie())
+            .secure(properties.getJwt().isSecureCookie())
             .path("/")
             .sameSite("Lax")
             .maxAge(Duration.ZERO)

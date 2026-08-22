@@ -14,8 +14,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest(
-    properties = "mdd.authentication.jwt.secret=MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=")
+@SpringBootTest(properties = "mdd.jwt.secret=MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=")
 @AutoConfigureMockMvc
 @Import(TestcontainersConfiguration.class)
 class MddApiApplicationIT {

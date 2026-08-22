@@ -4,7 +4,7 @@ spring:
   config:
     import:
       - optional:file:.env[.properties]
-      - classpath:authentication.yml
+      - classpath:mdd.yml
   datasource:
     hikari:
       connection-timeout: 5000
@@ -33,10 +33,3 @@ springdoc:
       enabled: true
       cookie-name: XSRF-TOKEN
       header-name: X-XSRF-TOKEN
-
-mdd:
-  authentication:
-    jwt:
-      secret: ${MDD_JWT_SECRET}
-      expiration: ${MDD_JWT_EXPIRATION:PT8H}
-      secure-cookie: ${MDD_JWT_SECURE_COOKIE:true}

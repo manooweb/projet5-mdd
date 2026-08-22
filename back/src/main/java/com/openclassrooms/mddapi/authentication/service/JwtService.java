@@ -1,7 +1,7 @@
 package com.openclassrooms.mddapi.authentication.service;
 
-import com.openclassrooms.mddapi.authentication.config.JwtProperties;
 import com.openclassrooms.mddapi.authentication.domain.UserAccount;
+import com.openclassrooms.mddapi.system.config.MddProperties;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class JwtService {
 
-  private final JwtProperties properties;
+  private final MddProperties properties;
   private final SecretKey signingKey;
 
-  public JwtService(JwtProperties properties) {
+  public JwtService(MddProperties properties) {
     this.properties = properties;
-    signingKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(properties.secret()));
+    signingKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(properties.getJwt().getSecret()));
   }
 
   public String createToken(UserAccount user) {
@@ -30,7 +30,7 @@ public class JwtService {
         .subject(user.getId().toString())
         .claim("username", user.getUsername())
         .issuedAt(Date.from(now))
-        .expiration(Date.from(now.plus(properties.expiration())))
+        .expiration(Date.from(now.plus(properties.getJwt().getExpiration())))
         .signWith(signingKey)
         .compact();
   }

@@ -30,8 +30,8 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 @SpringBootTest(
     properties = {
-      "mdd.authentication.jwt.secret=MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=",
-      "mdd.authentication.jwt.secure-cookie=false"
+      "mdd.jwt.secret=MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=",
+      "mdd.jwt.secure-cookie=false"
     })
 @AutoConfigureMockMvc
 @Import(TestcontainersConfiguration.class)
