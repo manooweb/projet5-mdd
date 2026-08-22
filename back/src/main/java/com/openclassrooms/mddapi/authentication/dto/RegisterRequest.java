@@ -7,8 +7,8 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record RegisterRequest(
-    @NotBlank @Size(max = 255) String username,
-    @NotBlank @Email @Size(max = 255) String email,
+    @Schema(example = "demo") @NotBlank @Size(max = 255) String username,
+    @Schema(example = "demo@mdd.net") @NotBlank @Email @Size(max = 255) String email,
     @Schema(example = "Pass1!wd")
         @NotBlank
         @Size(min = 8, max = 72)

@@ -17,8 +17,8 @@ tests {
 
   test("returns the authenticated user's public profile", function () {
     expect(res.body.id).to.be.a("number");
-    expect(res.body.username).to.equal("bruno-user");
-    expect(res.body.email).to.equal("bruno-user@example.test");
+    expect(res.body.username).to.equal("demo");
+    expect(res.body.email).to.equal("demo@mdd.net");
     expect(res.body).not.to.have.property("password");
   });
 }
