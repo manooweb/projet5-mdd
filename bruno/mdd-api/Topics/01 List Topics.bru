@@ -1,0 +1,23 @@
+meta {
+  name: List Topics
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/topics
+  body: none
+  auth: none
+}
+
+tests {
+  test("status is 200", function () {
+    expect(res.status).to.equal(200);
+  });
+
+  test("returns topics with subscription statuses", function () {
+    expect(res.body).to.be.an("array").that.is.not.empty;
+    expect(res.body[0]).to.include.keys("id", "name", "description", "subscribed");
+    expect(res.body[0].subscribed).to.be.a("boolean");
+  });
+}
