@@ -16,4 +16,13 @@ public class Subscription {
   private Instant createdAt;
 
   protected Subscription() {}
+
+  private Subscription(SubscriptionId id) {
+    this.id = id;
+    createdAt = Instant.now();
+  }
+
+  public static Subscription subscribe(Long userId, Long topicId) {
+    return new Subscription(new SubscriptionId(userId, topicId));
+  }
 }

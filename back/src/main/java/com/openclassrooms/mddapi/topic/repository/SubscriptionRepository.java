@@ -16,4 +16,12 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Subs
       where subscription.id.userId = :userId
       """)
   Set<Long> findTopicIdsByUserId(@Param("userId") Long userId);
+
+  @Query(
+      """
+      select count(subscription) > 0
+      from Subscription subscription
+      where subscription.id.userId = :userId and subscription.id.topicId = :topicId
+      """)
+  boolean existsByUserIdAndTopicId(@Param("userId") Long userId, @Param("topicId") Long topicId);
 }
