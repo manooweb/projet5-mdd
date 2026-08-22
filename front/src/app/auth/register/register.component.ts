@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -16,6 +17,8 @@ import { Password } from 'primeng/password';
 import { BackButtonComponent } from '../../shared/back-button/back-button.component';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { AuthenticationService } from '../authentication.service';
+import { ApiError, toApiError } from '../../shared/api-error/api-error';
+import { ApiErrorComponent } from '../../shared/api-error/api-error.component';
 
 const passwordComplexityValidator: ValidatorFn = (control): ValidationErrors | null =>
   /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])/.test(control.value)
@@ -26,6 +29,7 @@ const passwordComplexityValidator: ValidatorFn = (control): ValidationErrors | n
   selector: 'app-register',
   imports: [
     AutoFocus,
+    ApiErrorComponent,
     BackButtonComponent,
     ButtonDirective,
     HeaderComponent,
@@ -43,6 +47,7 @@ export class RegisterComponent {
   private readonly router = inject(Router);
 
   readonly isSubmitting = signal(false);
+  readonly apiError = signal<ApiError | null>(null);
 
   readonly passwordStrengthRegex = '^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])(?=.{8,})';
 
@@ -73,12 +78,16 @@ export class RegisterComponent {
     }
 
     this.isSubmitting.set(true);
+    this.apiError.set(null);
     this.authenticationService
       .register(this.registerForm.getRawValue())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => void this.router.navigateByUrl('/posts'),
-        error: () => this.isSubmitting.set(false),
+        error: (error: HttpErrorResponse) => {
+          this.isSubmitting.set(false);
+          this.apiError.set(toApiError(error));
+        },
       });
   }
 }

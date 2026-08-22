@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -9,11 +10,14 @@ import { Password } from 'primeng/password';
 import { BackButtonComponent } from '../../shared/back-button/back-button.component';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { AuthenticationService } from '../authentication.service';
+import { ApiError, toApiError } from '../../shared/api-error/api-error';
+import { ApiErrorComponent } from '../../shared/api-error/api-error.component';
 
 @Component({
   selector: 'app-login',
   imports: [
     AutoFocus,
+    ApiErrorComponent,
     BackButtonComponent,
     ButtonDirective,
     HeaderComponent,
@@ -31,6 +35,7 @@ export class LoginComponent {
   private readonly router = inject(Router);
 
   readonly isSubmitting = signal(false);
+  readonly apiError = signal<ApiError | null>(null);
 
   readonly loginForm = new FormGroup({
     login: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -47,12 +52,16 @@ export class LoginComponent {
     }
 
     this.isSubmitting.set(true);
+    this.apiError.set(null);
     this.authenticationService
       .login(this.loginForm.getRawValue())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => void this.router.navigateByUrl('/posts'),
-        error: () => this.isSubmitting.set(false),
+        error: (error: HttpErrorResponse) => {
+          this.isSubmitting.set(false);
+          this.apiError.set(toApiError(error));
+        },
       });
   }
 }
