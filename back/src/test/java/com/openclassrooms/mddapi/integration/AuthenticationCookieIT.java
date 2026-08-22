@@ -16,17 +16,15 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import java.time.Instant;
 import java.util.Date;
-import java.util.UUID;
 import javax.crypto.SecretKey;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 @SpringBootTest(
     properties = {
@@ -44,9 +42,16 @@ class AuthenticationCookieIT {
 
   @Autowired private JwtService jwtService;
 
+  private AuthenticationTestHelper authenticationTestHelper;
+
+  @BeforeEach
+  void setUp() {
+    authenticationTestHelper = new AuthenticationTestHelper(mockMvc);
+  }
+
   @Test
   void shouldCreateAnHttpOnlyJwtCookieWhenRegistering() throws Exception {
-    String identifier = uniqueIdentifier();
+    String identifier = authenticationTestHelper.uniqueIdentifier();
 
     mockMvc
         .perform(
@@ -57,7 +62,7 @@ class AuthenticationCookieIT {
                     {"username":"%s","email":"%s@example.test","password":"Pass1!wd"}
                     """
                         .formatted(identifier, identifier))
-                .with(csrfToken()))
+                .with(authenticationTestHelper.csrfToken()))
         .andExpect(status().isCreated())
         .andExpect(cookie().exists(AUTHENTICATION_COOKIE))
         .andExpect(cookie().value(AUTHENTICATION_COOKIE, not(emptyOrNullString())))
@@ -69,11 +74,12 @@ class AuthenticationCookieIT {
 
   @Test
   void shouldReturnConflictWhenRegisteringWithAnExistingUsername() throws Exception {
-    String existingIdentifier = uniqueIdentifier();
-    String newIdentifier = uniqueIdentifier();
-    register(existingIdentifier);
+    String existingIdentifier = authenticationTestHelper.uniqueIdentifier();
+    String newIdentifier = authenticationTestHelper.uniqueIdentifier();
+    authenticationTestHelper.register(existingIdentifier);
 
-    registerRequest(existingIdentifier, newIdentifier + "@example.test")
+    authenticationTestHelper
+        .registerRequest(existingIdentifier, newIdentifier + "@example.test")
         .andExpect(status().isConflict())
         .andExpect(jsonPath("$.status").value(409))
         .andExpect(jsonPath("$.error").value("Conflict"))
@@ -84,11 +90,12 @@ class AuthenticationCookieIT {
 
   @Test
   void shouldReturnConflictWhenRegisteringWithAnExistingEmail() throws Exception {
-    String existingIdentifier = uniqueIdentifier();
-    String newIdentifier = uniqueIdentifier();
-    register(existingIdentifier);
+    String existingIdentifier = authenticationTestHelper.uniqueIdentifier();
+    String newIdentifier = authenticationTestHelper.uniqueIdentifier();
+    authenticationTestHelper.register(existingIdentifier);
 
-    registerRequest(newIdentifier, existingIdentifier + "@example.test")
+    authenticationTestHelper
+        .registerRequest(newIdentifier, existingIdentifier + "@example.test")
         .andExpect(status().isConflict())
         .andExpect(jsonPath("$.status").value(409))
         .andExpect(jsonPath("$.error").value("Conflict"))
@@ -99,7 +106,7 @@ class AuthenticationCookieIT {
 
   @Test
   void shouldRejectARegistrationPasswordThatDoesNotMeetThePasswordPolicy() throws Exception {
-    String identifier = uniqueIdentifier();
+    String identifier = authenticationTestHelper.uniqueIdentifier();
 
     mockMvc
         .perform(
@@ -110,7 +117,7 @@ class AuthenticationCookieIT {
                     {"username":"%s","email":"%s@example.test","password":"pass1!wd"}
                     """
                         .formatted(identifier, identifier))
-                .with(csrfToken()))
+                .with(authenticationTestHelper.csrfToken()))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.status").value(400))
         .andExpect(jsonPath("$.error").value("Bad Request"))
@@ -121,8 +128,8 @@ class AuthenticationCookieIT {
 
   @Test
   void shouldCreateAnHttpOnlyJwtCookieWhenLoggingInWithUsername() throws Exception {
-    String identifier = uniqueIdentifier();
-    register(identifier);
+    String identifier = authenticationTestHelper.uniqueIdentifier();
+    authenticationTestHelper.register(identifier);
 
     loginRequest(identifier, "Pass1!wd")
         .andExpect(status().isNoContent())
@@ -136,8 +143,8 @@ class AuthenticationCookieIT {
 
   @Test
   void shouldCreateAnHttpOnlyJwtCookieWhenLoggingInWithEmail() throws Exception {
-    String identifier = uniqueIdentifier();
-    register(identifier);
+    String identifier = authenticationTestHelper.uniqueIdentifier();
+    authenticationTestHelper.register(identifier);
 
     loginRequest(identifier + "@example.test", "Pass1!wd")
         .andExpect(status().isNoContent())
@@ -151,8 +158,8 @@ class AuthenticationCookieIT {
 
   @Test
   void shouldRejectLoginWithAnInvalidPassword() throws Exception {
-    String identifier = uniqueIdentifier();
-    register(identifier);
+    String identifier = authenticationTestHelper.uniqueIdentifier();
+    authenticationTestHelper.register(identifier);
 
     loginRequest(identifier, "incorrect password")
         .andExpect(status().isUnauthorized())
@@ -166,11 +173,14 @@ class AuthenticationCookieIT {
 
   @Test
   void shouldClearTheAuthenticationCookieWhenLoggingOut() throws Exception {
-    String identifier = uniqueIdentifier();
-    Cookie authenticationCookie = register(identifier);
+    String identifier = authenticationTestHelper.uniqueIdentifier();
+    Cookie authenticationCookie = authenticationTestHelper.register(identifier);
 
     mockMvc
-        .perform(post("/api/auth/logout").cookie(authenticationCookie).with(csrfToken()))
+        .perform(
+            post("/api/auth/logout")
+                .cookie(authenticationCookie)
+                .with(authenticationTestHelper.csrfToken()))
         .andExpect(status().isNoContent())
         .andExpect(cookie().maxAge(AUTHENTICATION_COOKIE, 0))
         .andExpect(cookie().httpOnly(AUTHENTICATION_COOKIE, true))
@@ -179,8 +189,8 @@ class AuthenticationCookieIT {
 
   @Test
   void shouldReturnTheCurrentUserForAnAuthenticatedSession() throws Exception {
-    String identifier = uniqueIdentifier();
-    Cookie authenticationCookie = register(identifier);
+    String identifier = authenticationTestHelper.uniqueIdentifier();
+    Cookie authenticationCookie = authenticationTestHelper.register(identifier);
 
     mockMvc
         .perform(get("/api/users/me").cookie(authenticationCookie))
@@ -206,7 +216,8 @@ class AuthenticationCookieIT {
 
   @Test
   void shouldRejectTheCurrentUserRequestWhenTheJwtHasExpired() throws Exception {
-    Cookie authenticationCookie = register(uniqueIdentifier());
+    Cookie authenticationCookie =
+        authenticationTestHelper.register(authenticationTestHelper.uniqueIdentifier());
     Long userId = jwtService.findUserId(authenticationCookie.getValue()).orElseThrow();
     SecretKey signingKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(JWT_SECRET));
     String expiredToken =
@@ -221,28 +232,6 @@ class AuthenticationCookieIT {
         .andExpect(status().isUnauthorized());
   }
 
-  private Cookie register(String identifier) throws Exception {
-    MvcResult result =
-        registerRequest(identifier, identifier + "@example.test")
-            .andExpect(status().isCreated())
-            .andExpect(cookie().exists(AUTHENTICATION_COOKIE))
-            .andReturn();
-
-    return result.getResponse().getCookie(AUTHENTICATION_COOKIE);
-  }
-
-  private ResultActions registerRequest(String username, String email) throws Exception {
-    return mockMvc.perform(
-        post("/api/auth/register")
-            .contentType(APPLICATION_JSON)
-            .content(
-                """
-                {"username":"%s","email":"%s","password":"Pass1!wd"}
-                """
-                    .formatted(username, email))
-            .with(csrfToken()));
-  }
-
   private ResultActions loginRequest(String login, String password) throws Exception {
     return mockMvc.perform(
         post("/api/auth/login")
@@ -252,20 +241,6 @@ class AuthenticationCookieIT {
                 {"login":"%s","password":"%s"}
                 """
                     .formatted(login, password))
-            .with(csrfToken()));
-  }
-
-  private RequestPostProcessor csrfToken() throws Exception {
-    MvcResult csrfResult = mockMvc.perform(get("/api/auth/csrf")).andReturn();
-    Cookie csrfCookie = csrfResult.getResponse().getCookie("XSRF-TOKEN");
-    return request -> {
-      request.setCookies(csrfCookie);
-      request.addHeader("X-XSRF-TOKEN", csrfCookie.getValue());
-      return request;
-    };
-  }
-
-  private String uniqueIdentifier() {
-    return "user" + UUID.randomUUID().toString().replace("-", "");
+            .with(authenticationTestHelper.csrfToken()));
   }
 }
