@@ -71,6 +71,8 @@ public class MddProperties {
 
     @NotBlank private String accessDenied;
 
+    @NotBlank private String resourceNotFound;
+
     @NotBlank private String unexpected;
   }
 }

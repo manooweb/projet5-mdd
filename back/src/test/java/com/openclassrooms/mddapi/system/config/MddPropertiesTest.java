@@ -49,6 +49,8 @@ class MddPropertiesTest {
         .isEqualTo("Authentication is required.");
     assertThat(properties.getMessages().getErrors().getAccessDenied())
         .isEqualTo("Access is denied.");
+    assertThat(properties.getMessages().getErrors().getResourceNotFound())
+        .isEqualTo("The requested resource was not found.");
     assertThat(properties.getMessages().getErrors().getUnexpected())
         .isEqualTo("An unexpected error occurred.");
   }
@@ -73,6 +75,7 @@ class MddPropertiesTest {
             "messages.validation.passwordSize",
             "messages.errors.authenticationRequired",
             "messages.errors.accessDenied",
+            "messages.errors.resourceNotFound",
             "messages.errors.unexpected");
   }
 

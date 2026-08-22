@@ -102,6 +102,18 @@ class SecurityConfigurationMvcTest {
         .andExpect(jsonPath("$.path").value("/api/auth/error-probe"));
   }
 
+  @Test
+  void shouldReturnAStandardizedResponseWhenAnApiRouteDoesNotExist() throws Exception {
+    mockMvc
+        .perform(get("/api/auth/unknown-route"))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.status").value(404))
+        .andExpect(jsonPath("$.error").value("Not Found"))
+        .andExpect(jsonPath("$.messageCode").value("RESOURCE_NOT_FOUND"))
+        .andExpect(jsonPath("$.message").value("The requested resource was not found."))
+        .andExpect(jsonPath("$.path").value("/api/auth/unknown-route"));
+  }
+
   @RestController
   static class CsrfProbeController {
 

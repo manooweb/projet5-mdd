@@ -27,4 +27,18 @@ describe('toApiError', () => {
       message: 'Une erreur inattendue est survenue. Veuillez réessayer.',
     });
   });
+
+  it('maps a missing resource API message code to its French message', () => {
+    const error = new HttpErrorResponse({
+      status: 404,
+      error: {
+        messageCode: 'RESOURCE_NOT_FOUND',
+        message: 'The requested resource was not found.',
+      },
+    });
+
+    expect(toApiError(error)).toEqual({
+      message: 'La ressource demandée est introuvable.',
+    });
+  });
 });

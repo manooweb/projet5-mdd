@@ -9,6 +9,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @Slf4j
 @RestControllerAdvice
@@ -33,6 +34,15 @@ public class GlobalExceptionHandler {
         HttpStatus.BAD_REQUEST,
         ApiErrorCode.INVALID_REQUEST,
         properties.getMessages().getValidation().getInvalidRequest(),
+        request);
+  }
+
+  @ExceptionHandler(NoResourceFoundException.class)
+  ResponseEntity<ApiErrorResponse> handleResourceNotFound(HttpServletRequest request) {
+    return errorResponse(
+        HttpStatus.NOT_FOUND,
+        ApiErrorCode.RESOURCE_NOT_FOUND,
+        properties.getMessages().getErrors().getResourceNotFound(),
         request);
   }
 

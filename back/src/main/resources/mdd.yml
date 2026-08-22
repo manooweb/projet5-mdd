@@ -18,4 +18,5 @@ mdd:
     errors:
       authentication-required: Authentication is required.
       access-denied: Access is denied.
+      resource-not-found: The requested resource was not found.
       unexpected: An unexpected error occurred.
