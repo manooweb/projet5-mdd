@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TopicController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mdd-api</a> &gt; <a href="index.source.html" class="el_package">com.openclassrooms.mddapi.topic.controller</a> &gt; <span class="el_source">TopicController.java</span></div><h1>TopicController.java</h1><pre class="source lang-java linenums">package com.openclassrooms.mddapi.topic.controller;
+
+import com.openclassrooms.mddapi.topic.dto.TopicResponse;
+import com.openclassrooms.mddapi.topic.service.TopicService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class TopicController {
+
+  private final TopicService topicService;
+
+<span class="fc" id="L21">  public TopicController(TopicService topicService) {</span>
+<span class="fc" id="L22">    this.topicService = topicService;</span>
+<span class="fc" id="L23">  }</span>
+
+  @Operation(summary = &quot;List topics with the current user's subscription status&quot;)
+  @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Topics returned.&quot;)
+  @ApiResponse(responseCode = &quot;401&quot;, description = &quot;No valid authenticated session.&quot;)
+  @GetMapping(&quot;/api/topics&quot;)
+  List&lt;TopicResponse&gt; getTopics(Authentication authentication) {
+<span class="fc" id="L30">    return topicService.getTopics(Long.valueOf(authentication.getName()));</span>
+  }
+
+  @Operation(summary = &quot;Subscribe the current user to a topic&quot;)
+  @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Subscription created or already existed.&quot;)
+  @ApiResponse(responseCode = &quot;401&quot;, description = &quot;No valid authenticated session.&quot;)
+  @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Missing or invalid CSRF token.&quot;)
+  @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Topic not found.&quot;)
+  @PostMapping(&quot;/api/topics/{topicId}/subscription&quot;)
+  ResponseEntity&lt;Void&gt; subscribe(@PathVariable Long topicId, Authentication authentication) {
+<span class="fc" id="L40">    topicService.subscribe(Long.valueOf(authentication.getName()), topicId);</span>
+<span class="fc" id="L41">    return ResponseEntity.noContent().build();</span>
+  }
+
+  @Operation(summary = &quot;Unsubscribe the current user from a topic&quot;)
+  @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Subscription removed if it existed.&quot;)
+  @ApiResponse(responseCode = &quot;401&quot;, description = &quot;No valid authenticated session.&quot;)
+  @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Missing or invalid CSRF token.&quot;)
+  @DeleteMapping(&quot;/api/topics/{topicId}/subscription&quot;)
+  ResponseEntity&lt;Void&gt; unsubscribe(@PathVariable Long topicId, Authentication authentication) {
+<span class="fc" id="L50">    topicService.unsubscribe(Long.valueOf(authentication.getName()), topicId);</span>
+<span class="fc" id="L51">    return ResponseEntity.noContent().build();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

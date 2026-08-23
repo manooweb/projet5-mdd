@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PostController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mdd-api</a> &gt; <a href="index.source.html" class="el_package">com.openclassrooms.mddapi.post.controller</a> &gt; <span class="el_source">PostController.java</span></div><h1>PostController.java</h1><pre class="source lang-java linenums">package com.openclassrooms.mddapi.post.controller;
+
+import com.openclassrooms.mddapi.comment.dto.CreateCommentRequest;
+import com.openclassrooms.mddapi.post.dto.CreatePostRequest;
+import com.openclassrooms.mddapi.post.dto.PostDetailResponse;
+import com.openclassrooms.mddapi.post.dto.PostResponse;
+import com.openclassrooms.mddapi.post.service.PostService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
+import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class PostController {
+
+  private final PostService postService;
+
+<span class="nc" id="L29">  public PostController(PostService postService) {</span>
+<span class="nc" id="L30">    this.postService = postService;</span>
+<span class="nc" id="L31">  }</span>
+
+  @Operation(summary = &quot;List posts&quot;)
+  @ApiResponse(
+      responseCode = &quot;200&quot;,
+      description = &quot;Posts returned in the requested chronological order.&quot;)
+  @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid sort direction.&quot;)
+  @ApiResponse(responseCode = &quot;401&quot;, description = &quot;No valid authenticated session.&quot;)
+  @GetMapping(&quot;/api/posts&quot;)
+  List&lt;PostResponse&gt; getPosts(
+      @Parameter(
+              description = &quot;Chronological sort direction.&quot;,
+              schema =
+                  @Schema(
+                      type = &quot;string&quot;,
+                      allowableValues = {&quot;asc&quot;, &quot;desc&quot;},
+                      defaultValue = &quot;desc&quot;))
+          @RequestParam(defaultValue = &quot;desc&quot;)
+          String sort,
+      Authentication authentication) {
+<span class="nc" id="L51">    return postService.getPosts(Long.valueOf(authentication.getName()), sort);</span>
+  }
+
+  @Operation(summary = &quot;Get a post with its comments&quot;)
+  @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Post and comments returned.&quot;)
+  @ApiResponse(responseCode = &quot;401&quot;, description = &quot;No valid authenticated session.&quot;)
+  @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Post not found or topic not followed.&quot;)
+  @GetMapping(&quot;/api/posts/{postId}&quot;)
+  PostDetailResponse getPost(@PathVariable Long postId, Authentication authentication) {
+<span class="nc" id="L60">    return postService.getPost(Long.valueOf(authentication.getName()), postId);</span>
+  }
+
+  @Operation(summary = &quot;Create a comment on a post&quot;)
+  @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Comment created.&quot;)
+  @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid comment data.&quot;)
+  @ApiResponse(responseCode = &quot;401&quot;, description = &quot;No valid authenticated session.&quot;)
+  @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Missing or invalid CSRF token.&quot;)
+  @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Post not found or topic not followed.&quot;)
+  @PostMapping(&quot;/api/posts/{postId}/comments&quot;)
+  ResponseEntity&lt;Void&gt; createComment(
+      @PathVariable Long postId,
+      @Valid @RequestBody CreateCommentRequest request,
+      Authentication authentication) {
+<span class="nc" id="L74">    postService.createComment(Long.valueOf(authentication.getName()), postId, request);</span>
+<span class="nc" id="L75">    return ResponseEntity.status(HttpStatus.CREATED).build();</span>
+  }
+
+  @Operation(summary = &quot;Create a post&quot;)
+  @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Post created.&quot;)
+  @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid post data.&quot;)
+  @ApiResponse(responseCode = &quot;401&quot;, description = &quot;No valid authenticated session.&quot;)
+  @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Missing or invalid CSRF token.&quot;)
+  @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Topic not found.&quot;)
+  @PostMapping(&quot;/api/posts&quot;)
+  ResponseEntity&lt;Void&gt; createPost(
+      @Valid @RequestBody CreatePostRequest request, Authentication authentication) {
+<span class="nc" id="L87">    postService.createPost(Long.valueOf(authentication.getName()), request);</span>
+<span class="nc" id="L88">    return ResponseEntity.status(HttpStatus.CREATED).build();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mdd-api</a> &gt; <a href="index.source.html" class="el_package">com.openclassrooms.mddapi.system.error</a> &gt; <span class="el_source">GlobalExceptionHandler.java</span></div><h1>GlobalExceptionHandler.java</h1><pre class="source lang-java linenums">package com.openclassrooms.mddapi.system.error;
+
+import com.openclassrooms.mddapi.system.config.MddProperties;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
+<span class="fc" id="L14">@Slf4j</span>
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+  private final MddProperties properties;
+
+<span class="fc" id="L20">  public GlobalExceptionHandler(MddProperties properties) {</span>
+<span class="fc" id="L21">    this.properties = properties;</span>
+<span class="fc" id="L22">  }</span>
+
+  @ExceptionHandler(ApiException.class)
+  ResponseEntity&lt;ApiErrorResponse&gt; handleApiException(
+      ApiException exception, HttpServletRequest request) {
+<span class="fc" id="L27">    return errorResponse(</span>
+<span class="fc" id="L28">        exception.getStatus(), exception.getMessageCode(), exception.getMessage(), request);</span>
+  }
+
+  @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
+  ResponseEntity&lt;ApiErrorResponse&gt; handleInvalidRequest(HttpServletRequest request) {
+<span class="fc" id="L33">    return errorResponse(</span>
+        HttpStatus.BAD_REQUEST,
+        ApiErrorCode.INVALID_REQUEST,
+<span class="fc" id="L36">        properties.getMessages().getValidation().getInvalidRequest(),</span>
+        request);
+  }
+
+  @ExceptionHandler(NoResourceFoundException.class)
+  ResponseEntity&lt;ApiErrorResponse&gt; handleResourceNotFound(HttpServletRequest request) {
+<span class="nc" id="L42">    return errorResponse(</span>
+        HttpStatus.NOT_FOUND,
+        ApiErrorCode.RESOURCE_NOT_FOUND,
+<span class="nc" id="L45">        properties.getMessages().getErrors().getResourceNotFound(),</span>
+        request);
+  }
+
+  @ExceptionHandler(Exception.class)
+  ResponseEntity&lt;ApiErrorResponse&gt; handleUnexpectedException(
+      Exception exception, HttpServletRequest request) {
+<span class="nc" id="L52">    log.error(&quot;Unexpected error while processing request {}&quot;, request.getRequestURI(), exception);</span>
+<span class="nc" id="L53">    return errorResponse(</span>
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        ApiErrorCode.UNEXPECTED_ERROR,
+<span class="nc" id="L56">        properties.getMessages().getErrors().getUnexpected(),</span>
+        request);
+  }
+
+  private ResponseEntity&lt;ApiErrorResponse&gt; errorResponse(
+      HttpStatus status, ApiErrorCode messageCode, String message, HttpServletRequest request) {
+<span class="fc" id="L62">    return ResponseEntity.status(status)</span>
+<span class="fc" id="L63">        .body(</span>
+            new ApiErrorResponse(
+<span class="fc" id="L65">                status.value(),</span>
+<span class="fc" id="L66">                status.getReasonPhrase(),</span>
+<span class="fc" id="L67">                messageCode.name(),</span>
+                message,
+<span class="fc" id="L69">                request.getRequestURI()));</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

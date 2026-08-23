@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PostService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mdd-api</a> &gt; <a href="index.source.html" class="el_package">com.openclassrooms.mddapi.post.service</a> &gt; <span class="el_source">PostService.java</span></div><h1>PostService.java</h1><pre class="source lang-java linenums">package com.openclassrooms.mddapi.post.service;
+
+import com.openclassrooms.mddapi.authentication.domain.UserAccount;
+import com.openclassrooms.mddapi.authentication.repository.UserAccountRepository;
+import com.openclassrooms.mddapi.comment.domain.Comment;
+import com.openclassrooms.mddapi.comment.dto.CommentResponse;
+import com.openclassrooms.mddapi.comment.dto.CreateCommentRequest;
+import com.openclassrooms.mddapi.comment.notification.CommentCreatedEvent;
+import com.openclassrooms.mddapi.comment.repository.CommentRepository;
+import com.openclassrooms.mddapi.post.domain.Post;
+import com.openclassrooms.mddapi.post.dto.CreatePostRequest;
+import com.openclassrooms.mddapi.post.dto.PostDetailResponse;
+import com.openclassrooms.mddapi.post.dto.PostResponse;
+import com.openclassrooms.mddapi.post.repository.PostRepository;
+import com.openclassrooms.mddapi.system.config.MddProperties;
+import com.openclassrooms.mddapi.system.error.ApiErrorCode;
+import com.openclassrooms.mddapi.system.error.ApiException;
+import com.openclassrooms.mddapi.topic.domain.Topic;
+import com.openclassrooms.mddapi.topic.repository.TopicRepository;
+import java.util.List;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+public class PostService {
+
+  private final PostRepository postRepository;
+  private final CommentRepository commentRepository;
+  private final TopicRepository topicRepository;
+  private final UserAccountRepository userAccountRepository;
+  private final MddProperties properties;
+  private final ApplicationEventPublisher eventPublisher;
+
+  public PostService(
+      PostRepository postRepository,
+      CommentRepository commentRepository,
+      TopicRepository topicRepository,
+      UserAccountRepository userAccountRepository,
+      MddProperties properties,
+<span class="fc" id="L43">      ApplicationEventPublisher eventPublisher) {</span>
+<span class="fc" id="L44">    this.postRepository = postRepository;</span>
+<span class="fc" id="L45">    this.commentRepository = commentRepository;</span>
+<span class="fc" id="L46">    this.topicRepository = topicRepository;</span>
+<span class="fc" id="L47">    this.userAccountRepository = userAccountRepository;</span>
+<span class="fc" id="L48">    this.properties = properties;</span>
+<span class="fc" id="L49">    this.eventPublisher = eventPublisher;</span>
+<span class="fc" id="L50">  }</span>
+
+  @Transactional
+  public void createPost(Long userId, CreatePostRequest request) {
+<span class="fc" id="L54">    UserAccount author = findAuthor(userId);</span>
+<span class="fc" id="L55">    Topic topic = findTopic(request.topicId());</span>
+<span class="fc" id="L56">    postRepository.save(Post.create(author, topic, request.title(), request.content()));</span>
+<span class="fc" id="L57">  }</span>
+
+  @Transactional(readOnly = true)
+  public List&lt;PostResponse&gt; getPosts(Long userId, String sort) {
+    Sort.Direction sortDirection =
+<span class="pc bpc" id="L62" title="1 of 3 branches missed.">        switch (sort) {</span>
+<span class="fc" id="L63">          case &quot;asc&quot; -&gt; Sort.Direction.ASC;</span>
+<span class="fc" id="L64">          case &quot;desc&quot; -&gt; Sort.Direction.DESC;</span>
+          default -&gt;
+<span class="nc" id="L66">              throw new ApiException(</span>
+                  HttpStatus.BAD_REQUEST,
+                  ApiErrorCode.INVALID_REQUEST,
+<span class="nc" id="L69">                  properties.getMessages().getValidation().getInvalidRequest());</span>
+        };
+<span class="fc" id="L71">    List&lt;Post&gt; posts =</span>
+<span class="fc" id="L72">        postRepository.findAllForSubscribedTopics(userId, Sort.by(sortDirection, &quot;createdAt&quot;));</span>
+
+<span class="fc" id="L74">    return posts.stream().map(PostResponse::from).toList();</span>
+  }
+
+  @Transactional(readOnly = true)
+  public PostDetailResponse getPost(Long userId, Long postId) {
+<span class="fc" id="L79">    Post post = findSubscribedPost(userId, postId);</span>
+<span class="fc" id="L80">    List&lt;CommentResponse&gt; comments =</span>
+<span class="fc" id="L81">        commentRepository.findAllByPostIdWithAuthor(postId).stream()</span>
+<span class="fc" id="L82">            .map(CommentResponse::from)</span>
+<span class="fc" id="L83">            .toList();</span>
+
+<span class="fc" id="L85">    return PostDetailResponse.from(post, comments);</span>
+  }
+
+  @Transactional
+  public void createComment(Long userId, Long postId, CreateCommentRequest request) {
+<span class="fc" id="L90">    UserAccount author = findAuthor(userId);</span>
+<span class="fc" id="L91">    Post post = findSubscribedPost(userId, postId);</span>
+<span class="fc" id="L92">    commentRepository.save(Comment.create(author, post, request.content()));</span>
+<span class="fc" id="L93">    eventPublisher.publishEvent(</span>
+<span class="fc" id="L94">        new CommentCreatedEvent(post.getAuthor().getEmail(), post.getTitle()));</span>
+<span class="fc" id="L95">  }</span>
+
+  private UserAccount findAuthor(Long userId) {
+<span class="fc" id="L98">    return userAccountRepository</span>
+<span class="fc" id="L99">        .findById(userId)</span>
+<span class="fc" id="L100">        .orElseThrow(</span>
+            () -&gt;
+<span class="nc" id="L102">                new ApiException(</span>
+                    HttpStatus.UNAUTHORIZED,
+                    ApiErrorCode.AUTHENTICATION_REQUIRED,
+<span class="nc" id="L105">                    properties.getMessages().getErrors().getAuthenticationRequired()));</span>
+  }
+
+  private Topic findTopic(Long topicId) {
+<span class="fc" id="L109">    return topicRepository</span>
+<span class="fc" id="L110">        .findById(topicId)</span>
+<span class="fc" id="L111">        .orElseThrow(</span>
+            () -&gt;
+<span class="fc" id="L113">                new ApiException(</span>
+                    HttpStatus.NOT_FOUND,
+                    ApiErrorCode.RESOURCE_NOT_FOUND,
+<span class="fc" id="L116">                    properties.getMessages().getErrors().getResourceNotFound()));</span>
+  }
+
+  private Post findSubscribedPost(Long userId, Long postId) {
+<span class="fc" id="L120">    return postRepository</span>
+<span class="fc" id="L121">        .findByIdForSubscribedTopic(postId, userId)</span>
+<span class="fc" id="L122">        .orElseThrow(</span>
+            () -&gt;
+<span class="fc" id="L124">                new ApiException(</span>
+                    HttpStatus.NOT_FOUND,
+                    ApiErrorCode.RESOURCE_NOT_FOUND,
+<span class="fc" id="L127">                    properties.getMessages().getErrors().getResourceNotFound()));</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SubscriptionId.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mdd-api</a> &gt; <a href="index.source.html" class="el_package">com.openclassrooms.mddapi.topic.domain</a> &gt; <span class="el_source">SubscriptionId.java</span></div><h1>SubscriptionId.java</h1><pre class="source lang-java linenums">package com.openclassrooms.mddapi.topic.domain;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import java.io.Serializable;
+import java.util.Objects;
+
+@Embeddable
+public class SubscriptionId implements Serializable {
+
+  @Column(name = &quot;user_id&quot;)
+  private Long userId;
+
+  @Column(name = &quot;topic_id&quot;)
+  private Long topicId;
+
+<span class="nc" id="L17">  protected SubscriptionId() {}</span>
+
+<span class="nc" id="L19">  public SubscriptionId(Long userId, Long topicId) {</span>
+<span class="nc" id="L20">    this.userId = userId;</span>
+<span class="nc" id="L21">    this.topicId = topicId;</span>
+<span class="nc" id="L22">  }</span>
+
+  public Long getUserId() {
+<span class="nc" id="L25">    return userId;</span>
+  }
+
+  public Long getTopicId() {
+<span class="nc" id="L29">    return topicId;</span>
+  }
+
+  @Override
+  public boolean equals(Object object) {
+<span class="nc bnc" id="L34" title="All 2 branches missed.">    if (this == object) {</span>
+<span class="nc" id="L35">      return true;</span>
+    }
+<span class="nc bnc" id="L37" title="All 2 branches missed.">    if (!(object instanceof SubscriptionId that)) {</span>
+<span class="nc" id="L38">      return false;</span>
+    }
+<span class="nc bnc" id="L40" title="All 4 branches missed.">    return Objects.equals(userId, that.userId) &amp;&amp; Objects.equals(topicId, that.topicId);</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L45">    return Objects.hash(userId, topicId);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
