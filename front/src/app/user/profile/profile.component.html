@@ -1,12 +1,83 @@
 <app-header />
 
 <main class="mx-auto w-full max-w-6xl p-6 md:p-8">
-  <h1 class="text-2xl font-bold text-black">Profil utilisateur</h1>
+  <section class="mx-auto w-full max-w-md">
+    <h1 class="mb-8 text-center text-2xl font-bold text-black">Profil utilisateur</h1>
 
-  @if (loading()) {
-    <output class="flex min-h-64 flex-col items-center justify-center gap-4" aria-live="polite">
-      <p-progress-spinner ariaLabel="Chargement du profil" />
-      <span class="text-sm text-black">Chargement du profil...</span>
-    </output>
-  }
+    <form [formGroup]="profileForm" class="flex flex-col gap-5" novalidate>
+      <div class="flex flex-col gap-2">
+        <label for="profile-username" class="font-semibold text-black">Nom d’utilisateur</label>
+        <input
+          pInputText
+          id="profile-username"
+          name="username"
+          autocomplete="username"
+          class="h-10 w-full rounded-lg border border-black bg-white px-3 text-black focus:border-primary focus:ring-0 focus:outline-none"
+          formControlName="username"
+          type="text"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="profile-email" class="font-semibold text-black">Adresse e-mail</label>
+        <input
+          pInputText
+          id="profile-email"
+          name="email"
+          autocomplete="email"
+          class="h-10 w-full rounded-lg border border-black bg-white px-3 text-black focus:border-primary focus:ring-0 focus:outline-none"
+          formControlName="email"
+          type="email"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="profile-password" class="font-semibold text-black">Mot de passe</label>
+        <p-password
+          inputId="profile-password"
+          name="password"
+          autocomplete="new-password"
+          inputStyleClass="h-10 w-full rounded-lg border border-black bg-white px-3 text-black focus:border-primary focus:ring-0 focus:outline-none"
+          [feedback]="false"
+          [fluid]="true"
+          [toggleMask]="true"
+          formControlName="password"
+        />
+      </div>
+
+      <button
+        pButton
+        class="mt-3 flex h-10 w-full justify-center rounded-lg bg-primary font-semibold text-white hover:bg-primary-700 active:bg-primary-800 disabled:cursor-not-allowed disabled:bg-primary-300"
+        type="button"
+        [disabled]="profileForm.pristine"
+      >
+        Sauvegarder
+      </button>
+    </form>
+  </section>
+
+  <section class="mt-12 border-t border-black pt-8">
+    <h2 class="mb-6 text-center text-2xl font-bold text-black">Abonnements</h2>
+
+    @if (topics$ | async; as topics) {
+      <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        @for (topic of topics; track topic.id) {
+          @if (topic.subscribed) {
+            <article
+              class="flex min-h-60 flex-col rounded-lg bg-[#f5f5f5] p-6 text-black shadow-sm"
+            >
+              <p class="text-xl font-bold">{{ topic.name }}</p>
+              <p class="mt-4 flex-1 leading-relaxed">{{ topic.description }}</p>
+              <button
+                class="mt-6 h-10 self-center rounded-lg bg-primary px-6 font-semibold text-white hover:bg-primary-700 active:bg-primary-800"
+                type="button"
+              >
+                Se désabonner
+              </button>
+            </article>
+          }
+        }
+      </div>
+    }
+  </section>
 </main>
