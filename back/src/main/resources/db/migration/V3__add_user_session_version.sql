@@ -1,2 +1,2 @@
 ALTER TABLE `users`
-  ADD COLUMN `session_version` bigint NOT NULL DEFAULT 0;
+  ADD COLUMN `session_version` bigint NOT NULL DEFAULT 0 AFTER `password`;

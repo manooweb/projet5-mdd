@@ -34,9 +34,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
     if (SecurityContextHolder.getContext().getAuthentication() == null) {
       authenticationCookie(request)
-          .flatMap(jwtService::findUserId)
-          .flatMap(userAccountRepository::findById)
-          .ifPresent(user -> authenticate(user.getId(), request));
+          .flatMap(jwtService::findAuthentication)
+          .flatMap(
+              token ->
+                  userAccountRepository
+                      .findById(token.userId())
+                      .filter(user -> user.getSessionVersion() == token.sessionVersion())
+                      .map(user -> user.getId()))
+          .ifPresent(userId -> authenticate(userId, request));
     }
 
     filterChain.doFilter(request, response);

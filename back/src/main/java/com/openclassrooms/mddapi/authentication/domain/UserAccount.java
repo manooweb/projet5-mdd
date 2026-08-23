@@ -25,6 +25,9 @@ public class UserAccount {
   @Column(nullable = false)
   private String password;
 
+  @Column(name = "session_version", nullable = false)
+  private long sessionVersion;
+
   @Column(nullable = false, updatable = false)
   private Instant createdAt;
 
@@ -59,6 +62,10 @@ public class UserAccount {
     return password;
   }
 
+  public long getSessionVersion() {
+    return sessionVersion;
+  }
+
   public void initializeTimestamps() {
     Instant now = Instant.now();
     createdAt = now;
@@ -72,5 +79,9 @@ public class UserAccount {
       password = encodedPassword;
     }
     updatedAt = Instant.now();
+  }
+
+  public void invalidateSessions() {
+    sessionVersion++;
   }
 }

@@ -112,9 +112,7 @@ class UserProfileIT {
 
     Cookie renewedCurrentSession = passwordUpdate.getResponse().getCookie("MDD_AUTH_TOKEN");
 
-    mockMvc
-        .perform(get("/api/users/me").cookie(renewedCurrentSession))
-        .andExpect(status().isOk());
+    mockMvc.perform(get("/api/users/me").cookie(renewedCurrentSession)).andExpect(status().isOk());
 
     mockMvc.perform(get("/api/users/me").cookie(otherSession)).andExpect(status().isUnauthorized());
   }
