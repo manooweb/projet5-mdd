@@ -1,0 +1,12 @@
+.sort-action app-down-arrow-icon {
+  transition: transform 150ms ease-in-out;
+}
+
+.sort-action:hover app-down-arrow-icon,
+.sort-action--ascending app-down-arrow-icon {
+  transform: rotate(180deg);
+}
+
+.sort-action--ascending:hover app-down-arrow-icon {
+  transform: rotate(0deg);
+}

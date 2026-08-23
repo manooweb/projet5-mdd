@@ -43,8 +43,19 @@ public class PostService {
   }
 
   @Transactional(readOnly = true)
-  public List<PostResponse> getPosts() {
-    return postRepository.findAllByOrderByCreatedAtDesc().stream().map(PostResponse::from).toList();
+  public List<PostResponse> getPosts(String sort) {
+    List<Post> posts =
+        switch (sort) {
+          case "asc" -> postRepository.findAllByOrderByCreatedAtAsc();
+          case "desc" -> postRepository.findAllByOrderByCreatedAtDesc();
+          default ->
+              throw new ApiException(
+                  HttpStatus.BAD_REQUEST,
+                  ApiErrorCode.INVALID_REQUEST,
+                  properties.getMessages().getValidation().getInvalidRequest());
+        };
+
+    return posts.stream().map(PostResponse::from).toList();
   }
 
   private UserAccount findAuthor(Long userId) {

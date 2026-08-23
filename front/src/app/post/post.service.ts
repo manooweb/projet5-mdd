@@ -9,12 +9,14 @@ export interface CreatePostRequest {
   content: string;
 }
 
+export type PostSortDirection = 'asc' | 'desc';
+
 @Injectable({ providedIn: 'root' })
 export class PostService {
   private readonly http = inject(HttpClient);
 
-  getPosts(): Observable<Post[]> {
-    return this.http.get<Post[]>('/api/posts');
+  getPosts(sort: PostSortDirection = 'desc'): Observable<Post[]> {
+    return this.http.get<Post[]>('/api/posts', { params: { sort } });
   }
 
   createPost(request: CreatePostRequest): Observable<void> {

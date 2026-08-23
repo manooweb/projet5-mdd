@@ -64,7 +64,7 @@ describe('LoginComponent integration', () => {
 
     await fixture.whenStable();
     fixture.detectChanges();
-    httpTesting.expectOne('/api/posts').flush([]);
+    httpTesting.expectOne('/api/posts?sort=desc').flush([]);
 
     await fixture.whenStable();
     fixture.detectChanges();

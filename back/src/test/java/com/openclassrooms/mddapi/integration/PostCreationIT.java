@@ -96,7 +96,8 @@ class PostCreationIT {
   }
 
   @Test
-  void shouldListPostsFromNewestToOldest() throws Exception {
+  void shouldListPostsFromNewestToOldestByDefaultAndOldestToNewestWhenRequested() throws Exception {
+    jdbcTemplate.update("DELETE FROM posts");
     String identifier = authenticationTestHelper.uniqueIdentifier();
     Cookie authenticationCookie = authenticationTestHelper.register(identifier);
     Long authorId = userId(identifier);
@@ -133,6 +134,12 @@ class PostCreationIT {
         .andExpect(jsonPath("$[0].topic").value("Java"))
         .andExpect(jsonPath("$[0].createdAt").isString())
         .andExpect(jsonPath("$[1].title").value("Ancien article"));
+
+    mockMvc
+        .perform(get("/api/posts").param("sort", "asc").cookie(authenticationCookie))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].title").value("Ancien article"))
+        .andExpect(jsonPath("$[1].title").value("Nouvel article"));
   }
 
   private Long topicId(String topicName) {

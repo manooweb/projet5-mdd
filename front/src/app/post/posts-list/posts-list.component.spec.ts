@@ -74,4 +74,25 @@ describe('PostsListComponent', () => {
     expect(card?.textContent).toContain('demo');
     expect(card?.textContent).toContain('Java');
   });
+
+  it('requests the ascending order after clicking the sort action', async () => {
+    postService.getPosts.mockReturnValue(of([]));
+    await TestBed.configureTestingModule({
+      imports: [PostsListComponent],
+      providers: [provideRouter([]), { provide: PostService, useValue: postService }],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(PostsListComponent);
+    fixture.detectChanges();
+
+    const sortButton = (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(
+      'button[aria-label="Trier par date, ordre décroissant"]',
+    );
+    expect(postService.getPosts).toHaveBeenCalledWith('desc');
+
+    sortButton!.click();
+    fixture.detectChanges();
+
+    expect(postService.getPosts).toHaveBeenLastCalledWith('asc');
+  });
 });

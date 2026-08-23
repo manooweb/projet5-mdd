@@ -4,6 +4,8 @@ import com.openclassrooms.mddapi.post.dto.CreatePostRequest;
 import com.openclassrooms.mddapi.post.dto.PostResponse;
 import com.openclassrooms.mddapi.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -13,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -25,11 +28,23 @@ public class PostController {
   }
 
   @Operation(summary = "List posts")
-  @ApiResponse(responseCode = "200", description = "Posts returned from newest to oldest.")
+  @ApiResponse(
+      responseCode = "200",
+      description = "Posts returned in the requested chronological order.")
+  @ApiResponse(responseCode = "400", description = "Invalid sort direction.")
   @ApiResponse(responseCode = "401", description = "No valid authenticated session.")
   @GetMapping("/api/posts")
-  List<PostResponse> getPosts() {
-    return postService.getPosts();
+  List<PostResponse> getPosts(
+      @Parameter(
+              description = "Chronological sort direction.",
+              schema =
+                  @Schema(
+                      type = "string",
+                      allowableValues = {"asc", "desc"},
+                      defaultValue = "desc"))
+          @RequestParam(defaultValue = "desc")
+          String sort) {
+    return postService.getPosts(sort);
   }
 
   @Operation(summary = "Create a post")

@@ -18,10 +18,10 @@ describe('PostService', () => {
 
   afterEach(() => httpTesting.verify());
 
-  it('gets the posts list', () => {
+  it('gets the posts newest first by default', () => {
     service.getPosts().subscribe();
 
-    const request = httpTesting.expectOne('/api/posts');
+    const request = httpTesting.expectOne('/api/posts?sort=desc');
     expect(request.request.method).toBe('GET');
     request.flush([]);
   });
