@@ -1,0 +1,31 @@
+meta {
+  name: Create Post
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/posts
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "topicId": {{topicId}},
+    "title": "{{title}}",
+    "content": "{{content}}"
+  }
+}
+
+vars:pre-request {
+  topicId: 1
+  title: Create a Java post
+  content: This post was created from the Bruno collection.
+}
+
+tests {
+  test("status is 201", function () {
+    expect(res.status).to.equal(201);
+  });
+}

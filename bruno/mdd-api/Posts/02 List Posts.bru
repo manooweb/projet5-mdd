@@ -1,0 +1,22 @@
+meta {
+  name: List Posts
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/posts
+  body: none
+  auth: none
+}
+
+tests {
+  test("status is 200", function () {
+    expect(res.status).to.equal(200);
+  });
+
+  test("returns posts", function () {
+    expect(res.body).to.be.an("array").that.is.not.empty;
+    expect(res.body[0]).to.include.keys("id", "title", "content", "author", "topic", "createdAt");
+  });
+}
