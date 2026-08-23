@@ -1,0 +1,31 @@
+meta {
+  name: Update Current User
+  type: http
+  seq: 1
+}
+
+patch {
+  url: {{baseUrl}}/api/users/me
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "{{username}}",
+    "email": "{{email}}",
+    "password": "{{password}}"
+  }
+}
+
+vars:pre-request {
+  username: demo
+  email: demo@mdd.net
+  password: 
+}
+
+tests {
+  test("status is 204", function () {
+    expect(res.status).to.equal(204);
+  });
+}

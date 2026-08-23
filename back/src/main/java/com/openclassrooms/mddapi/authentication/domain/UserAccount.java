@@ -64,4 +64,13 @@ public class UserAccount {
     createdAt = now;
     updatedAt = now;
   }
+
+  public void update(String username, String email, String encodedPassword) {
+    this.username = username;
+    this.email = email;
+    if (encodedPassword != null) {
+      password = encodedPassword;
+    }
+    updatedAt = Instant.now();
+  }
 }
