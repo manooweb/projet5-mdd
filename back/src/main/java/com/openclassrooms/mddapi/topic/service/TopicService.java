@@ -50,4 +50,9 @@ public class TopicService {
       subscriptionRepository.save(Subscription.subscribe(userId, topicId));
     }
   }
+
+  @Transactional
+  public void unsubscribe(Long userId, Long topicId) {
+    subscriptionRepository.deleteByUserIdAndTopicId(userId, topicId);
+  }
 }

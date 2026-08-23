@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +38,16 @@ public class TopicController {
   @PostMapping("/api/topics/{topicId}/subscription")
   ResponseEntity<Void> subscribe(@PathVariable Long topicId, Authentication authentication) {
     topicService.subscribe(Long.valueOf(authentication.getName()), topicId);
+    return ResponseEntity.noContent().build();
+  }
+
+  @Operation(summary = "Unsubscribe the current user from a topic")
+  @ApiResponse(responseCode = "204", description = "Subscription removed if it existed.")
+  @ApiResponse(responseCode = "401", description = "No valid authenticated session.")
+  @ApiResponse(responseCode = "403", description = "Missing or invalid CSRF token.")
+  @DeleteMapping("/api/topics/{topicId}/subscription")
+  ResponseEntity<Void> unsubscribe(@PathVariable Long topicId, Authentication authentication) {
+    topicService.unsubscribe(Long.valueOf(authentication.getName()), topicId);
     return ResponseEntity.noContent().build();
   }
 }

@@ -1,0 +1,21 @@
+meta {
+  name: Unsubscribe
+  type: http
+  seq: 3
+}
+
+vars:pre-request {
+  topicId: 9
+}
+
+delete {
+  url: {{baseUrl}}/api/topics/{{topicId}}/subscription
+  body: none
+  auth: none
+}
+
+tests {
+  test("status is 204", function () {
+    expect(res.status).to.equal(204);
+  });
+}

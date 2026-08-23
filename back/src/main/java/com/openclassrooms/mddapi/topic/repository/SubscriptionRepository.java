@@ -4,6 +4,7 @@ import com.openclassrooms.mddapi.topic.domain.Subscription;
 import com.openclassrooms.mddapi.topic.domain.SubscriptionId;
 import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -24,4 +25,12 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Subs
       where subscription.id.userId = :userId and subscription.id.topicId = :topicId
       """)
   boolean existsByUserIdAndTopicId(@Param("userId") Long userId, @Param("topicId") Long topicId);
+
+  @Modifying
+  @Query(
+      """
+      delete from Subscription subscription
+      where subscription.id.userId = :userId and subscription.id.topicId = :topicId
+      """)
+  void deleteByUserIdAndTopicId(@Param("userId") Long userId, @Param("topicId") Long topicId);
 }
