@@ -96,6 +96,25 @@ describe('MobileNavigationComponent', () => {
     expect(dialog.classList).toContain('mobile-menu-leave');
   });
 
+  it('closes when Escape is pressed from the dialog', () => {
+    vi.useFakeTimers();
+    const fixture = TestBed.createComponent(MobileNavigationComponent);
+    fixture.detectChanges();
+
+    const hostElement = fixture.nativeElement as HTMLElement;
+    hostElement
+      .querySelector<HTMLButtonElement>('button[aria-label="Ouvrir le menu de navigation"]')!
+      .click();
+    fixture.detectChanges();
+    vi.runAllTimers();
+
+    const dialog = hostElement.querySelector<HTMLDialogElement>('dialog')!;
+    dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    fixture.detectChanges();
+
+    expect(dialog.classList).toContain('mobile-menu-leave');
+  });
+
   it('places logout before the navigation links and the profile icon at the bottom of the drawer', () => {
     vi.useFakeTimers();
     const fixture = TestBed.createComponent(MobileNavigationComponent);

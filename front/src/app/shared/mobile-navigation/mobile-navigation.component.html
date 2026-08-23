@@ -17,8 +17,10 @@
     [class.mobile-menu-enter]="isMenuOpen()"
     [class.mobile-menu-leave]="!isMenuOpen()"
     aria-label="Navigation principale"
+    tabindex="-1"
     (cancel)="onDialogCancel($event)"
     (click)="onDialogClick($event)"
+    (keydown.escape)="closeMenu()"
     (animationend)="onMenuAnimationEnd()"
   >
     <div class="flex h-full flex-col items-end gap-3 text-right text-lg font-medium">
