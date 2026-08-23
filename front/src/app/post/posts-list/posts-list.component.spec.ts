@@ -78,6 +78,13 @@ describe('PostsListComponent', () => {
         (metadata) => metadata.className,
       ),
     ).toEqual(['post-date', 'post-author', 'post-topic']);
+
+    const postLink = (fixture.nativeElement as HTMLElement).querySelector<HTMLAnchorElement>(
+      'a[aria-label="Lire l’article Un article Java"]',
+    );
+    expect(postLink?.getAttribute('href')).toBe('/posts/1');
+    expect(postLink?.classList).toContain('cursor-pointer');
+    expect(postLink?.querySelector('article')).toBe(card);
   });
 
   it('requests the ascending order after clicking the sort action', async () => {
