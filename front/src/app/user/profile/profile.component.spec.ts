@@ -36,7 +36,7 @@ describe('ProfileComponent', () => {
     const hostElement = fixture.nativeElement as HTMLElement;
     const username = hostElement.querySelector<HTMLInputElement>('#username');
     const email = hostElement.querySelector<HTMLInputElement>('#email');
-    const saveButton = hostElement.querySelector<HTMLButtonElement>('form button[type="button"]');
+    const saveButton = hostElement.querySelector<HTMLButtonElement>('form button[type="submit"]');
 
     expect(fixture.nativeElement.querySelector('h1')?.textContent?.trim()).toBe(
       'Profil utilisateur',
@@ -61,8 +61,69 @@ describe('ProfileComponent', () => {
     fixture.detectChanges();
 
     expect(
-      hostElement.querySelector<HTMLButtonElement>('form button[type="button"]')?.disabled,
+      hostElement.querySelector<HTMLButtonElement>('form button[type="submit"]')?.disabled,
     ).toBe(false);
+  });
+
+  it('saves the modified profile and resets the form', () => {
+    const fixture = TestBed.createComponent(ProfileComponent);
+    const hostElement = fixture.nativeElement as HTMLElement;
+    fixture.detectChanges();
+
+    httpTesting.expectOne('/api/topics').flush([]);
+    fixture.detectChanges();
+
+    const username = hostElement.querySelector<HTMLInputElement>('#username');
+    username!.value = 'demo-updated';
+    username!.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    hostElement.querySelector<HTMLButtonElement>('form button[type="submit"]')?.click();
+
+    const request = httpTesting.expectOne('/api/users/me');
+    expect(request.request.method).toBe('PATCH');
+    expect(request.request.body).toEqual({
+      username: 'demo-updated',
+      email: 'demo@mdd.net',
+      password: '',
+    });
+    request.flush(null);
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.profileForm.pristine).toBe(true);
+    expect(TestBed.inject(SessionService).currentUser()).toEqual({
+      id: 1,
+      username: 'demo-updated',
+      email: 'demo@mdd.net',
+    });
+  });
+
+  it('displays the duplicate identity error returned by the API', () => {
+    const fixture = TestBed.createComponent(ProfileComponent);
+    const hostElement = fixture.nativeElement as HTMLElement;
+    fixture.detectChanges();
+
+    httpTesting.expectOne('/api/topics').flush([]);
+    fixture.detectChanges();
+
+    const username = hostElement.querySelector<HTMLInputElement>('#username');
+    username!.value = 'already-used';
+    username!.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    hostElement.querySelector<HTMLButtonElement>('form button[type="submit"]')?.click();
+    httpTesting.expectOne('/api/users/me').flush(
+      {
+        messageCode: 'DUPLICATE_IDENTITY',
+        message: 'Username or email is already used.',
+      },
+      { status: 409, statusText: 'Conflict' },
+    );
+    fixture.detectChanges();
+
+    expect(hostElement.querySelector('app-api-error')?.textContent?.trim()).toBe(
+      'Ce nom d’utilisateur ou cette adresse e-mail est déjà utilisé(e).',
+    );
   });
 
   it('displays the registration password validation message for an invalid new password', () => {

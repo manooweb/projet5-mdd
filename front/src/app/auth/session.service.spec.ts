@@ -42,4 +42,31 @@ describe('SessionService', () => {
     await expect(rejectedSession).resolves.toBe(false);
     expect(service.currentUser()).toBeNull();
   });
+
+  it('updates the current user after the profile is saved', () => {
+    service.currentUser.set({ id: 1, username: 'demo', email: 'demo@mdd.net' });
+
+    service
+      .updateCurrentUser({
+        username: 'demo-updated',
+        email: 'demo-updated@mdd.net',
+        password: '',
+      })
+      .subscribe();
+
+    const request = httpTesting.expectOne('/api/users/me');
+    expect(request.request.method).toBe('PATCH');
+    expect(request.request.body).toEqual({
+      username: 'demo-updated',
+      email: 'demo-updated@mdd.net',
+      password: '',
+    });
+    request.flush(null);
+
+    expect(service.currentUser()).toEqual({
+      id: 1,
+      username: 'demo-updated',
+      email: 'demo-updated@mdd.net',
+    });
+  });
 });
