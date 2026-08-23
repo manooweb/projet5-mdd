@@ -1,0 +1,17 @@
+meta {
+  name: Subscribe to Java Topic
+  type: http
+  seq: 0
+}
+
+post {
+  url: {{baseUrl}}/api/topics/1/subscription
+  body: none
+  auth: none
+}
+
+tests {
+  test("status is 204", function () {
+    expect(res.status).to.equal(204);
+  });
+}
