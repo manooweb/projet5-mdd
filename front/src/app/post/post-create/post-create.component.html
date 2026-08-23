@@ -1,0 +1,62 @@
+<app-header />
+
+<main class="relative mx-auto w-full max-w-3xl p-6 md:p-8">
+  <app-back-button
+    class="absolute top-4 left-4 md:top-6 md:left-6"
+    target="/posts"
+    label="Retour aux articles"
+  />
+
+  <section class="mx-auto w-full max-w-2xl pt-14">
+    <h1 class="mb-8 text-center text-2xl font-bold text-black">Créer un nouvel article</h1>
+
+    <form [formGroup]="postForm" class="flex flex-col gap-5" novalidate (ngSubmit)="create()">
+      <label class="flex flex-col gap-2" for="topicId">
+        <span class="sr-only">Thème</span>
+        <select
+          id="topicId"
+          class="h-12 rounded-lg border border-gray-300 bg-white px-4 text-black outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+          formControlName="topicId"
+        >
+          <option value="" disabled>Sélectionner un thème</option>
+          @if (topics$ | async; as topics) {
+            @for (topic of topics; track topic.id) {
+              <option [value]="topic.id">{{ topic.name }}</option>
+            }
+          }
+        </select>
+      </label>
+
+      <label class="flex flex-col gap-2" for="title">
+        <span class="sr-only">Titre</span>
+        <input
+          id="title"
+          class="h-12 rounded-lg border border-gray-300 px-4 text-black outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+          formControlName="title"
+          type="text"
+          placeholder="Titre de l'article"
+        />
+      </label>
+
+      <label class="flex flex-col gap-2" for="content">
+        <span class="sr-only">Contenu</span>
+        <textarea
+          id="content"
+          class="min-h-52 resize-y rounded-lg border border-gray-300 p-4 text-black outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+          style="resize: vertical"
+          formControlName="content"
+          placeholder="Contenu de l'article"
+        ></textarea>
+      </label>
+
+      <button
+        pButton
+        class="mt-3 flex h-10 w-full justify-center rounded-lg bg-primary font-semibold text-white hover:bg-primary-700 active:bg-primary-800 disabled:cursor-not-allowed disabled:bg-primary-300"
+        type="submit"
+        [disabled]="postForm.invalid || isCreating()"
+      >
+        Créer
+      </button>
+    </form>
+  </section>
+</main>

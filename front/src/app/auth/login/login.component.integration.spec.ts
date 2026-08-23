@@ -64,13 +64,17 @@ describe('LoginComponent integration', () => {
 
     await fixture.whenStable();
     fixture.detectChanges();
+    httpTesting.expectOne('/api/posts').flush([]);
+
+    await fixture.whenStable();
+    fixture.detectChanges();
 
     expect(TestBed.inject(SessionService).currentUser()).toEqual({
       id: 1,
       username: 'manu',
       email: 'manu@example.com',
     });
-    expect(hostElement.querySelector('h1')?.textContent?.trim()).toBe('Articles');
+    expect(hostElement.querySelector('a[aria-label="Créer un article"]')).not.toBeNull();
 
     const logoutButton = hostElement.querySelector<HTMLButtonElement>(
       'button[aria-label="Se déconnecter"]',

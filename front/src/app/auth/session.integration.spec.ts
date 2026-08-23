@@ -41,6 +41,10 @@ describe('session restoration integration', () => {
 
     await fixture.whenStable();
     fixture.detectChanges();
+    httpTesting.expectOne('/api/posts').flush([]);
+
+    await fixture.whenStable();
+    fixture.detectChanges();
 
     expect(router.url).toBe('/posts');
     expect(TestBed.inject(SessionService).currentUser()).toEqual({
@@ -48,9 +52,9 @@ describe('session restoration integration', () => {
       username: 'manu',
       email: 'manu@example.com',
     });
-    expect((fixture.nativeElement as HTMLElement).querySelector('h1')?.textContent?.trim()).toBe(
-      'Articles',
-    );
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('a[aria-label="Créer un article"]'),
+    ).not.toBeNull();
   });
 
   it('redirects to login when session restoration returns 401', async () => {

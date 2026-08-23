@@ -1,24 +1,27 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { AsyncPipe, DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ProgressSpinner } from 'primeng/progressspinner';
+import { DownArrowIconComponent } from '../../shared/down-arrow-icon/down-arrow-icon.component';
 import { HeaderComponent } from '../../shared/header/header.component';
+import { PostService } from '../post.service';
 
 @Component({
   selector: 'app-posts-list',
-  imports: [HeaderComponent, ProgressSpinner],
+  imports: [
+    AsyncPipe,
+    DatePipe,
+    DownArrowIconComponent,
+    HeaderComponent,
+    ProgressSpinner,
+    RouterLink,
+  ],
   templateUrl: './posts-list.component.html',
   styleUrl: './posts-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PostsListComponent implements OnInit, OnDestroy {
-  readonly loading = signal(true);
+export class PostsListComponent {
+  private readonly postService = inject(PostService);
 
-  private loadingTimer?: ReturnType<typeof setTimeout>;
-
-  ngOnInit(): void {
-    this.loadingTimer = setTimeout(() => this.loading.set(false), 1200);
-  }
-
-  ngOnDestroy(): void {
-    clearTimeout(this.loadingTimer);
-  }
+  readonly posts$ = this.postService.getPosts();
 }

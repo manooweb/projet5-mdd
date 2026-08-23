@@ -1,11 +1,18 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { TopicService } from '../../topic/topic.service';
+import { PostService } from '../post.service';
 import { PostCreateComponent } from './post-create.component';
 
 describe('PostCreateComponent', () => {
+  const postService = {
+    createPost: vi.fn<PostService['createPost']>(() => of(void 0)),
+  };
+
   beforeEach(async () => {
+    postService.createPost.mockReset();
+    postService.createPost.mockReturnValue(of(void 0));
     await TestBed.configureTestingModule({
       imports: [PostCreateComponent],
       providers: [
@@ -20,6 +27,7 @@ describe('PostCreateComponent', () => {
               ]),
           },
         },
+        { provide: PostService, useValue: postService },
       ],
     }).compileComponents();
   });
@@ -68,5 +76,28 @@ describe('PostCreateComponent', () => {
     expect(hostElement.querySelector<HTMLButtonElement>('button[type="submit"]')?.disabled).toBe(
       false,
     );
+  });
+
+  it('creates the article and returns to the articles list', () => {
+    const fixture = TestBed.createComponent(PostCreateComponent);
+    const router = TestBed.inject(Router);
+    const navigateByUrl = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+    fixture.componentInstance.postForm.setValue({
+      topicId: '1',
+      title: 'Mon article Java',
+      content: 'Le contenu de mon article.',
+    });
+    fixture.detectChanges();
+
+    (fixture.nativeElement as HTMLElement)
+      .querySelector('form')!
+      .dispatchEvent(new Event('submit'));
+
+    expect(postService.createPost).toHaveBeenCalledWith({
+      topicId: 1,
+      title: 'Mon article Java',
+      content: 'Le contenu de mon article.',
+    });
+    expect(navigateByUrl).toHaveBeenCalledWith('/posts');
   });
 });
