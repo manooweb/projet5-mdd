@@ -1,13 +1,23 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import { of, Subject } from 'rxjs';
+import { PostDetail } from '../models/post';
+import { PostService } from '../post.service';
 import { PostDetailComponent } from './post-detail.component';
 
 describe('PostDetailComponent', () => {
   it('shows the article detail loading state', async () => {
-    vi.useFakeTimers();
+    const post = new Subject<PostDetail>();
     await TestBed.configureTestingModule({
       imports: [PostDetailComponent],
-      providers: [provideRouter([])],
+      providers: [
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: { paramMap: of(convertToParamMap({ postId: '12' })) },
+        },
+        { provide: PostService, useValue: { getPost: vi.fn(() => post) } },
+      ],
     }).compileComponents();
 
     const fixture = TestBed.createComponent(PostDetailComponent);
@@ -23,11 +33,22 @@ describe('PostDetailComponent', () => {
       "Chargement de l'article...",
     );
 
-    vi.advanceTimersByTime(1200);
+    post.next({
+      id: 12,
+      title: 'Article détaillé',
+      content: "Le contenu complet de l'article.",
+      author: 'demo',
+      topic: 'Java',
+      createdAt: '2026-08-23T10:15:30Z',
+      comments: [
+        { author: 'demo', content: 'Un commentaire utile.', createdAt: '2026-08-23T10:20:30Z' },
+      ],
+    });
     fixture.detectChanges();
 
     expect(hostElement.querySelector('p-progress-spinner')).toBeNull();
     expect(hostElement.querySelector('app-post-comments')).not.toBeNull();
-    vi.useRealTimers();
+    expect(hostElement.textContent).toContain('Article détaillé');
+    expect(hostElement.textContent).toContain('Un commentaire utile.');
   });
 });

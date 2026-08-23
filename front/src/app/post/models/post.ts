@@ -6,3 +6,13 @@ export interface Post {
   topic: string;
   createdAt: string;
 }
+
+export interface PostComment {
+  author: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface PostDetail extends Post {
+  comments: PostComment[];
+}

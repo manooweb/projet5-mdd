@@ -97,7 +97,7 @@ class PostCreationIT {
 
   @Test
   void shouldListPostsFromNewestToOldestByDefaultAndOldestToNewestWhenRequested() throws Exception {
-    jdbcTemplate.update("DELETE FROM posts");
+    deletePostsAndComments();
     String identifier = authenticationTestHelper.uniqueIdentifier();
     Cookie authenticationCookie = authenticationTestHelper.register(identifier);
     Long authorId = userId(identifier);
@@ -145,7 +145,7 @@ class PostCreationIT {
 
   @Test
   void shouldOnlyListPostsFromTopicsFollowedByTheCurrentUser() throws Exception {
-    jdbcTemplate.update("DELETE FROM posts");
+    deletePostsAndComments();
     String identifier = authenticationTestHelper.uniqueIdentifier();
     Cookie authenticationCookie = authenticationTestHelper.register(identifier);
     Long userId = userId(identifier);
@@ -180,6 +180,89 @@ class PostCreationIT {
         .andExpect(jsonPath("$", org.hamcrest.Matchers.hasSize(1)))
         .andExpect(jsonPath("$[0].title").value("Article Java suivi"))
         .andExpect(jsonPath("$[0].topic").value("Java"));
+  }
+
+  @Test
+  void shouldGetAPostWithItsCommentsForTheAuthenticatedSubscriber() throws Exception {
+    deletePostsAndComments();
+    String identifier = authenticationTestHelper.uniqueIdentifier();
+    Cookie authenticationCookie = authenticationTestHelper.register(identifier);
+    Long authorId = userId(identifier);
+    Long topicId = topicId("Java");
+    subscribe(authorId, topicId);
+    Instant createdAt = Instant.now();
+
+    jdbcTemplate.update(
+        """
+        INSERT INTO posts (title, content, user_id, topic_id, created_at)
+        VALUES (?, ?, ?, ?, ?)
+        """,
+        "Article détaillé",
+        "Le contenu complet de l'article.",
+        authorId,
+        topicId,
+        createdAt);
+    Long postId =
+        jdbcTemplate.queryForObject(
+            "SELECT id FROM posts WHERE title = ?", Long.class, "Article détaillé");
+
+    jdbcTemplate.update(
+        """
+        INSERT INTO comments (content, user_id, post_id, created_at)
+        VALUES (?, ?, ?, ?)
+        """,
+        "Un commentaire utile.",
+        authorId,
+        postId,
+        createdAt.plusSeconds(1));
+
+    mockMvc
+        .perform(get("/api/posts/{postId}", postId).cookie(authenticationCookie))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(postId))
+        .andExpect(jsonPath("$.title").value("Article détaillé"))
+        .andExpect(jsonPath("$.content").value("Le contenu complet de l'article."))
+        .andExpect(jsonPath("$.author").value(identifier))
+        .andExpect(jsonPath("$.topic").value("Java"))
+        .andExpect(jsonPath("$.createdAt").isString())
+        .andExpect(jsonPath("$.comments[0].author").value(identifier))
+        .andExpect(jsonPath("$.comments[0].content").value("Un commentaire utile."))
+        .andExpect(jsonPath("$.comments[0].createdAt").isString());
+  }
+
+  @Test
+  void shouldNotGetAPostFromATopicNotFollowedByTheAuthenticatedUser() throws Exception {
+    deletePostsAndComments();
+    String identifier = authenticationTestHelper.uniqueIdentifier();
+    Cookie authenticationCookie = authenticationTestHelper.register(identifier);
+    Long authorId = userId(identifier);
+    Long javaTopicId = topicId("Java");
+    Long angularTopicId = topicId("Angular");
+    subscribe(authorId, javaTopicId);
+
+    jdbcTemplate.update(
+        """
+        INSERT INTO posts (title, content, user_id, topic_id, created_at)
+        VALUES (?, ?, ?, ?, ?)
+        """,
+        "Article Angular non suivi",
+        "Ce contenu ne doit pas être accessible.",
+        authorId,
+        angularTopicId,
+        Instant.now());
+    Long postId =
+        jdbcTemplate.queryForObject(
+            "SELECT id FROM posts WHERE title = ?", Long.class, "Article Angular non suivi");
+
+    mockMvc
+        .perform(get("/api/posts/{postId}", postId).cookie(authenticationCookie))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.messageCode").value("RESOURCE_NOT_FOUND"));
+  }
+
+  private void deletePostsAndComments() {
+    jdbcTemplate.update("DELETE FROM comments");
+    jdbcTemplate.update("DELETE FROM posts");
   }
 
   private Long topicId(String topicName) {

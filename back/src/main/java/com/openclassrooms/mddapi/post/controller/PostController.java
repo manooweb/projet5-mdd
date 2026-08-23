@@ -1,6 +1,7 @@
 package com.openclassrooms.mddapi.post.controller;
 
 import com.openclassrooms.mddapi.post.dto.CreatePostRequest;
+import com.openclassrooms.mddapi.post.dto.PostDetailResponse;
 import com.openclassrooms.mddapi.post.dto.PostResponse;
 import com.openclassrooms.mddapi.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,6 +48,15 @@ public class PostController {
           String sort,
       Authentication authentication) {
     return postService.getPosts(Long.valueOf(authentication.getName()), sort);
+  }
+
+  @Operation(summary = "Get a post with its comments")
+  @ApiResponse(responseCode = "200", description = "Post and comments returned.")
+  @ApiResponse(responseCode = "401", description = "No valid authenticated session.")
+  @ApiResponse(responseCode = "404", description = "Post not found or topic not followed.")
+  @GetMapping("/api/posts/{postId}")
+  PostDetailResponse getPost(@PathVariable Long postId, Authentication authentication) {
+    return postService.getPost(Long.valueOf(authentication.getName()), postId);
   }
 
   @Operation(summary = "Create a post")

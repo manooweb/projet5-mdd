@@ -8,6 +8,9 @@ describe('PostCommentsComponent', () => {
     }).compileComponents();
 
     const fixture = TestBed.createComponent(PostCommentsComponent);
+    fixture.componentRef.setInput('comments', [
+      { author: 'demo', content: 'Un commentaire utile.', createdAt: '2026-08-23T10:20:30Z' },
+    ]);
     fixture.detectChanges();
 
     const hostElement = fixture.nativeElement as HTMLElement;
@@ -25,6 +28,8 @@ describe('PostCommentsComponent', () => {
       Node.DOCUMENT_POSITION_FOLLOWING,
     );
     expect(textarea).not.toBeNull();
+    expect(commentsList?.textContent).toContain('demo');
+    expect(commentsList?.textContent).toContain('Un commentaire utile.');
     expect(sendButton?.querySelector('svg')).not.toBeNull();
     expect(sendButton?.disabled).toBe(true);
   });

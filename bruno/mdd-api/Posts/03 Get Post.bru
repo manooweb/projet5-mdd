@@ -1,0 +1,28 @@
+meta {
+  name: Get Post
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/api/posts/{{postId}}
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  postId: 1
+}
+
+tests {
+  test("status is 200", function () {
+    expect(res.status).to.equal(200);
+  });
+
+  test("returns the post without comments", function () {
+    expect(res.body).to.include.keys("id", "title", "content", "author", "topic", "createdAt", "comments");
+    expect(res.body.id).to.equal(1);
+    expect(res.body.title).to.equal("Create a Java post");
+    expect(res.body.comments).to.be.an("array").that.is.empty;
+  });
+}

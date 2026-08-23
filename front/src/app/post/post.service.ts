@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Post } from './models/post';
+import { Post, PostDetail } from './models/post';
 
 export interface CreatePostRequest {
   topicId: number;
@@ -17,6 +17,10 @@ export class PostService {
 
   getPosts(sort: PostSortDirection = 'desc'): Observable<Post[]> {
     return this.http.get<Post[]>('/api/posts', { params: { sort } });
+  }
+
+  getPost(postId: number): Observable<PostDetail> {
+    return this.http.get<PostDetail>(`/api/posts/${postId}`);
   }
 
   createPost(request: CreatePostRequest): Observable<void> {

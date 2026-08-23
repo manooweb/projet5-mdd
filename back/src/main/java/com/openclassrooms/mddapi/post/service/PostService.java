@@ -2,8 +2,11 @@ package com.openclassrooms.mddapi.post.service;
 
 import com.openclassrooms.mddapi.authentication.domain.UserAccount;
 import com.openclassrooms.mddapi.authentication.repository.UserAccountRepository;
+import com.openclassrooms.mddapi.comment.dto.CommentResponse;
+import com.openclassrooms.mddapi.comment.repository.CommentRepository;
 import com.openclassrooms.mddapi.post.domain.Post;
 import com.openclassrooms.mddapi.post.dto.CreatePostRequest;
+import com.openclassrooms.mddapi.post.dto.PostDetailResponse;
 import com.openclassrooms.mddapi.post.dto.PostResponse;
 import com.openclassrooms.mddapi.post.repository.PostRepository;
 import com.openclassrooms.mddapi.system.config.MddProperties;
@@ -21,16 +24,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostService {
 
   private final PostRepository postRepository;
+  private final CommentRepository commentRepository;
   private final TopicRepository topicRepository;
   private final UserAccountRepository userAccountRepository;
   private final MddProperties properties;
 
   public PostService(
       PostRepository postRepository,
+      CommentRepository commentRepository,
       TopicRepository topicRepository,
       UserAccountRepository userAccountRepository,
       MddProperties properties) {
     this.postRepository = postRepository;
+    this.commentRepository = commentRepository;
     this.topicRepository = topicRepository;
     this.userAccountRepository = userAccountRepository;
     this.properties = properties;
@@ -59,6 +65,25 @@ public class PostService {
         postRepository.findAllForSubscribedTopics(userId, Sort.by(sortDirection, "createdAt"));
 
     return posts.stream().map(PostResponse::from).toList();
+  }
+
+  @Transactional(readOnly = true)
+  public PostDetailResponse getPost(Long userId, Long postId) {
+    Post post =
+        postRepository
+            .findByIdForSubscribedTopic(postId, userId)
+            .orElseThrow(
+                () ->
+                    new ApiException(
+                        HttpStatus.NOT_FOUND,
+                        ApiErrorCode.RESOURCE_NOT_FOUND,
+                        properties.getMessages().getErrors().getResourceNotFound()));
+    List<CommentResponse> comments =
+        commentRepository.findAllByPostIdWithAuthor(postId).stream()
+            .map(CommentResponse::from)
+            .toList();
+
+    return PostDetailResponse.from(post, comments);
   }
 
   private UserAccount findAuthor(Long userId) {

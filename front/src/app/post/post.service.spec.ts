@@ -26,6 +26,14 @@ describe('PostService', () => {
     request.flush([]);
   });
 
+  it('gets one post with its comments', () => {
+    service.getPost(12).subscribe();
+
+    const request = httpTesting.expectOne('/api/posts/12');
+    expect(request.request.method).toBe('GET');
+    request.flush({});
+  });
+
   it('creates a post', () => {
     const post = { topicId: 1, title: 'Un article Java', content: 'Son contenu.' };
 

@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { PostComment } from '../models/post';
 
 @Component({
   selector: 'app-post-comments',
@@ -9,6 +10,8 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PostCommentsComponent {
+  readonly comments = input<readonly PostComment[]>([]);
+
   readonly commentForm = new FormGroup({
     content: new FormControl('', { nonNullable: true, validators: Validators.required }),
   });
