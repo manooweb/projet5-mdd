@@ -82,4 +82,31 @@ describe('ProfileComponent', () => {
     expect(cards[0].textContent).toContain('Java');
     expect(cards[0].querySelector('button')?.textContent?.trim()).toBe('Se désabonner');
   });
+
+  it('unsubscribes from a topic and refreshes the subscriptions list', async () => {
+    const fixture = TestBed.createComponent(ProfileComponent);
+    const hostElement = fixture.nativeElement as HTMLElement;
+    fixture.detectChanges();
+
+    httpTesting.expectOne('/api/topics').flush([
+      { id: 1, name: 'Java', description: 'Le langage Java.', subscribed: true },
+    ]);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    hostElement.querySelector<HTMLButtonElement>('article button')?.click();
+
+    const request = httpTesting.expectOne('/api/topics/1/subscription');
+    expect(request.request.method).toBe('DELETE');
+    request.flush(null);
+    fixture.detectChanges();
+
+    httpTesting.expectOne('/api/topics').flush([
+      { id: 1, name: 'Java', description: 'Le langage Java.', subscribed: false },
+    ]);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(hostElement.querySelector('article')).toBeNull();
+  });
 });
