@@ -78,6 +78,9 @@ describe('PostsListComponent', () => {
         (metadata) => metadata.className,
       ),
     ).toEqual(['post-date', 'post-author', 'post-topic']);
+    const content = card!.querySelector('p.mt-4');
+    expect(content?.classList).toContain('whitespace-pre-line');
+    expect(content?.classList).toContain('line-clamp-4');
 
     const postLink = (fixture.nativeElement as HTMLElement).querySelector<HTMLAnchorElement>(
       'a[aria-label="Lire l’article Un article Java"]',
