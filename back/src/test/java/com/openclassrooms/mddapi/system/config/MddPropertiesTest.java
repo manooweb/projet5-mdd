@@ -26,6 +26,7 @@ class MddPropertiesTest {
 
     assertThat(properties.getJwt().getExpiration()).hasToString("PT8H");
     assertThat(properties.getJwt().isSecureCookie()).isTrue();
+    assertThat(properties.getMail().getFrom()).isEqualTo("no-reply@mdd.local");
     assertThat(properties.getMessages().getDuplicateIdentity())
         .isEqualTo("Username or email is already used.");
     assertThat(properties.getMessages().getInvalidCredentials()).isEqualTo("Invalid credentials.");
@@ -63,6 +64,7 @@ class MddPropertiesTest {
         .extracting(violation -> violation.getPropertyPath().toString())
         .containsExactlyInAnyOrder(
             "jwt.secret",
+            "mail.from",
             "messages.duplicateIdentity",
             "messages.invalidCredentials",
             "messages.validation.invalidRequest",

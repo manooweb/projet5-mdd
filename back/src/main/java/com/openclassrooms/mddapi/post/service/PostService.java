@@ -5,6 +5,7 @@ import com.openclassrooms.mddapi.authentication.repository.UserAccountRepository
 import com.openclassrooms.mddapi.comment.domain.Comment;
 import com.openclassrooms.mddapi.comment.dto.CommentResponse;
 import com.openclassrooms.mddapi.comment.dto.CreateCommentRequest;
+import com.openclassrooms.mddapi.comment.notification.CommentCreatedEvent;
 import com.openclassrooms.mddapi.comment.repository.CommentRepository;
 import com.openclassrooms.mddapi.post.domain.Post;
 import com.openclassrooms.mddapi.post.dto.CreatePostRequest;
@@ -17,6 +18,7 @@ import com.openclassrooms.mddapi.system.error.ApiException;
 import com.openclassrooms.mddapi.topic.domain.Topic;
 import com.openclassrooms.mddapi.topic.repository.TopicRepository;
 import java.util.List;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -30,18 +32,21 @@ public class PostService {
   private final TopicRepository topicRepository;
   private final UserAccountRepository userAccountRepository;
   private final MddProperties properties;
+  private final ApplicationEventPublisher eventPublisher;
 
   public PostService(
       PostRepository postRepository,
       CommentRepository commentRepository,
       TopicRepository topicRepository,
       UserAccountRepository userAccountRepository,
-      MddProperties properties) {
+      MddProperties properties,
+      ApplicationEventPublisher eventPublisher) {
     this.postRepository = postRepository;
     this.commentRepository = commentRepository;
     this.topicRepository = topicRepository;
     this.userAccountRepository = userAccountRepository;
     this.properties = properties;
+    this.eventPublisher = eventPublisher;
   }
 
   @Transactional
@@ -85,6 +90,8 @@ public class PostService {
     UserAccount author = findAuthor(userId);
     Post post = findSubscribedPost(userId, postId);
     commentRepository.save(Comment.create(author, post, request.content()));
+    eventPublisher.publishEvent(
+        new CommentCreatedEvent(post.getAuthor().getEmail(), post.getTitle()));
   }
 
   private UserAccount findAuthor(Long userId) {

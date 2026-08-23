@@ -3,6 +3,8 @@ mdd:
     secret: ${MDD_JWT_SECRET}
     expiration: ${MDD_JWT_EXPIRATION:PT8H}
     secure-cookie: ${MDD_JWT_SECURE_COOKIE:true}
+  mail:
+    from: ${MDD_MAIL_FROM:no-reply@mdd.local}
   messages:
     duplicate-identity: Username or email is already used.
     invalid-credentials: Invalid credentials.

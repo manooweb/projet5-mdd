@@ -16,6 +16,8 @@ public class MddProperties {
 
   @Valid private Jwt jwt = new Jwt();
 
+  @Valid private Mail mail = new Mail();
+
   @Valid private Messages messages = new Messages();
 
   @Getter
@@ -27,6 +29,13 @@ public class MddProperties {
     private Duration expiration;
 
     private boolean secureCookie;
+  }
+
+  @Getter
+  @Setter
+  public static class Mail {
+
+    @NotBlank private String from;
   }
 
   @Getter

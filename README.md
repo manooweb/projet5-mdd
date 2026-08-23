@@ -77,6 +77,7 @@ The Angular development server proxies `/api` requests to the Spring Boot backen
 | OpenAPI specification | `http://localhost:9001/v3/api-docs` |
 | Backend health status | `http://localhost:9001/actuator/health` |
 | MySQL host port | `localhost:33306` |
+| Mailpit | `http://localhost:8025/` |
 
 The public backend homepage is a technical entry point for local development. It links to Swagger UI and shows the current backend service status.
 

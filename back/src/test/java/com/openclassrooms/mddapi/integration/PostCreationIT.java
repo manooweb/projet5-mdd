@@ -1,6 +1,8 @@
 package com.openclassrooms.mddapi.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -9,19 +11,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import jakarta.servlet.http.Cookie;
 import java.time.Instant;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest(
     properties = {
       "mdd.jwt.secret=MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=",
-      "mdd.jwt.secure-cookie=false"
+      "mdd.jwt.secure-cookie=false",
+      "management.health.mail.enabled=false"
     })
 @AutoConfigureMockMvc
 @Import(TestcontainersConfiguration.class)
@@ -31,11 +39,18 @@ class PostCreationIT {
 
   @Autowired private JdbcTemplate jdbcTemplate;
 
+  @MockitoBean private JavaMailSender mailSender;
+
   private AuthenticationTestHelper authenticationTestHelper;
 
   @BeforeEach
   void setUp() {
     authenticationTestHelper = new AuthenticationTestHelper(mockMvc);
+  }
+
+  @AfterEach
+  void resetMailSender() {
+    reset(mailSender);
   }
 
   @Test
@@ -307,6 +322,15 @@ class PostCreationIT {
                 authorId,
                 "Un commentaire utile."))
         .isOne();
+
+    ArgumentCaptor<SimpleMailMessage> emailCaptor =
+        ArgumentCaptor.forClass(SimpleMailMessage.class);
+    verify(mailSender).send(emailCaptor.capture());
+    SimpleMailMessage email = emailCaptor.getValue();
+    assertThat(email.getTo()).containsExactly(identifier + "@example.test");
+    assertThat(email.getSubject()).isEqualTo("Nouveau commentaire sur votre article");
+    assertThat(email.getText())
+        .contains("Un nouveau commentaire a été publié sur votre article « Article à commenter ».");
   }
 
   private void deletePostsAndComments() {

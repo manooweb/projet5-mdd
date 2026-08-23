@@ -15,11 +15,21 @@ services:
       retries: 30
       start_period: 10s
 
+  mailpit:
+    image: axllent/mailpit:v1.30.0
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
   back:
     build:
       context: ./back
     depends_on:
       mysql:
+        condition: service_healthy
+      mailpit:
         condition: service_healthy
     environment:
       SPRING_DATASOURCE_PASSWORD: mdd_bruno_password
@@ -28,5 +38,8 @@ services:
       SPRING_DOCKER_COMPOSE_ENABLED: "false"
       MDD_JWT_SECRET: pZKqpFKjg3VuxPc8kQGXyD1P5/lyyQ8lwd2yeGlXJUw=
       MDD_JWT_SECURE_COOKIE: "false"
+      MDD_MAIL_FROM: no-reply@mdd.local
+      SPRING_MAIL_HOST: mailpit
+      SPRING_MAIL_PORT: "1025"
     ports:
       - "127.0.0.1:9002:9001"
