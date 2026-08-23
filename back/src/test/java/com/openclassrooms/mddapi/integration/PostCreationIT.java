@@ -260,6 +260,55 @@ class PostCreationIT {
         .andExpect(jsonPath("$.messageCode").value("RESOURCE_NOT_FOUND"));
   }
 
+  @Test
+  void shouldCreateACommentForTheAuthenticatedSubscriber() throws Exception {
+    deletePostsAndComments();
+    String identifier = authenticationTestHelper.uniqueIdentifier();
+    Cookie authenticationCookie = authenticationTestHelper.register(identifier);
+    Long authorId = userId(identifier);
+    Long topicId = topicId("Java");
+    subscribe(authorId, topicId);
+
+    jdbcTemplate.update(
+        """
+        INSERT INTO posts (title, content, user_id, topic_id, created_at)
+        VALUES (?, ?, ?, ?, ?)
+        """,
+        "Article à commenter",
+        "Son contenu.",
+        authorId,
+        topicId,
+        Instant.now());
+    Long postId =
+        jdbcTemplate.queryForObject(
+            "SELECT id FROM posts WHERE title = ?", Long.class, "Article à commenter");
+
+    mockMvc
+        .perform(
+            post("/api/posts/{postId}/comments", postId)
+                .cookie(authenticationCookie)
+                .with(authenticationTestHelper.csrfToken())
+                .contentType(APPLICATION_JSON)
+                .content("{\"content\":\"Un commentaire utile.\"}"))
+        .andExpect(status().isCreated());
+
+    assertThat(
+            jdbcTemplate.queryForObject(
+                """
+                SELECT COUNT(*)
+                FROM comments
+                WHERE post_id = ?
+                  AND user_id = ?
+                  AND content = ?
+                  AND created_at IS NOT NULL
+                """,
+                Integer.class,
+                postId,
+                authorId,
+                "Un commentaire utile."))
+        .isOne();
+  }
+
   private void deletePostsAndComments() {
     jdbcTemplate.update("DELETE FROM comments");
     jdbcTemplate.update("DELETE FROM posts");

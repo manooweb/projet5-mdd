@@ -1,10 +1,22 @@
 import { TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
+import { PostService } from '../post.service';
 import { PostCommentsComponent } from './post-comments.component';
 
 describe('PostCommentsComponent', () => {
+  const postService = {
+    createComment: vi.fn(),
+  };
+
+  beforeEach(() => {
+    postService.createComment.mockReset();
+    postService.createComment.mockReturnValue(of(void 0));
+  });
+
   it('renders the comments list before the comment form', async () => {
     await TestBed.configureTestingModule({
       imports: [PostCommentsComponent],
+      providers: [{ provide: PostService, useValue: postService }],
     }).compileComponents();
 
     const fixture = TestBed.createComponent(PostCommentsComponent);
@@ -32,5 +44,31 @@ describe('PostCommentsComponent', () => {
     expect(commentsList?.textContent).toContain('Un commentaire utile.');
     expect(sendButton?.querySelector('svg')).not.toBeNull();
     expect(sendButton?.disabled).toBe(true);
+  });
+
+  it('sends the typed comment for the displayed post', async () => {
+    await TestBed.configureTestingModule({
+      imports: [PostCommentsComponent],
+      providers: [{ provide: PostService, useValue: postService }],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(PostCommentsComponent);
+    fixture.componentRef.setInput('postId', 12);
+    fixture.detectChanges();
+
+    const hostElement = fixture.nativeElement as HTMLElement;
+    const textarea = hostElement.querySelector<HTMLTextAreaElement>('#content');
+    if (!textarea) {
+      throw new Error('Comment textarea was not found.');
+    }
+    textarea.value = 'Un commentaire utile.';
+    textarea.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    hostElement.querySelector('form')?.dispatchEvent(new Event('submit'));
+
+    expect(postService.createComment).toHaveBeenCalledWith(12, {
+      content: 'Un commentaire utile.',
+    });
   });
 });
