@@ -1,0 +1,43 @@
+<section class="mt-10 border-t border-black pt-8" aria-labelledby="comments-title">
+  <h2 id="comments-title" class="text-2xl font-bold text-black">Commentaires</h2>
+
+  <div class="mt-6" aria-label="Liste des commentaires">
+    <p class="text-sm text-black">Aucun commentaire pour le moment.</p>
+  </div>
+
+  <form [formGroup]="commentForm" class="mt-6 flex items-end gap-3" novalidate (ngSubmit)="send()">
+    <label class="flex-1" for="content">
+      <span class="sr-only">Votre commentaire</span>
+      <textarea
+        id="content"
+        class="min-h-28 w-full resize-y rounded-lg border border-gray-300 p-4 text-black outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+        formControlName="content"
+        placeholder="Écrivez ici votre commentaire"
+      ></textarea>
+    </label>
+
+    <button
+      class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-primary hover:bg-primary-50 disabled:cursor-not-allowed disabled:opacity-50"
+      type="submit"
+      aria-label="Envoyer le commentaire"
+      [disabled]="commentForm.invalid"
+    >
+      <svg width="28" height="28" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <path
+          d="M45.5 2.50006L21.85 26.1501"
+          stroke="currentColor"
+          stroke-width="5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M45.5 2.50006L30.45 45.5001L21.85 26.1501L2.50002 17.5501L45.5 2.50006Z"
+          stroke="currentColor"
+          stroke-width="5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+  </form>
+</section>

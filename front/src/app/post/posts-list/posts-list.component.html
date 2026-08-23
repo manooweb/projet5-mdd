@@ -29,15 +29,23 @@
   @if (posts$() | async; as posts) {
     <section class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
       @for (post of posts; track post.id) {
-        <article class="flex min-h-60 flex-col rounded-lg bg-[#f5f5f5] p-6 text-black shadow-sm">
-          <p class="text-xl font-bold">{{ post.title }}</p>
-          <div class="mt-3 flex gap-3 text-sm">
-            <span class="post-date">{{ post.createdAt | date: 'dd/MM/yyyy' }}</span>
-            <span class="post-author">{{ post.author }}</span>
-            <span class="post-topic">{{ post.topic }}</span>
-          </div>
-          <p class="mt-4 line-clamp-4 leading-relaxed">{{ post.content }}</p>
-        </article>
+        <a
+          class="group cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          [routerLink]="['/posts', post.id]"
+          [attr.aria-label]="'Lire l’article ' + post.title"
+        >
+          <article
+            class="flex min-h-60 flex-col rounded-lg border border-transparent bg-[#f5f5f5] p-6 text-black shadow-sm transition-colors group-hover:border-primary group-hover:bg-primary-50"
+          >
+            <p class="text-xl font-bold">{{ post.title }}</p>
+            <div class="mt-3 flex gap-3 text-sm">
+              <span class="post-date">{{ post.createdAt | date: 'dd/MM/yyyy' }}</span>
+              <span class="post-author">{{ post.author }}</span>
+              <span class="post-topic">{{ post.topic }}</span>
+            </div>
+            <p class="mt-4 line-clamp-4 leading-relaxed">{{ post.content }}</p>
+          </article>
+        </a>
       }
     </section>
   } @else {

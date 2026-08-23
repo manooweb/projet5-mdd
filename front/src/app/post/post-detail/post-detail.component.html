@@ -1,0 +1,17 @@
+<app-header />
+
+<main class="mx-auto w-full max-w-3xl p-6 md:p-8">
+  <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center">
+    <app-back-button target="/posts" label="Retour aux articles" />
+    <h1 class="text-center text-2xl font-bold text-black md:text-left">Détail de l'article</h1>
+  </div>
+
+  @if (loading$ | async) {
+    <output class="flex min-h-64 flex-col items-center justify-center gap-4" aria-live="polite">
+      <p-progress-spinner ariaLabel="Chargement de l'article" />
+      <span class="text-sm text-black">Chargement de l'article...</span>
+    </output>
+  } @else {
+    <app-post-comments />
+  }
+</main>
