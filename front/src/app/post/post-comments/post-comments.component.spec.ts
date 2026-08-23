@@ -20,8 +20,13 @@ describe('PostCommentsComponent', () => {
     }).compileComponents();
 
     const fixture = TestBed.createComponent(PostCommentsComponent);
+    fixture.componentRef.setInput('postId', 12);
     fixture.componentRef.setInput('comments', [
-      { author: 'demo', content: 'Un commentaire utile.', createdAt: '2026-08-23T10:20:30Z' },
+      {
+        author: 'demo',
+        content: 'Un commentaire utile.\nAvec une seconde ligne.',
+        createdAt: '2026-08-23T10:20:30Z',
+      },
     ]);
     fixture.detectChanges();
 
@@ -41,7 +46,9 @@ describe('PostCommentsComponent', () => {
     );
     expect(textarea).not.toBeNull();
     expect(commentsList?.textContent).toContain('demo');
-    expect(commentsList?.textContent).toContain('Un commentaire utile.');
+    const commentContent = commentsList?.querySelector('article p:last-child');
+    expect(commentsList?.textContent).toContain('Un commentaire utile.\nAvec une seconde ligne.');
+    expect(commentContent?.classList).toContain('whitespace-pre-line');
     expect(sendButton?.querySelector('svg')).not.toBeNull();
     expect(sendButton?.disabled).toBe(true);
   });
@@ -54,6 +61,8 @@ describe('PostCommentsComponent', () => {
 
     const fixture = TestBed.createComponent(PostCommentsComponent);
     fixture.componentRef.setInput('postId', 12);
+    const commentCreated = vi.fn();
+    fixture.componentInstance.commentCreated.subscribe(commentCreated);
     fixture.detectChanges();
 
     const hostElement = fixture.nativeElement as HTMLElement;
@@ -70,5 +79,6 @@ describe('PostCommentsComponent', () => {
     expect(postService.createComment).toHaveBeenCalledWith(12, {
       content: 'Un commentaire utile.',
     });
+    expect(commentCreated).toHaveBeenCalledOnce();
   });
 });

@@ -34,6 +34,17 @@ describe('PostService', () => {
     request.flush({});
   });
 
+  it('creates a comment on a post', () => {
+    const comment = { content: 'Un commentaire utile.' };
+
+    service.createComment(12, comment).subscribe();
+
+    const request = httpTesting.expectOne('/api/posts/12/comments');
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual(comment);
+    request.flush(null);
+  });
+
   it('creates a post', () => {
     const post = { topicId: 1, title: 'Un article Java', content: 'Son contenu.' };
 

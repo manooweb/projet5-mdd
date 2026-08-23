@@ -9,6 +9,10 @@ export interface CreatePostRequest {
   content: string;
 }
 
+export interface CreateCommentRequest {
+  content: string;
+}
+
 export type PostSortDirection = 'asc' | 'desc';
 
 @Injectable({ providedIn: 'root' })
@@ -21,6 +25,10 @@ export class PostService {
 
   getPost(postId: number): Observable<PostDetail> {
     return this.http.get<PostDetail>(`/api/posts/${postId}`);
+  }
+
+  createComment(postId: number, request: CreateCommentRequest): Observable<void> {
+    return this.http.post<void>(`/api/posts/${postId}/comments`, request);
   }
 
   createPost(request: CreatePostRequest): Observable<void> {

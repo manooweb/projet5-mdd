@@ -1,0 +1,27 @@
+meta {
+  name: Create Comment
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/posts/{{postId}}/comments
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "content": "A comment created from the Bruno collection."
+  }
+}
+
+vars:pre-request {
+  postId: 1
+}
+
+tests {
+  test("status is 201", function () {
+    expect(res.status).to.equal(201);
+  });
+}

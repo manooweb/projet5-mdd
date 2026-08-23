@@ -8,6 +8,7 @@ import { PostDetailComponent } from './post-detail.component';
 describe('PostDetailComponent', () => {
   it('shows the article detail loading state', async () => {
     const post = new Subject<PostDetail>();
+    const postService = { getPost: vi.fn(() => post) };
     await TestBed.configureTestingModule({
       imports: [PostDetailComponent],
       providers: [
@@ -16,7 +17,7 @@ describe('PostDetailComponent', () => {
           provide: ActivatedRoute,
           useValue: { paramMap: of(convertToParamMap({ postId: '12' })) },
         },
-        { provide: PostService, useValue: { getPost: vi.fn(() => post) } },
+        { provide: PostService, useValue: postService },
       ],
     }).compileComponents();
 
@@ -50,5 +51,9 @@ describe('PostDetailComponent', () => {
     expect(hostElement.querySelector('app-post-comments')).not.toBeNull();
     expect(hostElement.textContent).toContain('Article détaillé');
     expect(hostElement.textContent).toContain('Un commentaire utile.');
+
+    fixture.componentInstance.reloadPost();
+
+    expect(postService.getPost).toHaveBeenCalledTimes(2);
   });
 });

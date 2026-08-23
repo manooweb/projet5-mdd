@@ -1,5 +1,6 @@
 package com.openclassrooms.mddapi.post.controller;
 
+import com.openclassrooms.mddapi.comment.dto.CreateCommentRequest;
 import com.openclassrooms.mddapi.post.dto.CreatePostRequest;
 import com.openclassrooms.mddapi.post.dto.PostDetailResponse;
 import com.openclassrooms.mddapi.post.dto.PostResponse;
@@ -57,6 +58,21 @@ public class PostController {
   @GetMapping("/api/posts/{postId}")
   PostDetailResponse getPost(@PathVariable Long postId, Authentication authentication) {
     return postService.getPost(Long.valueOf(authentication.getName()), postId);
+  }
+
+  @Operation(summary = "Create a comment on a post")
+  @ApiResponse(responseCode = "201", description = "Comment created.")
+  @ApiResponse(responseCode = "400", description = "Invalid comment data.")
+  @ApiResponse(responseCode = "401", description = "No valid authenticated session.")
+  @ApiResponse(responseCode = "403", description = "Missing or invalid CSRF token.")
+  @ApiResponse(responseCode = "404", description = "Post not found or topic not followed.")
+  @PostMapping("/api/posts/{postId}/comments")
+  ResponseEntity<Void> createComment(
+      @PathVariable Long postId,
+      @Valid @RequestBody CreateCommentRequest request,
+      Authentication authentication) {
+    postService.createComment(Long.valueOf(authentication.getName()), postId, request);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
   @Operation(summary = "Create a post")

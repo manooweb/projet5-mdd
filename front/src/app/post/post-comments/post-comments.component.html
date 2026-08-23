@@ -1,11 +1,15 @@
-<section class="mt-10 border-t border-black pt-8" aria-labelledby="comments-title">
-  <h2 id="comments-title" class="text-2xl font-bold text-black">Commentaires</h2>
+<section class="mt-8 border-t border-black pt-5" aria-labelledby="comments-title">
+  <h2 id="comments-title" class="text-base font-medium text-black">Commentaires</h2>
 
-  <div class="mt-6" aria-label="Liste des commentaires">
+  <div class="mt-6 sm:pr-15" aria-label="Liste des commentaires">
     @for (comment of comments(); track comment.createdAt) {
-      <article class="mb-5 flex flex-col gap-2 sm:flex-row sm:items-start">
-        <p class="shrink-0 text-sm font-medium text-black sm:w-32">{{ comment.author }}</p>
-        <p class="rounded-lg bg-[#f5f5f5] p-4 text-sm text-black">{{ comment.content }}</p>
+      <article class="mb-5 sm:grid sm:grid-cols-[5rem_minmax(0,1fr)] sm:gap-4">
+        <p class="mb-2 text-right text-sm font-medium text-black sm:mb-0 sm:pt-2">
+          {{ comment.author }}
+        </p>
+        <p class="w-full whitespace-pre-line rounded-lg bg-[#f5f5f5] p-4 text-sm text-black">
+          {{ comment.content }}
+        </p>
       </article>
     } @empty {
       <p class="text-sm text-black">Aucun commentaire pour le moment.</p>

@@ -37,6 +37,17 @@ public class Comment {
 
   protected Comment() {}
 
+  private Comment(UserAccount author, Post post, String content) {
+    this.author = author;
+    this.post = post;
+    this.content = content;
+    createdAt = Instant.now();
+  }
+
+  public static Comment create(UserAccount author, Post post, String content) {
+    return new Comment(author, post, content);
+  }
+
   public Long getId() {
     return id;
   }

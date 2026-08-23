@@ -2,7 +2,9 @@ package com.openclassrooms.mddapi.post.service;
 
 import com.openclassrooms.mddapi.authentication.domain.UserAccount;
 import com.openclassrooms.mddapi.authentication.repository.UserAccountRepository;
+import com.openclassrooms.mddapi.comment.domain.Comment;
 import com.openclassrooms.mddapi.comment.dto.CommentResponse;
+import com.openclassrooms.mddapi.comment.dto.CreateCommentRequest;
 import com.openclassrooms.mddapi.comment.repository.CommentRepository;
 import com.openclassrooms.mddapi.post.domain.Post;
 import com.openclassrooms.mddapi.post.dto.CreatePostRequest;
@@ -69,21 +71,20 @@ public class PostService {
 
   @Transactional(readOnly = true)
   public PostDetailResponse getPost(Long userId, Long postId) {
-    Post post =
-        postRepository
-            .findByIdForSubscribedTopic(postId, userId)
-            .orElseThrow(
-                () ->
-                    new ApiException(
-                        HttpStatus.NOT_FOUND,
-                        ApiErrorCode.RESOURCE_NOT_FOUND,
-                        properties.getMessages().getErrors().getResourceNotFound()));
+    Post post = findSubscribedPost(userId, postId);
     List<CommentResponse> comments =
         commentRepository.findAllByPostIdWithAuthor(postId).stream()
             .map(CommentResponse::from)
             .toList();
 
     return PostDetailResponse.from(post, comments);
+  }
+
+  @Transactional
+  public void createComment(Long userId, Long postId, CreateCommentRequest request) {
+    UserAccount author = findAuthor(userId);
+    Post post = findSubscribedPost(userId, postId);
+    commentRepository.save(Comment.create(author, post, request.content()));
   }
 
   private UserAccount findAuthor(Long userId) {
@@ -100,6 +101,17 @@ public class PostService {
   private Topic findTopic(Long topicId) {
     return topicRepository
         .findById(topicId)
+        .orElseThrow(
+            () ->
+                new ApiException(
+                    HttpStatus.NOT_FOUND,
+                    ApiErrorCode.RESOURCE_NOT_FOUND,
+                    properties.getMessages().getErrors().getResourceNotFound()));
+  }
+
+  private Post findSubscribedPost(Long userId, Long postId) {
+    return postRepository
+        .findByIdForSubscribedTopic(postId, userId)
         .orElseThrow(
             () ->
                 new ApiException(
