@@ -102,6 +102,7 @@ class PostCreationIT {
     Cookie authenticationCookie = authenticationTestHelper.register(identifier);
     Long authorId = userId(identifier);
     Long topicId = topicId("Java");
+    subscribe(authorId, topicId);
     Instant now = Instant.now();
 
     jdbcTemplate.update(
@@ -142,6 +143,45 @@ class PostCreationIT {
         .andExpect(jsonPath("$[1].title").value("Nouvel article"));
   }
 
+  @Test
+  void shouldOnlyListPostsFromTopicsFollowedByTheCurrentUser() throws Exception {
+    jdbcTemplate.update("DELETE FROM posts");
+    String identifier = authenticationTestHelper.uniqueIdentifier();
+    Cookie authenticationCookie = authenticationTestHelper.register(identifier);
+    Long userId = userId(identifier);
+    Long javaTopicId = topicId("Java");
+    Long angularTopicId = topicId("Angular");
+    subscribe(userId, javaTopicId);
+
+    jdbcTemplate.update(
+        """
+        INSERT INTO posts (title, content, user_id, topic_id, created_at)
+        VALUES (?, ?, ?, ?, ?)
+        """,
+        "Article Java suivi",
+        "Visible dans le fil.",
+        userId,
+        javaTopicId,
+        Instant.now());
+    jdbcTemplate.update(
+        """
+        INSERT INTO posts (title, content, user_id, topic_id, created_at)
+        VALUES (?, ?, ?, ?, ?)
+        """,
+        "Article Angular non suivi",
+        "Absent du fil.",
+        userId,
+        angularTopicId,
+        Instant.now());
+
+    mockMvc
+        .perform(get("/api/posts").cookie(authenticationCookie))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$", org.hamcrest.Matchers.hasSize(1)))
+        .andExpect(jsonPath("$[0].title").value("Article Java suivi"))
+        .andExpect(jsonPath("$[0].topic").value("Java"));
+  }
+
   private Long topicId(String topicName) {
     return jdbcTemplate.queryForObject(
         "SELECT id FROM topics WHERE name = ?", Long.class, topicName);
@@ -150,5 +190,13 @@ class PostCreationIT {
   private Long userId(String username) {
     return jdbcTemplate.queryForObject(
         "SELECT id FROM users WHERE username = ?", Long.class, username);
+  }
+
+  private void subscribe(Long userId, Long topicId) {
+    jdbcTemplate.update(
+        "INSERT INTO subscriptions (user_id, topic_id, created_at) VALUES (?, ?, ?)",
+        userId,
+        topicId,
+        Instant.now());
   }
 }

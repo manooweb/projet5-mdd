@@ -12,6 +12,7 @@ import com.openclassrooms.mddapi.system.error.ApiException;
 import com.openclassrooms.mddapi.topic.domain.Topic;
 import com.openclassrooms.mddapi.topic.repository.TopicRepository;
 import java.util.List;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,17 +44,19 @@ public class PostService {
   }
 
   @Transactional(readOnly = true)
-  public List<PostResponse> getPosts(String sort) {
-    List<Post> posts =
+  public List<PostResponse> getPosts(Long userId, String sort) {
+    Sort.Direction sortDirection =
         switch (sort) {
-          case "asc" -> postRepository.findAllByOrderByCreatedAtAsc();
-          case "desc" -> postRepository.findAllByOrderByCreatedAtDesc();
+          case "asc" -> Sort.Direction.ASC;
+          case "desc" -> Sort.Direction.DESC;
           default ->
               throw new ApiException(
                   HttpStatus.BAD_REQUEST,
                   ApiErrorCode.INVALID_REQUEST,
                   properties.getMessages().getValidation().getInvalidRequest());
         };
+    List<Post> posts =
+        postRepository.findAllForSubscribedTopics(userId, Sort.by(sortDirection, "createdAt"));
 
     return posts.stream().map(PostResponse::from).toList();
   }

@@ -43,8 +43,9 @@ public class PostController {
                       allowableValues = {"asc", "desc"},
                       defaultValue = "desc"))
           @RequestParam(defaultValue = "desc")
-          String sort) {
-    return postService.getPosts(sort);
+          String sort,
+      Authentication authentication) {
+    return postService.getPosts(Long.valueOf(authentication.getName()), sort);
   }
 
   @Operation(summary = "Create a post")
