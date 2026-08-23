@@ -97,6 +97,16 @@ describe('TopicsListComponent', () => {
     const request = httpTesting.expectOne('/api/topics/1/subscription');
     expect(request.request.method).toBe('POST');
     request.flush(null);
+    fixture.detectChanges();
+
+    httpTesting.expectOne('/api/topics').flush([
+      {
+        id: 1,
+        name: 'Java',
+        description: 'Discussions autour du langage Java.',
+        subscribed: true,
+      },
+    ]);
     await fixture.whenStable();
     fixture.detectChanges();
 

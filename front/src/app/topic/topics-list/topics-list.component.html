@@ -1,14 +1,9 @@
 <app-header />
 
 <main class="mx-auto w-full p-6 md:p-8">
-  @if (loading()) {
-    <output class="flex min-h-64 flex-col items-center justify-center gap-4" aria-live="polite">
-      <p-progress-spinner ariaLabel="Chargement des thèmes" />
-      <span class="text-sm text-black">Chargement des thèmes...</span>
-    </output>
-  } @else {
+  @if (topics$ | async; as topics) {
     <section class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-      @for (topic of topics(); track topic.id) {
+      @for (topic of topics; track topic.id) {
         <article class="flex min-h-60 flex-col rounded-lg bg-[#f5f5f5] p-6 text-black shadow-sm">
           <p class="text-xl font-bold">{{ topic.name }}</p>
           <p class="mt-4 flex-1 leading-relaxed">{{ topic.description }}</p>
@@ -26,5 +21,10 @@
         </article>
       }
     </section>
+  } @else {
+    <output class="flex min-h-64 flex-col items-center justify-center gap-4" aria-live="polite">
+      <p-progress-spinner ariaLabel="Chargement des thèmes" />
+      <span class="text-sm text-black">Chargement des thèmes...</span>
+    </output>
   }
 </main>
