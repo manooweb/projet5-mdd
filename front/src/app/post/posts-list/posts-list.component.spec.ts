@@ -73,6 +73,11 @@ describe('PostsListComponent', () => {
     expect(card?.textContent).toContain('Un article Java');
     expect(card?.textContent).toContain('demo');
     expect(card?.textContent).toContain('Java');
+    expect(
+      Array.from(card!.querySelectorAll('.post-date, .post-author, .post-topic')).map(
+        (metadata) => metadata.className,
+      ),
+    ).toEqual(['post-date', 'post-author', 'post-topic']);
   });
 
   it('requests the ascending order after clicking the sort action', async () => {

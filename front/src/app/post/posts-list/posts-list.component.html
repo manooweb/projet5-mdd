@@ -32,9 +32,9 @@
         <article class="flex min-h-60 flex-col rounded-lg bg-[#f5f5f5] p-6 text-black shadow-sm">
           <p class="text-xl font-bold">{{ post.title }}</p>
           <div class="mt-3 flex gap-3 text-sm">
-            <span>{{ post.author }}</span>
-            <span>{{ post.createdAt | date: 'dd/MM/yyyy' }}</span>
-            <span>{{ post.topic }}</span>
+            <span class="post-date">{{ post.createdAt | date: 'dd/MM/yyyy' }}</span>
+            <span class="post-author">{{ post.author }}</span>
+            <span class="post-topic">{{ post.topic }}</span>
           </div>
           <p class="mt-4 line-clamp-4 leading-relaxed">{{ post.content }}</p>
         </article>
