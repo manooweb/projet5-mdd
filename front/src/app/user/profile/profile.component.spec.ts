@@ -88,9 +88,9 @@ describe('ProfileComponent', () => {
     const hostElement = fixture.nativeElement as HTMLElement;
     fixture.detectChanges();
 
-    httpTesting.expectOne('/api/topics').flush([
-      { id: 1, name: 'Java', description: 'Le langage Java.', subscribed: true },
-    ]);
+    httpTesting
+      .expectOne('/api/topics')
+      .flush([{ id: 1, name: 'Java', description: 'Le langage Java.', subscribed: true }]);
     await fixture.whenStable();
     fixture.detectChanges();
 
@@ -99,11 +99,10 @@ describe('ProfileComponent', () => {
     const request = httpTesting.expectOne('/api/topics/1/subscription');
     expect(request.request.method).toBe('DELETE');
     request.flush(null);
-    fixture.detectChanges();
 
-    httpTesting.expectOne('/api/topics').flush([
-      { id: 1, name: 'Java', description: 'Le langage Java.', subscribed: false },
-    ]);
+    httpTesting
+      .expectOne('/api/topics')
+      .flush([{ id: 1, name: 'Java', description: 'Le langage Java.', subscribed: false }]);
     await fixture.whenStable();
     fixture.detectChanges();
 

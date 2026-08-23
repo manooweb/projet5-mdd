@@ -14,4 +14,8 @@ export class TopicService {
   subscribe(topicId: number): Observable<void> {
     return this.http.post<void>(`/api/topics/${topicId}/subscription`, null);
   }
+
+  unsubscribe(topicId: number): Observable<void> {
+    return this.http.delete<void>(`/api/topics/${topicId}/subscription`);
+  }
 }
