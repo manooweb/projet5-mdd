@@ -1,6 +1,7 @@
 package com.openclassrooms.mddapi.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -65,6 +66,18 @@ class TopicSubscriptionIT {
     assertThat(subscriptions).isOne();
   }
 
+  @Test
+  void shouldUnsubscribeTheAuthenticatedUserFromATopic() throws Exception {
+    String identifier = authenticationTestHelper.uniqueIdentifier();
+    Cookie authenticationCookie = authenticationTestHelper.register(identifier);
+    Long javaTopicId = topicId("Java");
+    subscribe(authenticationCookie, javaTopicId).andExpect(status().isNoContent());
+
+    unsubscribe(authenticationCookie, javaTopicId).andExpect(status().isNoContent());
+
+    assertThat(subscriptionCount(identifier, javaTopicId)).isZero();
+  }
+
   private Long topicId(String topicName) {
     return jdbcTemplate.queryForObject(
         "SELECT id FROM topics WHERE name = ?", Long.class, topicName);
@@ -86,6 +99,13 @@ class TopicSubscriptionIT {
   private ResultActions subscribe(Cookie authenticationCookie, Long topicId) throws Exception {
     return mockMvc.perform(
         post("/api/topics/{topicId}/subscription", topicId)
+            .cookie(authenticationCookie)
+            .with(authenticationTestHelper.csrfToken()));
+  }
+
+  private ResultActions unsubscribe(Cookie authenticationCookie, Long topicId) throws Exception {
+    return mockMvc.perform(
+        delete("/api/topics/{topicId}/subscription", topicId)
             .cookie(authenticationCookie)
             .with(authenticationTestHelper.csrfToken()));
   }
