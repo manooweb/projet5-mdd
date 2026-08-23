@@ -34,8 +34,8 @@ describe('ProfileComponent', () => {
     fixture.detectChanges();
 
     const hostElement = fixture.nativeElement as HTMLElement;
-    const username = hostElement.querySelector<HTMLInputElement>('#profile-username');
-    const email = hostElement.querySelector<HTMLInputElement>('#profile-email');
+    const username = hostElement.querySelector<HTMLInputElement>('#username');
+    const email = hostElement.querySelector<HTMLInputElement>('#email');
     const saveButton = hostElement.querySelector<HTMLButtonElement>('form button[type="button"]');
 
     expect(fixture.nativeElement.querySelector('h1')?.textContent?.trim()).toBe(
@@ -55,7 +55,7 @@ describe('ProfileComponent', () => {
     httpTesting.expectOne('/api/topics').flush([]);
     fixture.detectChanges();
 
-    const username = hostElement.querySelector<HTMLInputElement>('#profile-username');
+    const username = hostElement.querySelector<HTMLInputElement>('#username');
     username!.value = 'demo-updated';
     username!.dispatchEvent(new Event('input'));
     fixture.detectChanges();
@@ -63,6 +63,27 @@ describe('ProfileComponent', () => {
     expect(
       hostElement.querySelector<HTMLButtonElement>('form button[type="button"]')?.disabled,
     ).toBe(false);
+  });
+
+  it('displays the registration password validation message for an invalid new password', () => {
+    const fixture = TestBed.createComponent(ProfileComponent);
+    const hostElement = fixture.nativeElement as HTMLElement;
+    fixture.detectChanges();
+
+    httpTesting.expectOne('/api/topics').flush([]);
+    fixture.detectChanges();
+
+    const password = hostElement.querySelector<HTMLInputElement>('#password');
+    password!.value = 'Password1';
+    password!.dispatchEvent(new Event('input'));
+    password!.dispatchEvent(new Event('blur'));
+    fixture.detectChanges();
+
+    const feedback = hostElement.querySelector<HTMLElement>('#password-feedback');
+    expect(getComputedStyle(feedback!).display).toBe('block');
+    expect(feedback?.textContent?.trim()).toBe(
+      'Le mot de passe doit comporter de 8 à 72 caractères, dont un chiffre, une minuscule, une majuscule et un caractère spécial.',
+    );
   });
 
   it('renders only subscribed topics with an unsubscribe button', async () => {

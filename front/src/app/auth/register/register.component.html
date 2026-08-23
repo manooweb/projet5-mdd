@@ -15,64 +15,7 @@
     }
 
     <form [formGroup]="registerForm" class="flex flex-col gap-5" novalidate (ngSubmit)="submit()">
-      <div class="flex flex-col gap-2">
-        <label for="username" class="font-semibold text-black">Nom d’utilisateur</label>
-        <input
-          pInputText
-          id="username"
-          name="username"
-          autocomplete="username"
-          class="h-10 w-full rounded-lg border border-black bg-white px-3 text-black"
-          formControlName="username"
-          aria-describedby="username-feedback"
-          pAutoFocus
-          type="text"
-        />
-        <p id="username-feedback" class="invalid-feedback" aria-live="polite">
-          Le nom d’utilisateur est obligatoire.
-        </p>
-      </div>
-
-      <div class="flex flex-col gap-2">
-        <label for="email" class="font-semibold text-black">Adresse e-mail</label>
-        <input
-          pInputText
-          id="email"
-          name="email"
-          autocomplete="email"
-          class="h-10 w-full rounded-lg border border-black bg-white px-3 text-black"
-          formControlName="email"
-          aria-describedby="email-feedback"
-          type="email"
-        />
-        <p id="email-feedback" class="invalid-feedback" aria-live="polite">
-          Une adresse e-mail valide est obligatoire.
-        </p>
-      </div>
-
-      <div class="flex flex-col gap-2">
-        <label for="password" class="font-semibold text-black">Mot de passe</label>
-        <p-password
-          inputId="password"
-          name="password"
-          autocomplete="new-password"
-          inputStyleClass="h-10 w-full rounded-lg border border-black bg-white px-3 text-black"
-          [feedback]="true"
-          [fluid]="true"
-          [strongRegex]="passwordStrengthRegex"
-          [toggleMask]="true"
-          promptLabel="Saisissez un mot de passe"
-          weakLabel="Faible"
-          mediumLabel="Moyen"
-          strongLabel="Fort"
-          formControlName="password"
-          aria-describedby="password-feedback"
-        />
-        <p id="password-feedback" class="invalid-feedback" aria-live="polite">
-          Le mot de passe doit comporter de 8 à 72 caractères, dont un chiffre, une minuscule, une
-          majuscule et un caractère spécial.
-        </p>
-      </div>
+      <app-account-fields [form]="registerForm" [autofocusUsername]="true" />
 
       <button
         pButton
