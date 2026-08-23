@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './auth/auth.guard';
+import { unknownRouteGuard } from './auth/unknown-route.guard';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { HomeComponent } from './home/home.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 import { PostCreateComponent } from './post/post-create/post-create.component';
 import { PostDetailComponent } from './post/post-detail/post-detail.component';
 import { PostsListComponent } from './post/posts-list/posts-list.component';
@@ -18,5 +20,5 @@ export const routes: Routes = [
   { path: 'posts/:postId', component: PostDetailComponent, canActivate: [authGuard] },
   { path: 'topics', component: TopicsListComponent, canActivate: [authGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
-  { path: '**', redirectTo: '' },
+  { path: '**', component: NotFoundComponent, canActivate: [unknownRouteGuard] },
 ];
