@@ -8,14 +8,14 @@
       <app-api-error [error]="error" />
     }
 
-    <form [formGroup]="profileForm" class="flex flex-col gap-5" novalidate (ngSubmit)="submit()">
+    <form [formGroup]="profileForm" class="flex flex-col gap-5" novalidate (ngSubmit)="save()">
       <app-account-fields [form]="profileForm" />
 
       <button
         pButton
         class="mt-3 flex h-10 w-full justify-center rounded-lg bg-primary font-semibold text-white hover:bg-primary-700 active:bg-primary-800 disabled:cursor-not-allowed disabled:bg-primary-300"
         type="submit"
-        [disabled]="profileForm.pristine || profileForm.invalid || isSubmitting()"
+        [disabled]="!hasChanges() || profileForm.invalid || isSubmitting()"
       >
         Sauvegarder
       </button>

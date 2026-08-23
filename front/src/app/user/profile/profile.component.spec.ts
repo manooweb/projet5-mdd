@@ -65,6 +65,28 @@ describe('ProfileComponent', () => {
     ).toBe(false);
   });
 
+  it('disables saving again when the user restores the initial value', () => {
+    const fixture = TestBed.createComponent(ProfileComponent);
+    const hostElement = fixture.nativeElement as HTMLElement;
+    fixture.detectChanges();
+
+    httpTesting.expectOne('/api/topics').flush([]);
+    fixture.detectChanges();
+
+    const username = hostElement.querySelector<HTMLInputElement>('#username');
+    username!.value = 'demo-updated';
+    username!.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    username!.value = 'demo';
+    username!.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    expect(
+      hostElement.querySelector<HTMLButtonElement>('form button[type="submit"]')?.disabled,
+    ).toBe(true);
+  });
+
   it('saves the modified profile and resets the form', () => {
     const fixture = TestBed.createComponent(ProfileComponent);
     const hostElement = fixture.nativeElement as HTMLElement;

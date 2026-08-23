@@ -33,6 +33,10 @@ export class ProfileComponent {
   private readonly topicService = inject(TopicService);
   private readonly currentUser = this.sessionService.currentUser();
   private readonly refreshTopics$ = new Subject<void>();
+  private initialProfileValues = {
+    username: this.currentUser?.username ?? '',
+    email: this.currentUser?.email ?? '',
+  };
 
   readonly topics$ = this.refreshTopics$.pipe(
     startWith(void 0),
@@ -40,8 +44,8 @@ export class ProfileComponent {
   );
 
   readonly profileForm = createAccountForm({
-    username: this.currentUser?.username,
-    email: this.currentUser?.email,
+    username: this.initialProfileValues.username,
+    email: this.initialProfileValues.email,
     passwordRequired: false,
   });
   readonly isSubmitting = signal(false);
@@ -58,13 +62,23 @@ export class ProfileComponent {
       });
   }
 
-  submit(): void {
+  hasChanges(): boolean {
+    const { username, email, password } = this.profileForm.getRawValue();
+
+    return (
+      username !== this.initialProfileValues.username ||
+      email !== this.initialProfileValues.email ||
+      password !== ''
+    );
+  }
+
+  save(): void {
     if (this.profileForm.invalid || this.isSubmitting()) {
       this.profileForm.markAllAsTouched();
       return;
     }
 
-    if (this.profileForm.pristine) {
+    if (!this.hasChanges()) {
       return;
     }
 
@@ -76,6 +90,10 @@ export class ProfileComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
+          this.initialProfileValues = {
+            username: details.username,
+            email: details.email,
+          };
           this.profileForm.reset({
             username: details.username,
             email: details.email,
