@@ -4,6 +4,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -15,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 @SpringBootTest(
@@ -85,11 +87,52 @@ class UserProfileIT {
     login(identifier, newPassword).andExpect(status().isNoContent());
   }
 
+  @Test
+  void shouldRenewTheCurrentSessionAndInvalidateOtherSessionsWhenThePasswordChanges()
+      throws Exception {
+    String identifier = authenticationTestHelper.uniqueIdentifier();
+    Cookie currentSession = authenticationTestHelper.register(identifier);
+    Cookie otherSession = loginCookie(identifier, "Pass1!wd");
+
+    MvcResult passwordUpdate =
+        mockMvc
+            .perform(
+                patch("/api/users/me")
+                    .cookie(currentSession)
+                    .with(authenticationTestHelper.csrfToken())
+                    .contentType(APPLICATION_JSON)
+                    .content(
+                        """
+                        {"username":"%s","email":"%s@example.test","password":"Updated1!"}
+                        """
+                            .formatted(identifier, identifier)))
+            .andExpect(status().isNoContent())
+            .andExpect(cookie().exists("MDD_AUTH_TOKEN"))
+            .andReturn();
+
+    Cookie renewedCurrentSession = passwordUpdate.getResponse().getCookie("MDD_AUTH_TOKEN");
+
+    mockMvc
+        .perform(get("/api/users/me").cookie(renewedCurrentSession))
+        .andExpect(status().isOk());
+
+    mockMvc.perform(get("/api/users/me").cookie(otherSession)).andExpect(status().isUnauthorized());
+  }
+
   private ResultActions login(String login, String password) throws Exception {
     return mockMvc.perform(
         post("/api/auth/login")
             .contentType(APPLICATION_JSON)
             .content("{\"login\":\"%s\",\"password\":\"%s\"}".formatted(login, password))
             .with(authenticationTestHelper.csrfToken()));
+  }
+
+  private Cookie loginCookie(String login, String password) throws Exception {
+    return login(login, password)
+        .andExpect(status().isNoContent())
+        .andExpect(cookie().exists("MDD_AUTH_TOKEN"))
+        .andReturn()
+        .getResponse()
+        .getCookie("MDD_AUTH_TOKEN");
   }
 }
