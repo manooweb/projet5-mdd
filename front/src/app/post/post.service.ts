@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Post, PostDetail } from './models/post';
 
@@ -15,7 +15,7 @@ export interface CreateCommentRequest {
 
 export type PostSortDirection = 'asc' | 'desc';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class PostService {
   private readonly http = inject(HttpClient);
 

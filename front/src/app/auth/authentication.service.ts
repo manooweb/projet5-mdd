@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { Observable, switchMap } from 'rxjs';
 
 export interface LoginCredentials {
@@ -13,7 +13,7 @@ export interface RegistrationDetails {
   password: string;
 }
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AuthenticationService {
   private readonly http = inject(HttpClient);
 

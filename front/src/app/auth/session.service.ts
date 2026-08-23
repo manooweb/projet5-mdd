@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Service, signal } from '@angular/core';
 import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { CurrentUser } from './models/current-user';
 
@@ -9,7 +9,7 @@ export interface UpdateCurrentUserDetails {
   password: string;
 }
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class SessionService {
   private readonly http = inject(HttpClient);
 
