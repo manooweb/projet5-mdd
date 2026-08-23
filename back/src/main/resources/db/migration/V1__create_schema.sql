@@ -16,12 +16,13 @@ CREATE TABLE `users` (
   `username` varchar(255) UNIQUE NOT NULL,
   `email` varchar(255) UNIQUE NOT NULL,
   `password` varchar(255) NOT NULL,
+  `session_version` bigint NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL,
   `updated_at` timestamp NOT NULL
 );
 
 CREATE TABLE `posts` (
-  `id` integer PRIMARY KEY,
+  `id` integer PRIMARY KEY AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `content` text NOT NULL,
   `user_id` integer NOT NULL,
@@ -30,7 +31,7 @@ CREATE TABLE `posts` (
 );
 
 CREATE TABLE `comments` (
-  `id` integer PRIMARY KEY,
+  `id` integer PRIMARY KEY AUTO_INCREMENT,
   `content` text,
   `user_id` integer NOT NULL,
   `post_id` integer NOT NULL,
