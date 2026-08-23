@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import { PostsListComponent } from './posts-list.component';
 
 describe('PostsListComponent', () => {
-  it('renders the articles page heading', async () => {
+  it('provides a link to create an article without rendering a page heading', async () => {
     await TestBed.configureTestingModule({
       imports: [PostsListComponent],
       providers: [provideRouter([])],
@@ -12,7 +12,14 @@ describe('PostsListComponent', () => {
     const fixture = TestBed.createComponent(PostsListComponent);
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('h1')?.textContent?.trim()).toBe('Articles');
+    const hostElement = fixture.nativeElement as HTMLElement;
+    const createLink = hostElement.querySelector<HTMLAnchorElement>(
+      'a[aria-label="Créer un article"]',
+    );
+
+    expect(hostElement.querySelector('h1')).toBeNull();
+    expect(createLink?.getAttribute('href')).toBe('/posts/create');
+    expect(createLink?.textContent?.trim()).toBe('Créer un article');
   });
 
   it('shows a loading spinner temporarily', async () => {
