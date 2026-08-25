@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/10</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/9</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -94,24 +94,24 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
@@ -119,24 +119,24 @@ import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { SessionService } from './session.service';
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >sessionExpirationInterceptor: HttpInterceptorFn = (r</span>equest, next) =&gt; {</span>
-  const router = <span class="cstat-no" title="statement not covered" >inject(Router);</span>
-  const sessionService = <span class="cstat-no" title="statement not covered" >inject(SessionService);</span>
+export const sessionExpirationInterceptor: HttpInterceptorFn = (request, next) =&gt; {
+  const router = inject(Router);
+  const sessionService = inject(SessionService);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return next(request).pipe(</span>
-<span class="fstat-no" title="function not covered" >    catchError((e</span>rror: HttpErrorResponse) =&gt; {
-<span class="cstat-no" title="statement not covered" >      if (error.status === 401 &amp;&amp; isProtectedApiRequest(request.url)) {</span>
-<span class="cstat-no" title="statement not covered" >        sessionService.clearSession();</span>
-<span class="cstat-no" title="statement not covered" >        void router.navigateByUrl('/login');</span>
+  return next(request).pipe(
+    catchError((error: HttpErrorResponse) =&gt; {
+      if (error.status === 401 &amp;&amp; isProtectedApiRequest(request.url)) {
+        sessionService.clearSession();
+        void router.navigateByUrl('/login');
       }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      return <span class="fstat-no" title="function not covered" >throwError(() =&gt; <span class="cstat-no" title="statement not covered" >e</span>rror)</span>;</span>
+      return throwError(() =&gt; error);
     }),
   );
 };
 &nbsp;
-function <span class="fstat-no" title="function not covered" >isProtectedApiRequest(u</span>rl: string): boolean {
-<span class="cstat-no" title="statement not covered" >  return !url.startsWith('/api/auth/') &amp;&amp; url !== '/api/users/me';</span>
+function isProtectedApiRequest(url: string): boolean {
+  return !url.startsWith('/api/auth/') &amp;&amp; url !== '/api/users/me';
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -145,7 +145,7 @@ function <span class="fstat-no" title="function not covered" >isProtectedApiRequ
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-23T20:08:46.269Z
+                at 2026-08-25T18:15:51.836Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
