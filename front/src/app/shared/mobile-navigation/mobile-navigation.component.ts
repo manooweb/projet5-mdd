@@ -26,13 +26,14 @@ export class MobileNavigationComponent implements OnDestroy {
   readonly isMenuRendered = computed(() => this.menuState() !== 'closed');
   readonly isMenuOpen = computed(() => this.menuState() === 'open');
 
-  toggleMenu(): void {
-    if (this.isMenuOpen()) {
-      this.closeMenu();
-      return;
-    }
-
-    this.openMenu();
+  openMenu(): void {
+    this.menuState.set('open');
+    this.openDialogTimer = setTimeout(() => {
+      const dialog = this.menuDialog()?.nativeElement;
+      if (dialog && !dialog.open) {
+        dialog.showModal();
+      }
+    }, 0);
   }
 
   ngOnDestroy(): void {
@@ -63,16 +64,6 @@ export class MobileNavigationComponent implements OnDestroy {
     if (event.target === event.currentTarget) {
       this.closeMenu();
     }
-  }
-
-  private openMenu(): void {
-    this.menuState.set('open');
-    this.openDialogTimer = setTimeout(() => {
-      const dialog = this.menuDialog()?.nativeElement;
-      if (dialog && !dialog.open) {
-        dialog.showModal();
-      }
-    }, 0);
   }
 
   private closeNativeDialog(): void {

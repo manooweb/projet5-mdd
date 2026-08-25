@@ -33,6 +33,24 @@ describe('RegisterComponent integration', () => {
 
   afterEach(() => httpTesting.verify());
 
+  it('submits valid registration details and redirects to the articles page', () => {
+    const navigateByUrl = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+
+    submitRegistration();
+
+    httpTesting.expectOne('/api/auth/csrf').flush(null, { status: 204, statusText: 'No Content' });
+    const registrationRequest = httpTesting.expectOne('/api/auth/register');
+    expect(registrationRequest.request.method).toBe('POST');
+    expect(registrationRequest.request.body).toEqual({
+      username: 'manu',
+      email: 'manu@example.com',
+      password: 'Pass1!wd',
+    });
+    registrationRequest.flush(null, { status: 204, statusText: 'No Content' });
+
+    expect(navigateByUrl).toHaveBeenCalledWith('/posts');
+  });
+
   it('displays the standardized API error returned by a rejected registration', () => {
     submitRegistration();
 
