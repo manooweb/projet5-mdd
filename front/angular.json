@@ -125,7 +125,14 @@
               "watch": false,
               "coverage": true,
               "coverageInclude": ["src/**/*.ts"],
-              "coverageExclude": ["src/main.ts"],
+              "coverageExclude": [
+                "src/main.ts",
+                "src/app/app.config.ts",
+                "src/app/config/primeui-license.local.ts",
+                "src/app/theme/mdd-preset.ts",
+                "src/app/**/models/**",
+                "src/testing/**"
+              ],
               "coverageReporters": ["html", "lcov", "text-summary", "json"],
               "runnerConfig": "vitest.unit.config.ts",
               "reporters": ["default", "json"],
@@ -136,7 +143,14 @@
               "watch": false,
               "coverage": true,
               "coverageInclude": ["src/**/*.ts"],
-              "coverageExclude": ["src/main.ts"],
+              "coverageExclude": [
+                "src/main.ts",
+                "src/app/app.config.ts",
+                "src/app/config/primeui-license.local.ts",
+                "src/app/theme/mdd-preset.ts",
+                "src/app/**/models/**",
+                "src/testing/**"
+              ],
               "coverageReporters": ["html", "lcov", "text-summary", "json"],
               "runnerConfig": "vitest.integration.config.ts",
               "reporters": ["default", "json"],
