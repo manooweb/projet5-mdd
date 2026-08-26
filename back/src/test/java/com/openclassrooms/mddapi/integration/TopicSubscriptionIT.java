@@ -3,6 +3,7 @@ package com.openclassrooms.mddapi.integration;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import jakarta.servlet.http.Cookie;
@@ -64,6 +65,16 @@ class TopicSubscriptionIT {
 
     Integer subscriptions = subscriptionCount(identifier, javaTopicId);
     assertThat(subscriptions).isOne();
+  }
+
+  @Test
+  void shouldRejectSubscriptionToATopicThatDoesNotExist() throws Exception {
+    String identifier = authenticationTestHelper.uniqueIdentifier();
+    Cookie authenticationCookie = authenticationTestHelper.register(identifier);
+
+    subscribe(authenticationCookie, 999999L)
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.messageCode").value("RESOURCE_NOT_FOUND"));
   }
 
   @Test

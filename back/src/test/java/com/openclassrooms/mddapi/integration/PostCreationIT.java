@@ -159,6 +159,17 @@ class PostCreationIT {
   }
 
   @Test
+  void shouldRejectPostListingWithAnInvalidSortDirection() throws Exception {
+    String identifier = authenticationTestHelper.uniqueIdentifier();
+    Cookie authenticationCookie = authenticationTestHelper.register(identifier);
+
+    mockMvc
+        .perform(get("/api/posts").param("sort", "invalid").cookie(authenticationCookie))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.messageCode").value("INVALID_REQUEST"));
+  }
+
+  @Test
   void shouldOnlyListPostsFromTopicsFollowedByTheCurrentUser() throws Exception {
     deletePostsAndComments();
     String identifier = authenticationTestHelper.uniqueIdentifier();
