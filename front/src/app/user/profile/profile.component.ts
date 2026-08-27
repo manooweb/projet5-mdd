@@ -31,11 +31,11 @@ export class ProfileComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly sessionService = inject(SessionService);
   private readonly topicService = inject(TopicService);
-  private readonly currentUser = this.sessionService.currentUser();
+  private readonly currentUser = this.sessionService.currentUser()!;
   private readonly refreshTopics$ = new Subject<void>();
   private initialProfileValues = {
-    username: this.currentUser?.username ?? '',
-    email: this.currentUser?.email ?? '',
+    username: this.currentUser.username,
+    email: this.currentUser.email,
   };
 
   readonly topics$ = this.refreshTopics$.pipe(
