@@ -237,6 +237,31 @@ describe('Member area', () => {
     cy.contains('button', 'Sauvegarder').should('not.be.disabled');
   });
 
+  it('displays the fallback API error when a password update is rejected', () => {
+    cy.intercept('GET', '/api/topics', { fixture: 'topics.json' }).as('topics');
+    cy.intercept('PATCH', '/api/users/me', {
+      statusCode: 503,
+      body: 'Service unavailable',
+    }).as('updateProfile');
+
+    cy.visitProtected('/profile');
+
+    cy.wait('@currentUser');
+    cy.wait('@topics');
+    cy.get('#password').type('Pass1!wd').blur();
+    cy.contains('button', 'Sauvegarder').click();
+
+    cy.wait('@updateProfile').its('request.body').should('deep.equal', {
+      username: 'manu',
+      email: 'manu@example.com',
+      password: 'Pass1!wd',
+    });
+    cy.get('[role="alert"]').should(
+      'have.text',
+      'Une erreur inattendue est survenue. Veuillez réessayer.',
+    );
+  });
+
   function interceptTopics(refreshedFixture: string): void {
     let requestCount = 0;
 
