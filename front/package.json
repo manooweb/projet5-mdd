@@ -16,7 +16,7 @@
     "cypress:open": "ELECTRON_RUN_AS_NODE= cypress open --expose coverage=false",
     "cypress:run": "ELECTRON_RUN_AS_NODE= cypress run --expose coverage=false",
     "cypress:run:coverage": "ELECTRON_RUN_AS_NODE= cypress run --config baseUrl=http://127.0.0.1:4201",
-    "e2e": "start-server-and-test start http://127.0.0.1:4200 cypress:run",
+    "e2e": "start-server-and-test start http://127.0.0.1:4400 cypress:run",
     "build:e2e:coverage": "ng run front:build-e2e-coverage",
     "start:e2e:coverage": "npm run build:e2e:coverage && http-server dist/front-e2e-coverage/browser -a 127.0.0.1 -p 4201 -c-1 -s",
     "e2e:coverage": "start-server-and-test start:e2e:coverage http://127.0.0.1:4201 cypress:run:coverage"

@@ -1,7 +1,11 @@
 describe('Home page', () => {
-  it('displays the MDD welcome message', () => {
+  it('displays the MDD logo and the authentication links', () => {
     cy.visit('/');
 
-    cy.contains('h1', 'Welcome to MDD').should('be.visible');
+    cy.get('main').within(() => {
+      cy.get('img[alt="MDD logo"]').should('be.visible');
+      cy.contains('a', 'Se connecter').should('have.attr', 'href', '/login');
+      cy.contains('a', 'S’inscrire').should('have.attr', 'href', '/register');
+    });
   });
 });

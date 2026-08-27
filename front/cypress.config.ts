@@ -9,7 +9,7 @@ export default defineConfig({
     },
   },
   e2e: {
-    baseUrl: 'http://127.0.0.1:4200',
+    baseUrl: 'http://127.0.0.1:4400',
     setupNodeEvents(on, config) {
       registerCodeCoverageTasks(on, config);
       return config;
