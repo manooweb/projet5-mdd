@@ -174,6 +174,24 @@ describe('Member area', () => {
     cy.get('dialog').should('not.exist');
   });
 
+  it('closes the mobile navigation when a navigation link is selected', () => {
+    cy.viewport(375, 667);
+    cy.intercept('GET', '/api/posts?sort=desc', { body: [] }).as('posts');
+    cy.intercept('GET', '/api/topics', { fixture: 'topics.json' }).as('topics');
+
+    cy.visitProtected('/posts');
+
+    cy.wait('@currentUser');
+    cy.wait('@posts');
+    cy.get('button[aria-label="Ouvrir le menu de navigation"]').click();
+    cy.get('dialog').contains('a[aria-label="Thèmes"]', 'Thèmes').click();
+
+    cy.wait('@currentUser');
+    cy.wait('@topics');
+    cy.location('pathname').should('eq', '/topics');
+    cy.get('dialog').should('not.exist');
+  });
+
   it('shows the not-found page for an authenticated user on an unknown route', () => {
     cy.visitProtected('/unknown-page');
 
