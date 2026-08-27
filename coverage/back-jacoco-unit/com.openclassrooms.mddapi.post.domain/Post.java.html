@@ -40,16 +40,16 @@ public class Post {
 
 <span class="nc" id="L41">  protected Post() {}</span>
 
-<span class="nc" id="L43">  private Post(UserAccount author, Topic topic, String title, String content) {</span>
-<span class="nc" id="L44">    this.author = author;</span>
-<span class="nc" id="L45">    this.topic = topic;</span>
-<span class="nc" id="L46">    this.title = title;</span>
-<span class="nc" id="L47">    this.content = content;</span>
-<span class="nc" id="L48">    createdAt = Instant.now();</span>
-<span class="nc" id="L49">  }</span>
+<span class="fc" id="L43">  private Post(UserAccount author, Topic topic, String title, String content) {</span>
+<span class="fc" id="L44">    this.author = author;</span>
+<span class="fc" id="L45">    this.topic = topic;</span>
+<span class="fc" id="L46">    this.title = title;</span>
+<span class="fc" id="L47">    this.content = content;</span>
+<span class="fc" id="L48">    createdAt = Instant.now();</span>
+<span class="fc" id="L49">  }</span>
 
   public static Post create(UserAccount author, Topic topic, String title, String content) {
-<span class="nc" id="L52">    return new Post(author, topic, title, content);</span>
+<span class="fc" id="L52">    return new Post(author, topic, title, content);</span>
   }
 
   public Long getId() {

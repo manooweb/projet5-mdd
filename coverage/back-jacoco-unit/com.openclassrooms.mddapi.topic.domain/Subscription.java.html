@@ -17,13 +17,13 @@ public class Subscription {
 
 <span class="nc" id="L18">  protected Subscription() {}</span>
 
-<span class="nc" id="L20">  private Subscription(SubscriptionId id) {</span>
-<span class="nc" id="L21">    this.id = id;</span>
-<span class="nc" id="L22">    createdAt = Instant.now();</span>
-<span class="nc" id="L23">  }</span>
+<span class="fc" id="L20">  private Subscription(SubscriptionId id) {</span>
+<span class="fc" id="L21">    this.id = id;</span>
+<span class="fc" id="L22">    createdAt = Instant.now();</span>
+<span class="fc" id="L23">  }</span>
 
   public static Subscription subscribe(Long userId, Long topicId) {
-<span class="nc" id="L26">    return new Subscription(new SubscriptionId(userId, topicId));</span>
+<span class="fc" id="L26">    return new Subscription(new SubscriptionId(userId, topicId));</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

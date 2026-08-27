@@ -8,17 +8,17 @@ public class ApiException extends RuntimeException {
   private final ApiErrorCode messageCode;
 
   public ApiException(HttpStatus status, ApiErrorCode messageCode, String message) {
-<span class="nc" id="L11">    super(message);</span>
-<span class="nc" id="L12">    this.status = status;</span>
-<span class="nc" id="L13">    this.messageCode = messageCode;</span>
-<span class="nc" id="L14">  }</span>
+<span class="fc" id="L11">    super(message);</span>
+<span class="fc" id="L12">    this.status = status;</span>
+<span class="fc" id="L13">    this.messageCode = messageCode;</span>
+<span class="fc" id="L14">  }</span>
 
   public HttpStatus getStatus() {
-<span class="nc" id="L17">    return status;</span>
+<span class="fc" id="L17">    return status;</span>
   }
 
   public ApiErrorCode getMessageCode() {
-<span class="nc" id="L21">    return messageCode;</span>
+<span class="fc" id="L21">    return messageCode;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

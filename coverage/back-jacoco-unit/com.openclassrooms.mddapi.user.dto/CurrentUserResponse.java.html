@@ -4,13 +4,13 @@ import com.openclassrooms.mddapi.authentication.domain.UserAccount;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = &quot;The authenticated user's public profile.&quot;)
-<span class="nc" id="L7">public record CurrentUserResponse(</span>
+<span class="fc" id="L7">public record CurrentUserResponse(</span>
     @Schema(example = &quot;1&quot;) Long id,
     @Schema(example = &quot;demo&quot;) String username,
     @Schema(example = &quot;demo@mdd.net&quot;) String email) {
 
   public static CurrentUserResponse from(UserAccount user) {
-<span class="nc" id="L13">    return new CurrentUserResponse(user.getId(), user.getUsername(), user.getEmail());</span>
+<span class="fc" id="L13">    return new CurrentUserResponse(user.getId(), user.getUsername(), user.getEmail());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

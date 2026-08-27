@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-<span class="nc" id="L10">public record UpdateCurrentUserRequest(</span>
+<span class="fc" id="L10">public record UpdateCurrentUserRequest(</span>
     @Schema(example = &quot;demo&quot;) @NotBlank @Size(max = 255) String username,
     @Schema(example = &quot;demo@mdd.net&quot;) @NotBlank @Email @Size(max = 255) String email,
     @Schema(example = &quot;Pass1!wd&quot;)

@@ -39,11 +39,11 @@ public class TopicService {
 
   @Transactional
   public void subscribe(Long userId, Long topicId) {
-<span class="pc bpc" id="L42" title="1 of 2 branches missed.">    if (!topicRepository.existsById(topicId)) {</span>
-<span class="nc" id="L43">      throw new ApiException(</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">    if (!topicRepository.existsById(topicId)) {</span>
+<span class="fc" id="L43">      throw new ApiException(</span>
           HttpStatus.NOT_FOUND,
           ApiErrorCode.RESOURCE_NOT_FOUND,
-<span class="nc" id="L46">          properties.getMessages().getErrors().getResourceNotFound());</span>
+<span class="fc" id="L46">          properties.getMessages().getErrors().getResourceNotFound());</span>
     }
 
 <span class="fc bfc" id="L49" title="All 2 branches covered.">    if (!subscriptionRepository.existsByUserIdAndTopicId(userId, topicId)) {</span>

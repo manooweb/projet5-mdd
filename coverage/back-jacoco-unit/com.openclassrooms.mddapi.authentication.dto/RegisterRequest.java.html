@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-<span class="nc" id="L9">public record RegisterRequest(</span>
+<span class="fc" id="L9">public record RegisterRequest(</span>
     @Schema(example = &quot;demo&quot;) @NotBlank @Size(max = 255) String username,
     @Schema(example = &quot;demo@mdd.net&quot;) @NotBlank @Email @Size(max = 255) String email,
     @Schema(example = &quot;Pass1!wd&quot;)

@@ -1,5 +1,5 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-mdd-api,com.openclassrooms.mddapi.post.service,PostService,22,172,1,2,4,43,2,11,1,10
+mdd-api,com.openclassrooms.mddapi.post.service,PostService,0,194,0,3,0,47,0,13,0,11
 mdd-api,com.openclassrooms.mddapi.system.security,ApiAuthenticationEntryPoint,0,44,0,0,0,16,0,2,0,2
 mdd-api,com.openclassrooms.mddapi.system.security,ApiAccessDeniedHandler,0,50,0,0,0,17,0,3,0,3
 mdd-api,com.openclassrooms.mddapi.authentication.controller,AuthenticationController,0,66,0,0,0,16,0,4,0,4
@@ -39,10 +39,10 @@ mdd-api,com.openclassrooms.mddapi.system.error,ApiException,0,16,0,0,0,6,0,3,0,3
 mdd-api,com.openclassrooms.mddapi.user.dto,UpdateCurrentUserRequest,0,12,0,0,0,1,0,1,0,1
 mdd-api,com.openclassrooms.mddapi.user.dto,CurrentUserResponse,0,22,0,0,0,2,0,2,0,2
 mdd-api,com.openclassrooms.mddapi.topic.domain,Topic,0,12,0,0,0,4,0,4,0,4
-mdd-api,com.openclassrooms.mddapi.topic.domain,SubscriptionId,50,12,8,0,8,5,8,2,4,2
+mdd-api,com.openclassrooms.mddapi.topic.domain,SubscriptionId,0,62,0,8,0,13,0,10,0,6
 mdd-api,com.openclassrooms.mddapi.topic.domain,Subscription,0,21,0,0,0,6,0,3,0,3
-mdd-api,com.openclassrooms.mddapi.user.service,CurrentUserService,21,104,3,13,4,24,4,9,1,4
-mdd-api,com.openclassrooms.mddapi.topic.service,TopicService,11,58,1,3,2,15,1,6,0,5
+mdd-api,com.openclassrooms.mddapi.user.service,CurrentUserService,0,125,2,14,0,28,2,11,0,5
+mdd-api,com.openclassrooms.mddapi.topic.service,TopicService,0,69,0,4,0,17,0,7,0,5
 mdd-api,com.openclassrooms.mddapi.post.dto,CreatePostRequest,0,12,0,0,0,1,0,1,0,1
 mdd-api,com.openclassrooms.mddapi.post.dto,PostResponse,0,39,0,0,0,8,0,2,0,2
 mdd-api,com.openclassrooms.mddapi.post.dto,PostDetailResponse,0,43,0,0,0,8,0,2,0,2

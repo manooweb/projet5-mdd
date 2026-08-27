@@ -4,14 +4,14 @@ import com.openclassrooms.mddapi.topic.domain.Topic;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = &quot;A topic with the subscription status of the authenticated user.&quot;)
-<span class="nc" id="L7">public record TopicResponse(</span>
+<span class="fc" id="L7">public record TopicResponse(</span>
     @Schema(example = &quot;1&quot;) Long id,
     @Schema(example = &quot;Java&quot;) String name,
     @Schema(example = &quot;Discussions about Java and its ecosystem.&quot;) String description,
     @Schema(example = &quot;false&quot;) boolean subscribed) {
 
   public static TopicResponse from(Topic topic, boolean subscribed) {
-<span class="nc" id="L14">    return new TopicResponse(topic.getId(), topic.getName(), topic.getDescription(), subscribed);</span>
+<span class="fc" id="L14">    return new TopicResponse(topic.getId(), topic.getName(), topic.getDescription(), subscribed);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

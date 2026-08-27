@@ -23,37 +23,37 @@ public class TopicService {
   public TopicService(
       TopicRepository topicRepository,
       SubscriptionRepository subscriptionRepository,
-<span class="nc" id="L26">      MddProperties properties) {</span>
-<span class="nc" id="L27">    this.topicRepository = topicRepository;</span>
-<span class="nc" id="L28">    this.subscriptionRepository = subscriptionRepository;</span>
-<span class="nc" id="L29">    this.properties = properties;</span>
-<span class="nc" id="L30">  }</span>
+<span class="fc" id="L26">      MddProperties properties) {</span>
+<span class="fc" id="L27">    this.topicRepository = topicRepository;</span>
+<span class="fc" id="L28">    this.subscriptionRepository = subscriptionRepository;</span>
+<span class="fc" id="L29">    this.properties = properties;</span>
+<span class="fc" id="L30">  }</span>
 
   @Transactional(readOnly = true)
   public List&lt;TopicResponse&gt; getTopics(Long userId) {
-<span class="nc" id="L34">    Set&lt;Long&gt; subscribedTopicIds = subscriptionRepository.findTopicIdsByUserId(userId);</span>
-<span class="nc" id="L35">    return topicRepository.findAllByOrderByIdAsc().stream()</span>
-<span class="nc" id="L36">        .map(topic -&gt; TopicResponse.from(topic, subscribedTopicIds.contains(topic.getId())))</span>
-<span class="nc" id="L37">        .toList();</span>
+<span class="fc" id="L34">    Set&lt;Long&gt; subscribedTopicIds = subscriptionRepository.findTopicIdsByUserId(userId);</span>
+<span class="fc" id="L35">    return topicRepository.findAllByOrderByIdAsc().stream()</span>
+<span class="fc" id="L36">        .map(topic -&gt; TopicResponse.from(topic, subscribedTopicIds.contains(topic.getId())))</span>
+<span class="fc" id="L37">        .toList();</span>
   }
 
   @Transactional
   public void subscribe(Long userId, Long topicId) {
-<span class="nc bnc" id="L42" title="All 2 branches missed.">    if (!topicRepository.existsById(topicId)) {</span>
-<span class="nc" id="L43">      throw new ApiException(</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">    if (!topicRepository.existsById(topicId)) {</span>
+<span class="fc" id="L43">      throw new ApiException(</span>
           HttpStatus.NOT_FOUND,
           ApiErrorCode.RESOURCE_NOT_FOUND,
-<span class="nc" id="L46">          properties.getMessages().getErrors().getResourceNotFound());</span>
+<span class="fc" id="L46">          properties.getMessages().getErrors().getResourceNotFound());</span>
     }
 
-<span class="nc bnc" id="L49" title="All 2 branches missed.">    if (!subscriptionRepository.existsByUserIdAndTopicId(userId, topicId)) {</span>
-<span class="nc" id="L50">      subscriptionRepository.save(Subscription.subscribe(userId, topicId));</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">    if (!subscriptionRepository.existsByUserIdAndTopicId(userId, topicId)) {</span>
+<span class="fc" id="L50">      subscriptionRepository.save(Subscription.subscribe(userId, topicId));</span>
     }
-<span class="nc" id="L52">  }</span>
+<span class="fc" id="L52">  }</span>
 
   @Transactional
   public void unsubscribe(Long userId, Long topicId) {
-<span class="nc" id="L56">    subscriptionRepository.deleteByUserIdAndTopicId(userId, topicId);</span>
-<span class="nc" id="L57">  }</span>
+<span class="fc" id="L56">    subscriptionRepository.deleteByUserIdAndTopicId(userId, topicId);</span>
+<span class="fc" id="L57">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

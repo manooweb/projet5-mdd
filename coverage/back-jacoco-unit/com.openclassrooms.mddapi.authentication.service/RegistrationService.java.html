@@ -23,30 +23,30 @@ public class RegistrationService {
       UserAccountRepository userAccountRepository,
       PasswordEncoder passwordEncoder,
       JwtService jwtService,
-<span class="nc" id="L26">      MddProperties properties) {</span>
-<span class="nc" id="L27">    this.userAccountRepository = userAccountRepository;</span>
-<span class="nc" id="L28">    this.passwordEncoder = passwordEncoder;</span>
-<span class="nc" id="L29">    this.jwtService = jwtService;</span>
-<span class="nc" id="L30">    this.properties = properties;</span>
-<span class="nc" id="L31">  }</span>
+<span class="fc" id="L26">      MddProperties properties) {</span>
+<span class="fc" id="L27">    this.userAccountRepository = userAccountRepository;</span>
+<span class="fc" id="L28">    this.passwordEncoder = passwordEncoder;</span>
+<span class="fc" id="L29">    this.jwtService = jwtService;</span>
+<span class="fc" id="L30">    this.properties = properties;</span>
+<span class="fc" id="L31">  }</span>
 
   @Transactional
   public String register(RegisterRequest request) {
-<span class="nc bnc" id="L35" title="All 2 branches missed.">    if (userAccountRepository.existsByUsername(request.username())</span>
-<span class="nc bnc" id="L36" title="All 2 branches missed.">        || userAccountRepository.existsByEmail(request.email())) {</span>
-<span class="nc" id="L37">      throw new ApiException(</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">    if (userAccountRepository.existsByUsername(request.username())</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        || userAccountRepository.existsByEmail(request.email())) {</span>
+<span class="fc" id="L37">      throw new ApiException(</span>
           HttpStatus.CONFLICT,
           ApiErrorCode.DUPLICATE_IDENTITY,
-<span class="nc" id="L40">          properties.getMessages().getDuplicateIdentity());</span>
+<span class="fc" id="L40">          properties.getMessages().getDuplicateIdentity());</span>
     }
 
-<span class="nc" id="L43">    UserAccount user =</span>
-<span class="nc" id="L44">        UserAccount.register(</span>
-<span class="nc" id="L45">            request.username(), request.email(), passwordEncoder.encode(request.password()));</span>
-<span class="nc" id="L46">    user.initializeTimestamps();</span>
-<span class="nc" id="L47">    UserAccount savedUser = userAccountRepository.save(user);</span>
+<span class="fc" id="L43">    UserAccount user =</span>
+<span class="fc" id="L44">        UserAccount.register(</span>
+<span class="fc" id="L45">            request.username(), request.email(), passwordEncoder.encode(request.password()));</span>
+<span class="fc" id="L46">    user.initializeTimestamps();</span>
+<span class="fc" id="L47">    UserAccount savedUser = userAccountRepository.save(user);</span>
 
-<span class="nc" id="L49">    return jwtService.createToken(savedUser);</span>
+<span class="fc" id="L49">    return jwtService.createToken(savedUser);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

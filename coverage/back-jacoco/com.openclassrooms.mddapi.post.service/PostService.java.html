@@ -59,14 +59,14 @@ public class PostService {
   @Transactional(readOnly = true)
   public List&lt;PostResponse&gt; getPosts(Long userId, String sort) {
     Sort.Direction sortDirection =
-<span class="pc bpc" id="L62" title="1 of 3 branches missed.">        switch (sort) {</span>
+<span class="fc bfc" id="L62" title="All 3 branches covered.">        switch (sort) {</span>
 <span class="fc" id="L63">          case &quot;asc&quot; -&gt; Sort.Direction.ASC;</span>
 <span class="fc" id="L64">          case &quot;desc&quot; -&gt; Sort.Direction.DESC;</span>
           default -&gt;
-<span class="nc" id="L66">              throw new ApiException(</span>
+<span class="fc" id="L66">              throw new ApiException(</span>
                   HttpStatus.BAD_REQUEST,
                   ApiErrorCode.INVALID_REQUEST,
-<span class="nc" id="L69">                  properties.getMessages().getValidation().getInvalidRequest());</span>
+<span class="fc" id="L69">                  properties.getMessages().getValidation().getInvalidRequest());</span>
         };
 <span class="fc" id="L71">    List&lt;Post&gt; posts =</span>
 <span class="fc" id="L72">        postRepository.findAllForSubscribedTopics(userId, Sort.by(sortDirection, &quot;createdAt&quot;));</span>
@@ -99,10 +99,10 @@ public class PostService {
 <span class="fc" id="L99">        .findById(userId)</span>
 <span class="fc" id="L100">        .orElseThrow(</span>
             () -&gt;
-<span class="nc" id="L102">                new ApiException(</span>
+<span class="fc" id="L102">                new ApiException(</span>
                     HttpStatus.UNAUTHORIZED,
                     ApiErrorCode.AUTHENTICATION_REQUIRED,
-<span class="nc" id="L105">                    properties.getMessages().getErrors().getAuthenticationRequired()));</span>
+<span class="fc" id="L105">                    properties.getMessages().getErrors().getAuthenticationRequired()));</span>
   }
 
   private Topic findTopic(Long topicId) {

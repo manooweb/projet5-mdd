@@ -37,15 +37,15 @@ public class Comment {
 
 <span class="nc" id="L38">  protected Comment() {}</span>
 
-<span class="nc" id="L40">  private Comment(UserAccount author, Post post, String content) {</span>
-<span class="nc" id="L41">    this.author = author;</span>
-<span class="nc" id="L42">    this.post = post;</span>
-<span class="nc" id="L43">    this.content = content;</span>
-<span class="nc" id="L44">    createdAt = Instant.now();</span>
-<span class="nc" id="L45">  }</span>
+<span class="fc" id="L40">  private Comment(UserAccount author, Post post, String content) {</span>
+<span class="fc" id="L41">    this.author = author;</span>
+<span class="fc" id="L42">    this.post = post;</span>
+<span class="fc" id="L43">    this.content = content;</span>
+<span class="fc" id="L44">    createdAt = Instant.now();</span>
+<span class="fc" id="L45">  }</span>
 
   public static Comment create(UserAccount author, Post post, String content) {
-<span class="nc" id="L48">    return new Comment(author, post, content);</span>
+<span class="fc" id="L48">    return new Comment(author, post, content);</span>
   }
 
   public Long getId() {
