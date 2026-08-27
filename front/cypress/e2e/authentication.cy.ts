@@ -11,11 +11,12 @@ describe('Authentication', () => {
   };
 
   beforeEach(() => {
-    cy.intercept('GET', '/api/auth/csrf', { statusCode: 204 }).as('csrfToken');
+    cy.interceptCsrfToken();
   });
 
   it('logs in with valid credentials and redirects to the articles page', () => {
-    interceptAuthenticatedArticlesPage();
+    interceptArticlesPage();
+    cy.interceptCurrentUser();
     cy.intercept('POST', '/api/auth/login', { statusCode: 204 }).as('login');
 
     cy.visit('/login');
@@ -48,7 +49,8 @@ describe('Authentication', () => {
   });
 
   it('registers a user and redirects to the articles page', () => {
-    interceptAuthenticatedArticlesPage();
+    interceptArticlesPage();
+    cy.interceptCurrentUser();
     cy.intercept('POST', '/api/auth/register', { statusCode: 204 }).as('register');
 
     cy.visit('/register');
@@ -85,10 +87,7 @@ describe('Authentication', () => {
     cy.location('pathname').should('eq', '/register');
   });
 
-  function interceptAuthenticatedArticlesPage(): void {
-    cy.intercept('GET', '/api/users/me', {
-      body: { id: 1, username: 'manu', email: 'manu@example.com' },
-    }).as('currentUser');
+  function interceptArticlesPage(): void {
     cy.intercept('GET', '/api/posts?sort=desc', { body: [] }).as('posts');
   }
 });

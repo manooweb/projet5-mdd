@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "name": "Angular",
+    "description": "Développement d'applications Angular.",
+    "subscribed": false
+  },
+  {
+    "id": 2,
+    "name": "Spring",
+    "description": "Développement d'applications Spring.",
+    "subscribed": true
+  }
+]

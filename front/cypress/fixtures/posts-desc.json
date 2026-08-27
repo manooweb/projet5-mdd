@@ -1,0 +1,18 @@
+[
+  {
+    "id": 2,
+    "title": "Article le plus récent",
+    "content": "Contenu du deuxième article.",
+    "author": "manu",
+    "topic": "Angular",
+    "createdAt": "2026-08-27T10:00:00Z"
+  },
+  {
+    "id": 1,
+    "title": "Article plus ancien",
+    "content": "Contenu du premier article.",
+    "author": "alice",
+    "topic": "Spring",
+    "createdAt": "2026-08-20T10:00:00Z"
+  }
+]
