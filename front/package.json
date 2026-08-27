@@ -19,7 +19,8 @@
     "e2e": "start-server-and-test start http://127.0.0.1:4400 cypress:run",
     "build:e2e:coverage": "ng run front:build-e2e-coverage",
     "start:e2e:coverage": "npm run build:e2e:coverage && http-server dist/front-e2e-coverage/browser -a 127.0.0.1 -p 4201 -c-1 -s -P http://127.0.0.1:4201?",
-    "e2e:coverage": "start-server-and-test start:e2e:coverage http://127.0.0.1:4201 cypress:run:coverage"
+    "clean:e2e:coverage": "node scripts/clean-e2e-coverage.mjs",
+    "e2e:coverage": "npm run clean:e2e:coverage && start-server-and-test start:e2e:coverage http://127.0.0.1:4201 cypress:run:coverage"
   },
   "private": true,
   "packageManager": "npm@12.0.2",
