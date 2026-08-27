@@ -83,6 +83,23 @@ describe('Member area', () => {
     cy.location('pathname').should('eq', '/login');
   });
 
+  it('keeps logout available after a rejected logout request', () => {
+    cy.intercept('GET', '/api/posts?sort=desc', { body: [] }).as('posts');
+    cy.interceptCsrfToken();
+    cy.intercept('POST', '/api/auth/logout', { statusCode: 500 }).as('logout');
+
+    cy.visitProtected('/posts');
+
+    cy.wait('@currentUser');
+    cy.wait('@posts');
+    cy.get('button[aria-label="Se déconnecter"]').click();
+
+    cy.wait('@csrfToken');
+    cy.wait('@logout');
+    cy.location('pathname').should('eq', '/posts');
+    cy.get('button[aria-label="Se déconnecter"]').should('not.be.disabled');
+  });
+
   it('creates an article and returns to the articles page', () => {
     cy.intercept('GET', '/api/topics', { fixture: 'topics.json' }).as('topics');
     cy.intercept('POST', '/api/posts', { statusCode: 201 }).as('createPost');
