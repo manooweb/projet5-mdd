@@ -182,6 +182,61 @@ describe('Member area', () => {
     cy.contains('a', 'Retour aux articles').should('have.attr', 'href', '/posts');
   });
 
+  it('redirects an unauthenticated visitor from a protected route to login', () => {
+    cy.intercept('GET', '/api/users/me', { statusCode: 401 }).as('missingSession');
+
+    cy.visit('/posts');
+
+    cy.wait('@missingSession');
+    cy.location('pathname').should('eq', '/login');
+  });
+
+  it('returns to login when the active session expires while loading articles', () => {
+    cy.intercept('GET', '/api/posts?sort=desc', { statusCode: 401 }).as('expiredSession');
+
+    cy.visitProtected('/posts');
+
+    cy.wait('@currentUser');
+    cy.wait('@expiredSession');
+    cy.location('pathname').should('eq', '/login');
+  });
+
+  it('keeps an incomplete article form local', () => {
+    cy.intercept('GET', '/api/topics', { fixture: 'topics.json' }).as('topics');
+    cy.intercept('POST', '/api/posts').as('createPost');
+
+    cy.visitProtected('/posts/create');
+
+    cy.wait('@currentUser');
+    cy.wait('@topics');
+    cy.get('form').submit();
+
+    cy.get('@createPost.all').should('have.length', 0);
+    cy.location('pathname').should('eq', '/posts/create');
+  });
+
+  it('displays the API error and keeps profile saving available after a rejected update', () => {
+    cy.intercept('GET', '/api/topics', { fixture: 'topics.json' }).as('topics');
+    cy.intercept('PATCH', '/api/users/me', {
+      statusCode: 409,
+      body: { messageCode: 'DUPLICATE_IDENTITY' },
+    }).as('updateProfile');
+
+    cy.visitProtected('/profile');
+
+    cy.wait('@currentUser');
+    cy.wait('@topics');
+    cy.get('#username').clear().type('manu-updated');
+    cy.contains('button', 'Sauvegarder').click();
+
+    cy.wait('@updateProfile');
+    cy.get('[role="alert"]').should(
+      'have.text',
+      'Ce nom d’utilisateur ou cette adresse e-mail est déjà utilisé(e).',
+    );
+    cy.contains('button', 'Sauvegarder').should('not.be.disabled');
+  });
+
   function interceptTopics(refreshedFixture: string): void {
     let requestCount = 0;
 
