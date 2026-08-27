@@ -83,6 +83,105 @@ describe('Member area', () => {
     cy.location('pathname').should('eq', '/login');
   });
 
+  it('creates an article and returns to the articles page', () => {
+    cy.intercept('GET', '/api/topics', { fixture: 'topics.json' }).as('topics');
+    cy.intercept('POST', '/api/posts', { statusCode: 201 }).as('createPost');
+    cy.intercept('GET', '/api/posts?sort=desc', { body: [] }).as('posts');
+
+    cy.visitProtected('/posts/create');
+
+    cy.wait('@currentUser');
+    cy.wait('@topics');
+    cy.get('#topicId').select('1');
+    cy.get('#title').type('Tester les parcours');
+    cy.get('#content').type('Un article créé depuis le formulaire.');
+    cy.contains('button', 'Créer').click();
+
+    cy.wait('@createPost').its('request.body').should('deep.equal', {
+      topicId: 1,
+      title: 'Tester les parcours',
+      content: 'Un article créé depuis le formulaire.',
+    });
+    cy.wait('@currentUser');
+    cy.wait('@posts');
+    cy.location('pathname').should('eq', '/posts');
+  });
+
+  it('displays an article, creates a comment and reloads it', () => {
+    let postRequestCount = 0;
+
+    cy.intercept('GET', '/api/posts/12', (request) => {
+      postRequestCount += 1;
+      request.reply({
+        fixture: postRequestCount === 1 ? 'post-detail.json' : 'post-detail-after-comment.json',
+      });
+    }).as('post');
+    cy.intercept('POST', '/api/posts/12/comments', { statusCode: 201 }).as('createComment');
+
+    cy.visitProtected('/posts/12');
+
+    cy.wait('@currentUser');
+    cy.wait('@post');
+    cy.contains('h1', 'Tester une API').should('be.visible');
+    cy.contains('[aria-label="Liste des commentaires"]', 'Un commentaire utile.').should(
+      'be.visible',
+    );
+    cy.get('app-post-comments #content').type('Un second commentaire.');
+    cy.get('button[aria-label="Envoyer le commentaire"]').click();
+
+    cy.wait('@createComment').its('request.body').should('deep.equal', {
+      content: 'Un second commentaire.',
+    });
+    cy.wait('@post');
+    cy.contains('[aria-label="Liste des commentaires"]', 'Un second commentaire.').should(
+      'be.visible',
+    );
+  });
+
+  it('shows a clear message when an article does not exist', () => {
+    cy.intercept('GET', '/api/posts/404', { statusCode: 404 }).as('missingPost');
+
+    cy.visitProtected('/posts/404');
+
+    cy.wait('@currentUser');
+    cy.wait('@missingPost');
+    cy.get('[role="alert"]').should('contain.text', 'Article introuvable.');
+    cy.get('a[aria-label="Retour aux articles"]').should('have.attr', 'href', '/posts');
+  });
+
+  it('opens the mobile navigation and closes it with Escape or its backdrop', () => {
+    cy.viewport(375, 667);
+    cy.intercept('GET', '/api/posts?sort=desc', { body: [] }).as('posts');
+
+    cy.visitProtected('/posts');
+
+    cy.wait('@currentUser');
+    cy.wait('@posts');
+    cy.get('button[aria-label="Ouvrir le menu de navigation"]').click();
+    cy.get('dialog[aria-label="Navigation principale"]').should('have.attr', 'open');
+    cy.get('dialog').within(() => {
+      cy.get('a[aria-label="Articles"]').should('be.visible');
+      cy.get('a[aria-label="Thèmes"]').should('be.visible');
+      cy.get('a[aria-label="Mon profil"]').should('be.visible');
+    });
+
+    cy.get('dialog').trigger('keydown', { key: 'Escape', code: 'Escape' });
+    cy.get('dialog').should('not.exist');
+
+    cy.get('button[aria-label="Ouvrir le menu de navigation"]').click();
+    cy.get('dialog').should('have.attr', 'open');
+    cy.get('dialog').click('topLeft');
+    cy.get('dialog').should('not.exist');
+  });
+
+  it('shows the not-found page for an authenticated user on an unknown route', () => {
+    cy.visitProtected('/unknown-page');
+
+    cy.wait('@currentUser');
+    cy.contains('h1', 'Page introuvable').should('be.visible');
+    cy.contains('a', 'Retour aux articles').should('have.attr', 'href', '/posts');
+  });
+
   function interceptTopics(refreshedFixture: string): void {
     let requestCount = 0;
 
