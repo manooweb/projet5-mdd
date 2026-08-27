@@ -18,8 +18,8 @@ describe('PostService', () => {
 
   afterEach(() => httpTesting.verify());
 
-  it('gets the posts newest first by default', () => {
-    service.getPosts().subscribe();
+  it('gets posts in descending date order', () => {
+    service.getPosts('desc').subscribe();
 
     const request = httpTesting.expectOne('/api/posts?sort=desc');
     expect(request.request.method).toBe('GET');

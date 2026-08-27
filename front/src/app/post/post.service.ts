@@ -19,7 +19,7 @@ export type PostSortDirection = 'asc' | 'desc';
 export class PostService {
   private readonly http = inject(HttpClient);
 
-  getPosts(sort: PostSortDirection = 'desc'): Observable<Post[]> {
+  getPosts(sort: PostSortDirection): Observable<Post[]> {
     return this.http.get<Post[]>('/api/posts', { params: { sort } });
   }
 
