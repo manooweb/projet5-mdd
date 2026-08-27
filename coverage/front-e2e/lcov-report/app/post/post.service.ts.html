@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.66% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/6</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/3</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.66% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/6</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -118,23 +118,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">56x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { HttpClient } from '@angular/common/http';
@@ -155,23 +155,23 @@ export interface CreateCommentRequest {
 export type PostSortDirection = 'asc' | 'desc';
 &nbsp;
 @Service()
-export class <span class="fstat-no" title="function not covered" >PostService </span>{
-  private readonly http = <span class="cstat-no" title="statement not covered" >inject(HttpClient);</span>
+export class PostService {
+  private readonly http = inject(HttpClient);
 &nbsp;
-<span class="fstat-no" title="function not covered" >  getPosts(</span>sort: PostSortDirection = <span class="branch-0 cbranch-no" title="branch not covered" >'desc')</span>: Observable&lt;Post[]&gt; {
-<span class="cstat-no" title="statement not covered" >    return this.http.get&lt;Post[]&gt;('/api/posts', { params: { sort } });</span>
+  getPosts(sort: PostSortDirection): Observable&lt;Post[]&gt; {
+    return this.http.get&lt;Post[]&gt;('/api/posts', { params: { sort } });
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  getPost(</span>postId: number): Observable&lt;PostDetail&gt; {
-<span class="cstat-no" title="statement not covered" >    return this.http.get&lt;PostDetail&gt;(`/api/posts/${postId}`);</span>
+  getPost(postId: number): Observable&lt;PostDetail&gt; {
+    return this.http.get&lt;PostDetail&gt;(`/api/posts/${postId}`);
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  createComment(</span>postId: number, request: CreateCommentRequest): Observable&lt;void&gt; {
-<span class="cstat-no" title="statement not covered" >    return this.http.post&lt;void&gt;(`/api/posts/${postId}/comments`, request);</span>
+  createComment(postId: number, request: CreateCommentRequest): Observable&lt;void&gt; {
+    return this.http.post&lt;void&gt;(`/api/posts/${postId}/comments`, request);
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  createPost(</span>request: CreatePostRequest): Observable&lt;void&gt; {
-<span class="cstat-no" title="statement not covered" >    return this.http.post&lt;void&gt;('/api/posts', request);</span>
+  createPost(request: CreatePostRequest): Observable&lt;void&gt; {
+    return this.http.post&lt;void&gt;('/api/posts', request);
   }
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -181,7 +181,7 @@ export class <span class="fstat-no" title="function not covered" >PostService </
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-27T06:23:27.050Z
+                at 2026-08-27T17:35:51.555Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

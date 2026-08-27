@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.76% </span>
+                <span class="strong">88.23% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/17</span>
+                <span class='fraction'>15/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>5/10</span>
+                <span class='fraction'>9/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/5</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">6.25% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/16</span>
+                <span class='fraction'>14/16</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -161,38 +161,38 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">71x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -228,15 +228,15 @@ import { ApiErrorComponent } from '../../shared/api-error/api-error.component';
   styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent<span class="fstat-no" title="function not covered" > {</span>
-  private readonly authenticationService = <span class="cstat-no" title="statement not covered" >inject(AuthenticationService);</span>
-  private readonly destroyRef = <span class="cstat-no" title="statement not covered" >inject(DestroyRef);</span>
-  private readonly router = <span class="cstat-no" title="statement not covered" >inject(Router);</span>
+export class LoginComponent {
+  private readonly authenticationService = inject(AuthenticationService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
 &nbsp;
-  readonly isSubmitting = <span class="cstat-no" title="statement not covered" >signal(false)<span class="branch-0 cbranch-no" title="branch not covered" >;</span></span>
-  readonly apiError = <span class="cstat-no" title="statement not covered" >signal&lt;ApiError | null&gt;(null)<span class="branch-0 cbranch-no" title="branch not covered" >;</span></span>
+  readonly isSubmitting = signal(false);
+  readonly apiError = signal&lt;ApiError | null&gt;(null);
 &nbsp;
-  readonly loginForm = <span class="cstat-no" title="statement not covered" >new FormGroup({</span>
+  readonly loginForm = new FormGroup({
     login: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     password: new FormControl('', {
       nonNullable: true,
@@ -244,22 +244,22 @@ export class LoginComponent<span class="fstat-no" title="function not covered" >
     }),
   });
 &nbsp;
-<span class="fstat-no" title="function not covered" >  submit(</span>): void {
-<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (this.loginForm.invalid || this.isSubmitting()) {</span>
+  submit(): void {
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (this.loginForm.invalid || this.isSubmitting()) {
 <span class="cstat-no" title="statement not covered" >      this.loginForm.markAllAsTouched();</span>
 <span class="cstat-no" title="statement not covered" >      return;</span>
     }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    this.isSubmitting.set(true);</span>
-<span class="cstat-no" title="statement not covered" >    this.apiError.set(null);</span>
-<span class="cstat-no" title="statement not covered" >    this.authenticationService</span>
+    this.isSubmitting.set(true);
+    this.apiError.set(null);
+    this.authenticationService
       .login(this.loginForm.getRawValue())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: <span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >void this.router.navigateByUrl('/posts'),</span>
-        error: <span class="fstat-no" title="function not covered" >(e</span>rror: HttpErrorResponse) =&gt; {
-<span class="cstat-no" title="statement not covered" >          this.isSubmitting.set(false);</span>
-<span class="cstat-no" title="statement not covered" >          this.apiError.set(toApiError(error));</span>
+        next: () =&gt; void this.router.navigateByUrl('/posts'),
+        error: (error: HttpErrorResponse) =&gt; {
+          this.isSubmitting.set(false);
+          this.apiError.set(toApiError(error));
         },
       });
   }
@@ -271,7 +271,7 @@ export class LoginComponent<span class="fstat-no" title="function not covered" >
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-27T06:23:27.040Z
+                at 2026-08-27T17:35:51.548Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

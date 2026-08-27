@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">22.22% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/9</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/5</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">12.5% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/8</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -116,23 +116,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">68x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -153,23 +153,23 @@ import { TopicService } from '../topic.service';
   styleUrl: './topics-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TopicsListComponent<span class="fstat-no" title="function not covered" > {</span>
-  private readonly destroyRef = <span class="cstat-no" title="statement not covered" >inject(DestroyRef);</span>
-  private readonly topicService = <span class="cstat-no" title="statement not covered" >inject(TopicService);</span>
-  private readonly refreshTopics$ = <span class="cstat-no" title="statement not covered" >new Subject&lt;void&gt;();</span>
+export class TopicsListComponent {
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly topicService = inject(TopicService);
+  private readonly refreshTopics$ = new Subject&lt;void&gt;();
 &nbsp;
-  readonly topics$ = <span class="cstat-no" title="statement not covered" >this.refreshTopics$.pipe(</span>
+  readonly topics$ = this.refreshTopics$.pipe(
     startWith(void 0),
-    switchMap(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >this.topicService.getTopics())</span>,
+    switchMap(() =&gt; this.topicService.getTopics()),
   );
 &nbsp;
-<span class="fstat-no" title="function not covered" >  subscribe(</span>topic: Topic): void {
-<span class="cstat-no" title="statement not covered" >    this.topicService</span>
+  subscribe(topic: Topic): void {
+    this.topicService
       .subscribe(topic.id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: <span class="fstat-no" title="function not covered" >() =</span>&gt; {
-<span class="cstat-no" title="statement not covered" >          this.refreshTopics$.next();</span>
+        next: () =&gt; {
+          this.refreshTopics$.next();
         },
       });
   }
@@ -181,7 +181,7 @@ export class TopicsListComponent<span class="fstat-no" title="function not cover
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-27T06:23:27.040Z
+                at 2026-08-27T17:35:51.548Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

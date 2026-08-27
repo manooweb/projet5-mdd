@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">7.69% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/13</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">38.46% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>5/13</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">8.33% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/12</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -97,20 +97,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">84x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">227x</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { ChangeDetectionStrategy, Component, effect, input, signal } from '@angular/core';
@@ -123,20 +123,20 @@ import { AbstractControl } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormValidationFeedbackComponent {
-  readonly control = <span class="cstat-no" title="statement not covered" >input.required&lt;AbstractControl&gt;()<span class="branch-0 cbranch-no" title="branch not covered" >;</span></span>
-  readonly feedbackId = <span class="cstat-no" title="statement not covered" >input.required&lt;string&gt;()<span class="branch-0 cbranch-no" title="branch not covered" >;</span></span>
-  readonly message = <span class="cstat-no" title="statement not covered" >input.required&lt;string&gt;()<span class="branch-0 cbranch-no" title="branch not covered" >;</span></span>
-  readonly visible = <span class="cstat-no" title="statement not covered" >signal(false)<span class="branch-0 cbranch-no" title="branch not covered" >;</span></span>
+  readonly control = input.required&lt;AbstractControl&gt;();
+  readonly feedbackId = input.required&lt;string&gt;();
+  readonly message = input.required&lt;string&gt;();
+  readonly visible = signal(false);
 &nbsp;
-  private readonly syncVisibility = <span class="cstat-no" title="statement not covered" >effect(<span class="fstat-no" title="function not covered" >(o</span>nCleanup) =&gt; {</span>
-    const control = <span class="cstat-no" title="statement not covered" >this.control();</span>
-    const updateVisibility = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt;</span>
-<span class="cstat-no" title="statement not covered" >      this.visible.set(control.invalid &amp;&amp; (control.dirty || control.touched));</span>
-<span class="cstat-no" title="statement not covered" >    updateVisibility();</span>
+  private readonly syncVisibility = effect((onCleanup) =&gt; {
+    const control = this.control();
+    const updateVisibility = () =&gt;
+      this.visible.set(control.invalid &amp;&amp; (control.dirty || control.touched));
+    updateVisibility();
 &nbsp;
-    const subscription = <span class="cstat-no" title="statement not covered" >control.events.subscribe(updateVisibility);</span>
-<span class="cstat-no" title="statement not covered" >    onCleanup(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >subscription.unsubscribe())</span>;</span>
-  })<span class="branch-0 cbranch-no" title="branch not covered" >;</span>
+    const subscription = control.events.subscribe(updateVisibility);
+    onCleanup(() =&gt; subscription.unsubscribe());
+  });
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -145,7 +145,7 @@ export class FormValidationFeedbackComponent {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-27T06:23:27.040Z
+                at 2026-08-27T17:35:51.548Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

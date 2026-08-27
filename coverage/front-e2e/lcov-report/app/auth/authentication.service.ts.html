@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.11% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/9</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/8</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">12.5% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/8</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -118,27 +118,27 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">65x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { HttpClient } from '@angular/common/http';
@@ -157,27 +157,27 @@ export interface RegistrationDetails {
 }
 &nbsp;
 @Service()
-export class <span class="fstat-no" title="function not covered" >AuthenticationService </span>{
-  private readonly http = <span class="cstat-no" title="statement not covered" >inject(HttpClient);</span>
+export class AuthenticationService {
+  private readonly http = inject(HttpClient);
 &nbsp;
-<span class="fstat-no" title="function not covered" >  login(</span>credentials: LoginCredentials): Observable&lt;void&gt; {
-<span class="cstat-no" title="statement not covered" >    return this.csrfToken().pipe(</span>
-      switchMap(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >this.http.post&lt;void&gt;('/api/auth/login', credentials))</span>,
+  login(credentials: LoginCredentials): Observable&lt;void&gt; {
+    return this.csrfToken().pipe(
+      switchMap(() =&gt; this.http.post&lt;void&gt;('/api/auth/login', credentials)),
     );
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  register(</span>details: RegistrationDetails): Observable&lt;void&gt; {
-<span class="cstat-no" title="statement not covered" >    return this.csrfToken().pipe(</span>
-      switchMap(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >this.http.post&lt;void&gt;('/api/auth/register', details))</span>,
+  register(details: RegistrationDetails): Observable&lt;void&gt; {
+    return this.csrfToken().pipe(
+      switchMap(() =&gt; this.http.post&lt;void&gt;('/api/auth/register', details)),
     );
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  logout(</span>): Observable&lt;void&gt; {
-<span class="cstat-no" title="statement not covered" >    return this.csrfToken().pipe(switchMap(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >this.http.post&lt;void&gt;('/api/auth/logout', null))</span>);</span>
+  logout(): Observable&lt;void&gt; {
+    return this.csrfToken().pipe(switchMap(() =&gt; this.http.post&lt;void&gt;('/api/auth/logout', null)));
   }
 &nbsp;
-  private <span class="fstat-no" title="function not covered" >csrfToken(</span>): Observable&lt;void&gt; {
-<span class="cstat-no" title="statement not covered" >    return this.http.get&lt;void&gt;('/api/auth/csrf');</span>
+  private csrfToken(): Observable&lt;void&gt; {
+    return this.http.get&lt;void&gt;('/api/auth/csrf');
   }
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -187,7 +187,7 @@ export class <span class="fstat-no" title="function not covered" >Authentication
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-27T06:23:27.050Z
+                at 2026-08-27T17:35:51.555Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

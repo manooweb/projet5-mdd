@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.66% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/12</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.55% </span>
+                <span class="strong">88.88% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>5/9</span>
+                <span class='fraction'>8/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">12.5% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/8</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">9.09% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/11</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -151,21 +151,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">68x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -178,7 +178,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { AsyncPipe, DatePipe } from '@angular/common';
@@ -210,24 +210,24 @@ type PostDetailState =
   styleUrl: './post-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PostDetailComponent<span class="fstat-no" title="function not covered" > {</span>
-  private readonly route = <span class="cstat-no" title="statement not covered" >inject(ActivatedRoute);</span>
-  private readonly postService = <span class="cstat-no" title="statement not covered" >inject(PostService);</span>
-  private readonly refresh$ = <span class="cstat-no" title="statement not covered" >new Subject&lt;void&gt;();</span>
+export class PostDetailComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly postService = inject(PostService);
+  private readonly refresh$ = new Subject&lt;void&gt;();
 &nbsp;
-  readonly postState$ = <span class="cstat-no" title="statement not covered" >this.route.paramMap.pipe(</span>
-    map(<span class="fstat-no" title="function not covered" >(p</span>arams) =&gt; <span class="cstat-no" title="statement not covered" >Number(params.get('postId')))</span>,
-    switchMap(<span class="fstat-no" title="function not covered" >(p</span>ostId) =&gt;
-<span class="cstat-no" title="statement not covered" >      this.refresh$.pipe(</span>
+  readonly postState$ = this.route.paramMap.pipe(
+    map((params) =&gt; Number(params.get('postId'))),
+    switchMap((postId) =&gt;
+      this.refresh$.pipe(
         startWith(void 0),
-        switchMap(<span class="fstat-no" title="function not covered" >() =</span>&gt;
-<span class="cstat-no" title="statement not covered" >          this.postService.getPost(postId).pipe(</span>
-            map(<span class="fstat-no" title="function not covered" >(p</span>ost) =&gt; (<span class="cstat-no" title="statement not covered" >{ status: 'loaded', post })</span> as PostDetailState),
-            catchError(<span class="fstat-no" title="function not covered" >(e</span>rror: unknown) =&gt;
-<span class="cstat-no" title="statement not covered" >              of&lt;PostDetailState&gt;(</span>
+        switchMap(() =&gt;
+          this.postService.getPost(postId).pipe(
+            map((post) =&gt; ({ status: 'loaded', post }) as PostDetailState),
+            catchError((error: unknown) =&gt;
+              of&lt;PostDetailState&gt;(
                 error instanceof HttpErrorResponse &amp;&amp; error.status === 404
                   ? { status: 'not-found' }
-                  : { status: 'error' },
+                  : <span class="branch-1 cbranch-no" title="branch not covered" >{ status: 'error' },</span>
               ),
             ),
           ),
@@ -236,8 +236,8 @@ export class PostDetailComponent<span class="fstat-no" title="function not cover
     ),
   );
 &nbsp;
-<span class="fstat-no" title="function not covered" >  reloadPost(</span>): void {
-<span class="cstat-no" title="statement not covered" >    this.refresh$.next();</span>
+  reloadPost(): void {
+    this.refresh$.next();
   }
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -247,7 +247,7 @@ export class PostDetailComponent<span class="fstat-no" title="function not cover
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-27T06:23:27.050Z
+                at 2026-08-27T17:35:51.555Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
