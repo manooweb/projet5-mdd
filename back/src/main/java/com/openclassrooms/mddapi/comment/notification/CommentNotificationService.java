@@ -29,14 +29,9 @@ public class CommentNotificationService {
     SimpleMailMessage message = new SimpleMailMessage();
     message.setFrom(properties.getMail().getFrom());
     message.setTo(event.articleAuthorEmail());
-    message.setSubject("Nouveau commentaire sur votre article");
+    message.setSubject(properties.getMail().getCommentNotification().getSubject());
     message.setText(
-        """
-        Un nouveau commentaire a été publié sur votre article « %s ».
-
-        MDD
-        """
-            .formatted(event.postTitle()));
+        properties.getMail().getCommentNotification().getBody().formatted(event.postTitle()));
     mailSender.send(message);
   }
 }

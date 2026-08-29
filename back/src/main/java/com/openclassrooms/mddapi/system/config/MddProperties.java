@@ -21,9 +21,9 @@ public class MddProperties {
 
   @Valid private Messages messages = new Messages();
 
+  /** JWT signing and cookie settings. */
   @Getter
   @Setter
-  /** JWT signing and cookie settings. */
   public static class Jwt {
 
     @NotBlank private String secret;
@@ -33,17 +33,29 @@ public class MddProperties {
     private boolean secureCookie;
   }
 
+  /** Outgoing email sender and notification-template settings. */
   @Getter
   @Setter
-  /** Outgoing email sender settings. */
   public static class Mail {
 
     @NotBlank private String from;
+
+    @Valid private CommentNotification commentNotification = new CommentNotification();
   }
 
+  /** Content of the email sent after a comment is published. */
   @Getter
   @Setter
+  public static class CommentNotification {
+
+    @NotBlank private String subject;
+
+    @NotBlank private String body;
+  }
+
   /** Localized application messages exposed by API errors. */
+  @Getter
+  @Setter
   public static class Messages {
 
     @NotBlank private String duplicateIdentity;
@@ -55,9 +67,9 @@ public class MddProperties {
     @Valid private Errors errors = new Errors();
   }
 
+  /** Messages associated with invalid request data. */
   @Getter
   @Setter
-  /** Messages associated with invalid request data. */
   public static class Validation {
 
     @NotBlank private String invalidRequest;
@@ -77,9 +89,9 @@ public class MddProperties {
     @NotBlank private String passwordSize;
   }
 
+  /** Messages associated with API and security failures. */
   @Getter
   @Setter
-  /** Messages associated with API and security failures. */
   public static class Errors {
 
     @NotBlank private String authenticationRequired;

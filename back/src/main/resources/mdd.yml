@@ -5,6 +5,12 @@ mdd:
     secure-cookie: ${MDD_JWT_SECURE_COOKIE:true}
   mail:
     from: ${MDD_MAIL_FROM:no-reply@mdd.local}
+    comment-notification:
+      subject: Nouveau commentaire sur votre article
+      body: |
+        Un nouveau commentaire a été publié sur votre article « %s ».
+
+        MDD
   messages:
     duplicate-identity: Username or email is already used.
     invalid-credentials: Invalid credentials.

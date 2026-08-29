@@ -27,6 +27,11 @@ class MddPropertiesTest {
     assertThat(properties.getJwt().getExpiration()).hasToString("PT8H");
     assertThat(properties.getJwt().isSecureCookie()).isTrue();
     assertThat(properties.getMail().getFrom()).isEqualTo("no-reply@mdd.local");
+    assertThat(properties.getMail().getCommentNotification().getSubject())
+        .isEqualTo("Nouveau commentaire sur votre article");
+    assertThat(properties.getMail().getCommentNotification().getBody().formatted("Article test"))
+        .isEqualTo(
+            "Un nouveau commentaire a été publié sur votre article « Article test ».\n\nMDD\n");
     assertThat(properties.getMessages().getDuplicateIdentity())
         .isEqualTo("Username or email is already used.");
     assertThat(properties.getMessages().getInvalidCredentials()).isEqualTo("Invalid credentials.");
@@ -65,6 +70,8 @@ class MddPropertiesTest {
         .containsExactlyInAnyOrder(
             "jwt.secret",
             "mail.from",
+            "mail.commentNotification.subject",
+            "mail.commentNotification.body",
             "messages.duplicateIdentity",
             "messages.invalidCredentials",
             "messages.validation.invalidRequest",
