@@ -5,7 +5,7 @@ mdd-api,com.openclassrooms.mddapi.system.security,ApiAccessDeniedHandler,0,50,0,
 mdd-api,com.openclassrooms.mddapi.authentication.controller,AuthenticationController,66,0,0,0,16,0,4,0,4,0
 mdd-api,com.openclassrooms.mddapi.post.domain,Post,21,26,0,0,7,8,7,2,7,2
 mdd-api,com.openclassrooms.mddapi.authentication.config,AuthenticationConfiguration,9,0,0,0,2,0,2,0,2,0
-mdd-api,com.openclassrooms.mddapi.authentication.security,JwtAuthenticationFilter,101,0,6,0,26,0,12,0,9,0
+mdd-api,com.openclassrooms.mddapi.authentication.security,JwtAuthenticationFilter,98,0,6,0,26,0,11,0,8,0
 mdd-api,com.openclassrooms.mddapi.comment.dto,CommentResponse,23,0,0,0,3,0,2,0,2,0
 mdd-api,com.openclassrooms.mddapi.comment.dto,CreateCommentRequest,0,6,0,0,0,1,0,1,0,1
 mdd-api,com.openclassrooms.mddapi.authentication.service,JwtService.AuthenticationToken,9,0,0,0,1,0,1,0,1,0
@@ -23,9 +23,11 @@ mdd-api,com.openclassrooms.mddapi.system.config,MddProperties.Jwt,0,3,0,0,0,1,0,
 mdd-api,com.openclassrooms.mddapi.system.config,SwaggerUiHomeLinkConfig,0,44,0,12,0,10,0,9,0,3
 mdd-api,com.openclassrooms.mddapi.system.config,MddProperties.Messages,0,13,0,0,0,3,0,1,0,1
 mdd-api,com.openclassrooms.mddapi.system.config,SecurityConfig.CsrfTokenEndpointFilter,0,35,0,4,0,9,0,5,0,3
-mdd-api,com.openclassrooms.mddapi.system.config,MddProperties.Mail,0,3,0,0,0,1,0,1,0,1
+mdd-api,com.openclassrooms.mddapi.system.config,MddProperties.Mail,0,8,0,0,0,2,0,1,0,1
 mdd-api,com.openclassrooms.mddapi.system.config,OpenApiConfig,41,0,0,0,13,0,2,0,2,0
+mdd-api,com.openclassrooms.mddapi.system.config,MddProperties.CommentNotification,0,3,0,0,0,1,0,1,0,1
 mdd-api,com.openclassrooms.mddapi.post.controller,PostController,45,0,0,0,9,0,5,0,5,0
+mdd-api,com.openclassrooms.mddapi.system.validation,ValidPasswordValidator,2,55,1,17,1,12,1,12,0,4
 mdd-api,com.openclassrooms.mddapi.topic.controller,TopicController,33,0,0,0,8,0,4,0,4,0
 mdd-api,com.openclassrooms.mddapi.comment.domain,Comment,15,22,0,0,5,7,5,2,5,2
 mdd-api,com.openclassrooms.mddapi.authentication.dto,RegisterRequest,0,12,0,0,0,1,0,1,0,1
@@ -48,5 +50,5 @@ mdd-api,com.openclassrooms.mddapi.post.dto,PostResponse,39,0,0,0,8,0,2,0,2,0
 mdd-api,com.openclassrooms.mddapi.post.dto,PostDetailResponse,43,0,0,0,8,0,2,0,2,0
 mdd-api,com.openclassrooms.mddapi.user.controller,CurrentUserController,43,0,0,0,10,0,4,0,4,0
 mdd-api,com.openclassrooms.mddapi.topic.dto,TopicResponse,0,26,0,0,0,2,0,2,0,2
-mdd-api,com.openclassrooms.mddapi.comment.notification,CommentNotificationService,42,0,0,0,12,0,2,0,2,0
+mdd-api,com.openclassrooms.mddapi.comment.notification,CommentNotificationService,50,0,0,0,12,0,2,0,2,0
 mdd-api,com.openclassrooms.mddapi.comment.notification,CommentCreatedEvent,0,9,0,0,0,1,0,1,0,1

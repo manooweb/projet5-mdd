@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MddProperties.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mdd-api</a> &gt; <a href="index.source.html" class="el_package">com.openclassrooms.mddapi.system.config</a> &gt; <span class="el_source">MddProperties.java</span></div><h1>MddProperties.java</h1><pre class="source lang-java linenums">package com.openclassrooms.mddapi.system.config;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MddProperties.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mdd-api</a> &gt; <a href="index.source.html" class="el_package">com.openclassrooms.mddapi.system.config</a> &gt; <span class="el_source">MddProperties.java</span></div><h1>MddProperties.java</h1><pre class="source lang-java linenums">package com.openclassrooms.mddapi.system.config;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -21,9 +21,9 @@ import org.springframework.validation.annotation.Validated;
 
 <span class="fc" id="L22">  @Valid private Messages messages = new Messages();</span>
 
+  /** JWT signing and cookie settings. */
   @Getter
   @Setter
-  /** JWT signing and cookie settings. */
 <span class="fc" id="L27">  public static class Jwt {</span>
 
     @NotBlank private String secret;
@@ -33,32 +33,44 @@ import org.springframework.validation.annotation.Validated;
     private boolean secureCookie;
   }
 
+  /** Outgoing email sender and notification-template settings. */
   @Getter
   @Setter
-  /** Outgoing email sender settings. */
 <span class="fc" id="L39">  public static class Mail {</span>
 
     @NotBlank private String from;
+
+<span class="fc" id="L43">    @Valid private CommentNotification commentNotification = new CommentNotification();</span>
   }
 
+  /** Content of the email sent after a comment is published. */
   @Getter
   @Setter
+<span class="fc" id="L49">  public static class CommentNotification {</span>
+
+    @NotBlank private String subject;
+
+    @NotBlank private String body;
+  }
+
   /** Localized application messages exposed by API errors. */
-<span class="fc" id="L47">  public static class Messages {</span>
+  @Getter
+  @Setter
+<span class="fc" id="L59">  public static class Messages {</span>
 
     @NotBlank private String duplicateIdentity;
 
     @NotBlank private String invalidCredentials;
 
-<span class="fc" id="L53">    @Valid private Validation validation = new Validation();</span>
+<span class="fc" id="L65">    @Valid private Validation validation = new Validation();</span>
 
-<span class="fc" id="L55">    @Valid private Errors errors = new Errors();</span>
+<span class="fc" id="L67">    @Valid private Errors errors = new Errors();</span>
   }
 
+  /** Messages associated with invalid request data. */
   @Getter
   @Setter
-  /** Messages associated with invalid request data. */
-<span class="fc" id="L61">  public static class Validation {</span>
+<span class="fc" id="L73">  public static class Validation {</span>
 
     @NotBlank private String invalidRequest;
 
@@ -77,10 +89,10 @@ import org.springframework.validation.annotation.Validated;
     @NotBlank private String passwordSize;
   }
 
+  /** Messages associated with API and security failures. */
   @Getter
   @Setter
-  /** Messages associated with API and security failures. */
-<span class="fc" id="L83">  public static class Errors {</span>
+<span class="fc" id="L95">  public static class Errors {</span>
 
     @NotBlank private String authenticationRequired;
 
