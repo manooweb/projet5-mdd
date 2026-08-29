@@ -1,39 +1,48 @@
 # MDD (Monde Du Dév)
 
-MDD is a responsive social-network MVP for developers. Its target functional scope is user authentication, topics and subscriptions, an article feed, articles, comments, and profile management.
+MDD is a responsive social-network MVP for developers. Users can create an account, subscribe to topics, consult their feed, publish articles, comment on articles, and manage their profile.
 
-## Current implementation status
+The project contains an Angular single-page application and a Spring Boot REST API. The functional interface is in French; repository documentation and source-code documentation are in English.
 
-The technical foundation is in place. The backend currently provides the technical entry point, health and OpenAPI endpoints, as well as the authentication vertical: CSRF initialization, registration, login, and logout. The remaining MVP verticals will be added incrementally with their tests and documentation.
+## Implemented features
+
+- Account registration, login, logout, and session restoration.
+- Topic listing, subscription, and unsubscription.
+- Feed of articles from subscribed topics, with chronological sorting.
+- Article creation, article detail, and comment creation.
+- Profile display and update, including an optional password update.
+- Email notification to an article author after a comment is committed.
+- Responsive desktop and mobile navigation.
 
 ## Project structure
 
 | Directory | Purpose |
 |---|---|
-| [`front/`](front/README.md) | Angular single-page application |
-| `back/` | Spring Boot REST API, database migrations, and backend tests |
-| [`bruno/`](bruno/) | Local API collection for Bruno |
+| [`front/`](front/README.md) | Angular single-page application, frontend tests, and Cypress scenarios |
+| [`back/`](back/README.md) | Spring Boot REST API, Flyway migrations, and backend tests |
+| [`bruno/`](bruno/) | API collection and local environments for Bruno |
+| [`docs/javadoc/`](docs/javadoc/DOC_CONVENTIONS.md) | Java documentation conventions and generated API documentation |
 | [`docs/reports/coverage/`](docs/reports/coverage/README.md) | Generated Java, Angular, and end-to-end coverage reports |
 
 ## Technical stack
 
 | Area | Technology |
 |---|---|
-| Frontend | Angular 22, TypeScript strict mode, standalone components, zoneless change detection, SCSS |
-| Backend | Java 25.0.4 Temurin, Spring Boot 4.1.0, Spring Data JPA, Spring Security, Flyway, Thymeleaf |
-| Database | MySQL 9.7.1 |
-| API documentation | springdoc OpenAPI 3.0.3 and Swagger UI |
+| Frontend | Angular 22, TypeScript strict mode, standalone components, zoneless change detection, SCSS, PrimeNG, and Tailwind CSS |
+| Backend | Java 25, Spring Boot 4.1, Spring Data JPA, Spring Security, Flyway, Thymeleaf, and Spring Mail |
+| Database | MySQL 9.7 |
+| API documentation | springdoc OpenAPI 3 and Swagger UI |
 | Authentication | JWT in an `HttpOnly` cookie with CSRF protection |
 | Backend tests | JUnit, Mockito, MockMvc, Spring Boot integration tests, and Testcontainers MySQL |
 | Frontend tests | Vitest and Cypress |
 | API checks | Bruno with a cookie jar and CSRF support |
-| Quality | EditorConfig, Spotless, JaCoCo, Vitest coverage, and a manual SonarQube Cloud audit |
+| Quality | EditorConfig, Spotless, JaCoCo, ESLint, Prettier, Vitest coverage, Cypress coverage, and a manual SonarQube Cloud audit |
 
 ## Prerequisites
 
-- Java 25.0.4 (Temurin)
-- Node.js 22.22.3 or a later 22.x release
-- Docker Engine with Docker Compose, for MySQL and Testcontainers
+- Java 25, preferably Temurin 25.0.4.
+- Node.js 22.22.3 or a later 22.x release.
+- Docker Engine with Docker Compose. It is required for the local MySQL and Mailpit services, Testcontainers, and the isolated Bruno checks.
 
 ## Configuration
 
@@ -44,7 +53,9 @@ cd back
 cp .env.example .env
 ```
 
-Set strong local values for the MySQL passwords and `MDD_JWT_SECRET`. The `.env` file is ignored by Git and must never be committed. `MDD_JWT_SECURE_COOKIE=false` is intended for local HTTP development only; use a secure cookie outside local development.
+Set strong local values for the MySQL passwords and `MDD_JWT_SECRET`. The `.env` file is ignored by Git and must never be committed.
+
+`MDD_JWT_SECURE_COOKIE=false` is only for local HTTP development. A deployed application must use HTTPS and a secure authentication cookie. `MDD_MAIL_FROM` configures the sender address used for comment notifications.
 
 ## Run locally
 
@@ -54,7 +65,7 @@ Start the backend from `back/`:
 ./mvnw spring-boot:run
 ```
 
-Spring Boot Docker Compose support detects `compose.yaml` and manages the local database service for this development run.
+Spring Boot Docker Compose support detects `compose.yaml` and starts MySQL and Mailpit for this development run.
 
 In a second terminal, start the frontend:
 
@@ -64,7 +75,7 @@ npm install
 npm start
 ```
 
-The Angular development server proxies `/api` requests to the Spring Boot backend, so frontend requests remain same-origin during local development.
+The Angular development server proxies `/api` requests to Spring Boot. The browser therefore uses the same origin during local development.
 
 ## Local services
 
@@ -76,37 +87,49 @@ The Angular development server proxies `/api` requests to the Spring Boot backen
 | Swagger UI | `http://localhost:9001/swagger-ui/index.html` |
 | OpenAPI specification | `http://localhost:9001/v3/api-docs` |
 | Backend health status | `http://localhost:9001/actuator/health` |
+| Database health status | `http://localhost:9001/actuator/health/db` |
+| Mailpit inbox | `http://localhost:8025/` |
 | MySQL host port | `localhost:33306` |
-| Mailpit | `http://localhost:8025/` |
 
-The public backend homepage is a technical entry point for local development. It links to Swagger UI and shows the current backend service status.
+The public backend homepage is a technical entry point for local development. It links to Swagger UI, Mailpit, and backend health information.
 
 ## Architecture and data
 
-The application is a modular Spring Boot monolith exposing a JSON REST API under `/api`, with an Angular SPA in the same repository. The backend is organized by domain; the current `authentication` domain contains its controller, DTOs, services, repository, configuration, and `UserAccount` entity. Cross-cutting technical code is placed in the `system` package.
+The application is a modular Spring Boot monolith exposing a JSON REST API under `/api`, with an Angular SPA in the same repository. The frontend is organized by feature (`auth`, `topic`, `post`, and `user`) and by shared UI concerns. Typed HTTP services manage API calls; signals are used for synchronous local state, and RxJS is used for HTTP flows.
 
-Flyway creates the current relational schema. It contains `users`, `topics`, `subscriptions`, `posts`, and `comments`; foreign keys model subscriptions, post authors/topics, and comment authors/posts. The topic catalog is seeded by the second migration. The schema is the foundation for the MVP, but only the authentication API is currently exposed.
+The backend is organized by domain: `authentication`, `topic`, `post`, `comment`, and `user`. Each domain keeps its controller, DTOs, service, repository, and, where needed, JPA entities together. Cross-cutting configuration, error handling, security, and validation code lives in `system`.
+
+Flyway creates the relational schema. It contains `users`, `topics`, `subscriptions`, `posts`, and `comments`. Foreign keys model user subscriptions, article authors and topics, and comment authors and articles. The second migration creates the local demo user and the third migration seeds the topic catalog.
 
 ## Security
 
-Authentication uses a signed JWT stored in the `MDD_AUTH_TOKEN` cookie. The cookie is `HttpOnly`; application code cannot read it. Passwords are hashed with BCrypt. CSRF protection remains enabled for requests that modify data: the client first initializes the CSRF token, then sends the `X-XSRF-TOKEN` header while the readable `XSRF-TOKEN` cookie is present.
+Authentication uses a signed JWT stored in the `MDD_AUTH_TOKEN` cookie. The cookie is `HttpOnly`, so application code cannot read it. Passwords are hashed with BCrypt.
 
-`SameSite` limits cross-site cookie delivery, but it does not replace CSRF validation. No credentials, database passwords, or JWT secret belong in versioned files.
+CSRF protection remains enabled for requests that modify data. The client first initializes the readable `XSRF-TOKEN` cookie through `GET /api/auth/csrf`, then sends its value in the `X-XSRF-TOKEN` header. `SameSite` limits cross-site cookie delivery but does not replace CSRF validation.
 
-## Available API endpoints
+Protected API routes require a valid session. Validation, centralized JSON error responses, and ownership checks protect data access. No credentials, database passwords, or JWT secret belong in versioned files.
 
-Swagger UI is the authoritative interactive API reference. The endpoints currently implemented are listed below.
+## API
 
-| Method | Path | Purpose | Successful response |
-|---|---|---|---|
-| `GET` | `/api/auth/csrf` | Initializes CSRF protection and the `XSRF-TOKEN` cookie | `204 No Content` |
-| `POST` | `/api/auth/register` | Creates a user account and starts an authenticated session | `201 Created` |
-| `POST` | `/api/auth/login` | Authenticates with a username or email and starts a session | `204 No Content` |
-| `POST` | `/api/auth/logout` | Clears the current authentication cookie | `204 No Content` |
-| `GET` | `/actuator/health` | Returns the backend health status | `200 OK` |
-| `GET` | `/v3/api-docs` | Returns the generated OpenAPI specification | `200 OK` |
+Swagger UI is the authoritative interactive API reference, including schemas and request/response examples. The endpoints below summarize the current API.
 
-For `register`, send `username`, `email`, and `password` in JSON. The password must contain 8 to 72 characters. For `login`, send `login` (username or email) and `password`. Call `GET /api/auth/csrf` before every state-changing authentication request.
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/api/auth/csrf` | Initializes the CSRF cookie |
+| `POST` | `/api/auth/register` | Creates an account and authenticated session |
+| `POST` | `/api/auth/login` | Opens an authenticated session |
+| `POST` | `/api/auth/logout` | Clears the authentication cookie |
+| `GET` | `/api/users/me` | Returns the current user profile |
+| `PATCH` | `/api/users/me` | Updates the current user profile |
+| `GET` | `/api/topics` | Lists topics with the current subscription status |
+| `POST` | `/api/topics/{topicId}/subscription` | Subscribes the current user to a topic |
+| `DELETE` | `/api/topics/{topicId}/subscription` | Unsubscribes the current user from a topic |
+| `GET` | `/api/posts?sort=asc|desc` | Lists articles from subscribed topics |
+| `POST` | `/api/posts` | Creates an article |
+| `GET` | `/api/posts/{postId}` | Returns an article and its comments |
+| `POST` | `/api/posts/{postId}/comments` | Creates a comment |
+
+State-changing requests require a CSRF token. Most application routes require authentication; Swagger UI documents their success and error responses.
 
 ## Tests and quality checks
 
@@ -116,6 +139,8 @@ Run backend checks from `back/`:
 |---|---|
 | Fast test suite | `./mvnw test` |
 | Unit and integration tests, coverage reports, coverage thresholds, and formatting verification | `./mvnw verify` |
+| Generate Javadoc | `./mvnw javadoc:javadoc` |
+| Check Java formatting | `./mvnw spotless:check` |
 | Apply Java formatting | `./mvnw spotless:apply` |
 
 `verify` runs `*Test` classes with Surefire and `*IT` classes with Failsafe. Integration tests use an isolated MySQL Testcontainers instance, so Docker must be available.
@@ -126,16 +151,27 @@ Run frontend checks from `front/`:
 |---|---|
 | Unit test suite | `npm test` |
 | Vitest unit and integration coverage | `npm run test:coverage` |
+| Cypress end-to-end tests | `npm run e2e` |
+| Cypress end-to-end coverage | `npm run e2e:coverage` |
 | Lint | `npm run lint` |
 | Check formatting | `npm run format:check` |
 | Apply formatting | `npm run format` |
+| Run the frontend SonarQube scan workflow | `npm run sonar` |
 
-Coverage report entry points are available in [`docs/reports/coverage/index.html`](docs/reports/coverage/index.html). Regeneration commands and the scope of each report are documented in [`docs/reports/coverage/README.md`](docs/reports/coverage/README.md).
+Run Bruno checks from the repository root:
+
+| Purpose | Command |
+|---|---|
+| Start the isolated API and MySQL stack, run the collection, then stop it | `npm run bruno:test` |
+
+Coverage report entry points are available in [`docs/reports/coverage/index.html`](docs/reports/coverage/index.html). Their generation commands and scope are documented in [`docs/reports/coverage/README.md`](docs/reports/coverage/README.md).
 
 ## Additional documentation
 
-- [`front/README.md`](front/README.md): frontend-specific setup and commands.
-- [`docs/reports/coverage/README.md`](docs/reports/coverage/README.md): generated coverage reports.
-- Swagger UI: endpoint details and request/response examples for the running backend.
+- [`front/README.md`](front/README.md): frontend architecture, setup, routes, and commands.
+- [`back/README.md`](back/README.md): backend architecture, configuration, API, and commands.
+- [`docs/javadoc/DOC_CONVENTIONS.md`](docs/javadoc/DOC_CONVENTIONS.md): Java documentation conventions.<br>Generated Javadoc starts at [`docs/javadoc/apidocs/index.html`](docs/javadoc/apidocs/index.html).
+- [`docs/reports/coverage/README.md`](docs/reports/coverage/README.md): generated coverage reports and their scope.
+- [`bruno/mdd-api/`](bruno/mdd-api/): executable API checks and local environments.
 
-This README is updated as each MVP vertical is completed. It documents only configuration, commands, endpoints, and results that are present in the repository.
+This README documents the configuration, commands, and endpoints currently present in the repository.

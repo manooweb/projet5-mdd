@@ -2,6 +2,8 @@
 
 This directory contains generated coverage reports intentionally tracked in Git.
 
+Open the [coverage report index](index.html) to access the combined Java, Vitest, and Cypress reports.
+
 | Report                      | Scope                                                                                     | Regeneration command                |
 | --------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------- |
 | `back-jacoco/`              | Combined Java unit and integration test coverage, including the integration test ratio.   | `cd back && ./mvnw clean verify`    |
