@@ -12,16 +12,10 @@ patch {
 
 body:json {
   {
-    "username": "{{username}}",
-    "email": "{{email}}",
-    "password": "{{password}}"
+    "username": "{{updateUsername}}",
+    "email": "{{updateEmail}}",
+    "password": "{{updatePassword}}"
   }
-}
-
-vars:pre-request {
-  username: demo
-  email: demo@mdd.net
-  password: 
 }
 
 tests {

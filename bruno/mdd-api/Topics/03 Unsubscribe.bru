@@ -4,10 +4,6 @@ meta {
   seq: 3
 }
 
-vars:pre-request {
-  topicId: 9
-}
-
 delete {
   url: {{baseUrl}}/api/topics/{{topicId}}/subscription
   body: none

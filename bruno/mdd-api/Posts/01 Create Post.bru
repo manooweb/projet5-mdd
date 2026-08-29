@@ -13,15 +13,9 @@ post {
 body:json {
   {
     "topicId": {{topicId}},
-    "title": "{{title}}",
-    "content": "{{content}}"
+    "title": "{{postTitle}}",
+    "content": "{{postContent}}"
   }
-}
-
-vars:pre-request {
-  topicId: 1
-  title: Create a Java post
-  content: This post was created from the Bruno collection.
 }
 
 tests {

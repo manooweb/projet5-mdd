@@ -2,7 +2,6 @@
   "name": "mdd-tooling",
   "private": true,
   "scripts": {
-    "bruno:run": "bash scripts/run-bruno-collection.sh",
     "bruno:test": "bash scripts/run-bruno.sh"
   },
   "devDependencies": {

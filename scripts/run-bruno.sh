@@ -33,5 +33,5 @@ wait_for_backend
 
 (
   cd bruno/mdd-api
-  "$project_root/node_modules/.bin/bru" run --env Local
+  "$project_root/node_modules/.bin/bru" run --env Isolated
 )

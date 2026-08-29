@@ -10,10 +10,6 @@ post {
   auth: none
 }
 
-vars:pre-request {
-  topicId: 9
-}
-
 tests {
   test("status is 204", function () {
     expect(res.status).to.equal(204);

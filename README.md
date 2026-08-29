@@ -20,7 +20,7 @@ The project contains an Angular single-page application and a Spring Boot REST A
 |---|---|
 | [`front/`](front/README.md) | Angular single-page application, frontend tests, and Cypress scenarios |
 | [`back/`](back/README.md) | Spring Boot REST API, Flyway migrations, and backend tests |
-| [`bruno/`](bruno/) | API collection and local environments for Bruno |
+| [`bruno/`](bruno/README.md) | Shared API requests for manual use and isolated automated checks |
 | [`docs/javadoc/`](docs/javadoc/DOC_CONVENTIONS.md) | Java documentation conventions and generated API documentation |
 | [`docs/reports/coverage/`](docs/reports/coverage/README.md) | Generated Java, Angular, and end-to-end coverage reports |
 
@@ -172,6 +172,6 @@ Coverage report entry points are available in [`docs/reports/coverage/index.html
 - [`back/README.md`](back/README.md): backend architecture, configuration, API, and commands.
 - [`docs/javadoc/DOC_CONVENTIONS.md`](docs/javadoc/DOC_CONVENTIONS.md): Java documentation conventions.<br>Generated Javadoc starts at [`docs/javadoc/apidocs/index.html`](docs/javadoc/apidocs/index.html).
 - [`docs/reports/coverage/README.md`](docs/reports/coverage/README.md): generated coverage reports and their scope.
-- [`bruno/mdd-api/`](bruno/mdd-api/): executable API checks and local environments.
+- [`bruno/README.md`](bruno/README.md): manual and isolated Bruno workflows.
 
 This README documents the configuration, commands, and endpoints currently present in the repository.
