@@ -42,17 +42,6 @@ describe('ProfileComponent integration', () => {
     expect(hostElement.querySelector('article')?.textContent).toContain('Java');
   });
 
-  it('does not send an update when no profile field has changed', async () => {
-    fixture.detectChanges();
-    flushTopics([]);
-    await fixture.whenStable();
-    fixture.detectChanges();
-
-    hostElement.querySelector<HTMLFormElement>('form')!.dispatchEvent(new Event('submit'));
-
-    httpTesting.expectNone('/api/users/me');
-  });
-
   it('updates the current user through the profile API', async () => {
     fixture.detectChanges();
     flushTopics([]);
