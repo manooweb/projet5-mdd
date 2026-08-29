@@ -19,6 +19,7 @@ com.openclassrooms.mddapi.system.config
 com.openclassrooms.mddapi.system.controller
 com.openclassrooms.mddapi.system.error
 com.openclassrooms.mddapi.system.security
+com.openclassrooms.mddapi.system.validation
 com.openclassrooms.mddapi.topic.controller
 com.openclassrooms.mddapi.topic.domain
 com.openclassrooms.mddapi.topic.dto
