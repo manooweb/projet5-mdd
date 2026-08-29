@@ -65,6 +65,8 @@ describe('LogoutButtonComponent integration', () => {
     const button = hostElement.querySelector<HTMLButtonElement>('button')!;
 
     button.click();
+    fixture.detectChanges();
+    expect(button.disabled).toBe(true);
     button.click();
 
     const csrf = httpTesting.expectOne('/api/auth/csrf');
