@@ -35,6 +35,10 @@
     <jjwt.version>0.13.0</jjwt.version>
     <minimum.integration.test.ratio>0.30</minimum.integration.test.ratio>
     <minimum.coverage.ratio>0.80</minimum.coverage.ratio>
+    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../docs/reports/coverage/back-jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
+    <sonar.organization>manooweb</sonar.organization>
+    <sonar.projectKey>manooweb_projet5-mdd-back</sonar.projectKey>
     <spotless.version>3.9.0</spotless.version>
     <springdoc.version>3.0.3</springdoc.version>
     <surefireArgLine/>

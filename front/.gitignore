@@ -1,5 +1,6 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
+.env
 # Compiled output
 /dist
 /tmp
@@ -35,6 +36,7 @@ yarn-error.log
 /connect.lock
 /coverage
 /.nyc_output
+/.scannerwork
 /libpeerconnection.log
 testem.log
 /typings
