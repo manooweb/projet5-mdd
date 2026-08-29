@@ -8,7 +8,7 @@ const { createContext } = require('istanbul-lib-report');
 const reports = require('istanbul-reports');
 const SummarizerFactory = require('istanbul-lib-report/lib/summarizer-factory');
 
-const coverageRoot = path.resolve('../coverage');
+const coverageRoot = path.resolve('../docs/reports/coverage');
 const unitReportDirectory = path.join(coverageRoot, 'front-vitest-unit');
 const integrationReportDirectory = path.join(coverageRoot, 'front-vitest-integration');
 const globalReportDirectory = path.join(coverageRoot, 'front-vitest');

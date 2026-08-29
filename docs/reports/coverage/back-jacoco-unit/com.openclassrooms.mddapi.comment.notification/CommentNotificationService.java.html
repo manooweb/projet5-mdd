@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommentNotificationService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mdd-api</a> &gt; <a href="index.source.html" class="el_package">com.openclassrooms.mddapi.comment.notification</a> &gt; <span class="el_source">CommentNotificationService.java</span></div><h1>CommentNotificationService.java</h1><pre class="source lang-java linenums">package com.openclassrooms.mddapi.comment.notification;
+
+import com.openclassrooms.mddapi.system.config.MddProperties;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
+
+/** Sends an article-author email after a comment transaction has been committed. */
+@Service
+public class CommentNotificationService {
+
+  private final JavaMailSender mailSender;
+  private final MddProperties properties;
+
+<span class="nc" id="L17">  public CommentNotificationService(JavaMailSender mailSender, MddProperties properties) {</span>
+<span class="nc" id="L18">    this.mailSender = mailSender;</span>
+<span class="nc" id="L19">    this.properties = properties;</span>
+<span class="nc" id="L20">  }</span>
+
+  /**
+   * Sends the notification associated with a committed comment.
+   *
+   * @param event recipient address and post title
+   */
+  @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+  public void notifyArticleAuthor(CommentCreatedEvent event) {
+<span class="nc" id="L29">    SimpleMailMessage message = new SimpleMailMessage();</span>
+<span class="nc" id="L30">    message.setFrom(properties.getMail().getFrom());</span>
+<span class="nc" id="L31">    message.setTo(event.articleAuthorEmail());</span>
+<span class="nc" id="L32">    message.setSubject(&quot;Nouveau commentaire sur votre article&quot;);</span>
+<span class="nc" id="L33">    message.setText(</span>
+        &quot;&quot;&quot;
+        Un nouveau commentaire a été publié sur votre article « %s ».
+
+        MDD
+        &quot;&quot;&quot;
+<span class="nc" id="L39">            .formatted(event.postTitle()));</span>
+<span class="nc" id="L40">    mailSender.send(message);</span>
+<span class="nc" id="L41">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

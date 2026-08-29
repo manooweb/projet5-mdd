@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PostService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mdd-api</a> &gt; <a href="index.source.html" class="el_package">com.openclassrooms.mddapi.post.service</a> &gt; <span class="el_source">PostService.java</span></div><h1>PostService.java</h1><pre class="source lang-java linenums">package com.openclassrooms.mddapi.post.service;
+
+import com.openclassrooms.mddapi.authentication.domain.UserAccount;
+import com.openclassrooms.mddapi.authentication.repository.UserAccountRepository;
+import com.openclassrooms.mddapi.comment.domain.Comment;
+import com.openclassrooms.mddapi.comment.dto.CommentResponse;
+import com.openclassrooms.mddapi.comment.dto.CreateCommentRequest;
+import com.openclassrooms.mddapi.comment.notification.CommentCreatedEvent;
+import com.openclassrooms.mddapi.comment.repository.CommentRepository;
+import com.openclassrooms.mddapi.post.domain.Post;
+import com.openclassrooms.mddapi.post.dto.CreatePostRequest;
+import com.openclassrooms.mddapi.post.dto.PostDetailResponse;
+import com.openclassrooms.mddapi.post.dto.PostResponse;
+import com.openclassrooms.mddapi.post.repository.PostRepository;
+import com.openclassrooms.mddapi.system.config.MddProperties;
+import com.openclassrooms.mddapi.system.error.ApiErrorCode;
+import com.openclassrooms.mddapi.system.error.ApiException;
+import com.openclassrooms.mddapi.topic.domain.Topic;
+import com.openclassrooms.mddapi.topic.repository.TopicRepository;
+import java.util.List;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/** Implements post-feed, post-detail and comment business operations. */
+@Service
+public class PostService {
+
+  private final PostRepository postRepository;
+  private final CommentRepository commentRepository;
+  private final TopicRepository topicRepository;
+  private final UserAccountRepository userAccountRepository;
+  private final MddProperties properties;
+  private final ApplicationEventPublisher eventPublisher;
+
+  public PostService(
+      PostRepository postRepository,
+      CommentRepository commentRepository,
+      TopicRepository topicRepository,
+      UserAccountRepository userAccountRepository,
+      MddProperties properties,
+<span class="fc" id="L44">      ApplicationEventPublisher eventPublisher) {</span>
+<span class="fc" id="L45">    this.postRepository = postRepository;</span>
+<span class="fc" id="L46">    this.commentRepository = commentRepository;</span>
+<span class="fc" id="L47">    this.topicRepository = topicRepository;</span>
+<span class="fc" id="L48">    this.userAccountRepository = userAccountRepository;</span>
+<span class="fc" id="L49">    this.properties = properties;</span>
+<span class="fc" id="L50">    this.eventPublisher = eventPublisher;</span>
+<span class="fc" id="L51">  }</span>
+
+  /**
+   * Creates a post for an existing user in an existing topic.
+   *
+   * @param userId authenticated author identifier
+   * @param request validated post content and target topic
+   * @throws ApiException when the user or topic does not exist
+   */
+  @Transactional
+  public void createPost(Long userId, CreatePostRequest request) {
+<span class="fc" id="L62">    UserAccount author = findAuthor(userId);</span>
+<span class="fc" id="L63">    Topic topic = findTopic(request.topicId());</span>
+<span class="fc" id="L64">    postRepository.save(Post.create(author, topic, request.title(), request.content()));</span>
+<span class="fc" id="L65">  }</span>
+
+  /**
+   * Returns posts from the topics followed by a user.
+   *
+   * @param userId authenticated user identifier
+   * @param sort chronological direction: {@code asc} or {@code desc}
+   * @return subscribed-topic posts ordered by creation date
+   * @throws ApiException when {@code sort} is not supported
+   */
+  @Transactional(readOnly = true)
+  public List&lt;PostResponse&gt; getPosts(Long userId, String sort) {
+    Sort.Direction sortDirection =
+<span class="fc bfc" id="L78" title="All 3 branches covered.">        switch (sort) {</span>
+<span class="fc" id="L79">          case &quot;asc&quot; -&gt; Sort.Direction.ASC;</span>
+<span class="fc" id="L80">          case &quot;desc&quot; -&gt; Sort.Direction.DESC;</span>
+          default -&gt;
+<span class="fc" id="L82">              throw new ApiException(</span>
+                  HttpStatus.BAD_REQUEST,
+                  ApiErrorCode.INVALID_REQUEST,
+<span class="fc" id="L85">                  properties.getMessages().getValidation().getInvalidRequest());</span>
+        };
+<span class="fc" id="L87">    List&lt;Post&gt; posts =</span>
+<span class="fc" id="L88">        postRepository.findAllForSubscribedTopics(userId, Sort.by(sortDirection, &quot;createdAt&quot;));</span>
+
+<span class="fc" id="L90">    return posts.stream().map(PostResponse::from).toList();</span>
+  }
+
+  /**
+   * Returns a post and its comments when it belongs to a subscribed topic.
+   *
+   * @param userId authenticated user identifier
+   * @param postId requested post identifier
+   * @return post detail and comments
+   * @throws ApiException when the post is not visible to the user
+   */
+  @Transactional(readOnly = true)
+  public PostDetailResponse getPost(Long userId, Long postId) {
+<span class="fc" id="L103">    Post post = findSubscribedPost(userId, postId);</span>
+<span class="fc" id="L104">    List&lt;CommentResponse&gt; comments =</span>
+<span class="fc" id="L105">        commentRepository.findAllByPostIdWithAuthor(postId).stream()</span>
+<span class="fc" id="L106">            .map(CommentResponse::from)</span>
+<span class="fc" id="L107">            .toList();</span>
+
+<span class="fc" id="L109">    return PostDetailResponse.from(post, comments);</span>
+  }
+
+  /**
+   * Persists a comment and schedules an email notification after transaction commit.
+   *
+   * @param userId authenticated comment author identifier
+   * @param postId commented post identifier
+   * @param request validated comment content
+   * @throws ApiException when the user or post is not found or visible
+   */
+  @Transactional
+  public void createComment(Long userId, Long postId, CreateCommentRequest request) {
+<span class="fc" id="L122">    UserAccount author = findAuthor(userId);</span>
+<span class="fc" id="L123">    Post post = findSubscribedPost(userId, postId);</span>
+<span class="fc" id="L124">    commentRepository.save(Comment.create(author, post, request.content()));</span>
+<span class="fc" id="L125">    eventPublisher.publishEvent(</span>
+<span class="fc" id="L126">        new CommentCreatedEvent(post.getAuthor().getEmail(), post.getTitle()));</span>
+<span class="fc" id="L127">  }</span>
+
+  private UserAccount findAuthor(Long userId) {
+<span class="fc" id="L130">    return userAccountRepository</span>
+<span class="fc" id="L131">        .findById(userId)</span>
+<span class="fc" id="L132">        .orElseThrow(</span>
+            () -&gt;
+<span class="nc" id="L134">                new ApiException(</span>
+                    HttpStatus.UNAUTHORIZED,
+                    ApiErrorCode.AUTHENTICATION_REQUIRED,
+<span class="nc" id="L137">                    properties.getMessages().getErrors().getAuthenticationRequired()));</span>
+  }
+
+  private Topic findTopic(Long topicId) {
+<span class="fc" id="L141">    return topicRepository</span>
+<span class="fc" id="L142">        .findById(topicId)</span>
+<span class="fc" id="L143">        .orElseThrow(</span>
+            () -&gt;
+<span class="fc" id="L145">                new ApiException(</span>
+                    HttpStatus.NOT_FOUND,
+                    ApiErrorCode.RESOURCE_NOT_FOUND,
+<span class="fc" id="L148">                    properties.getMessages().getErrors().getResourceNotFound()));</span>
+  }
+
+  private Post findSubscribedPost(Long userId, Long postId) {
+<span class="fc" id="L152">    return postRepository</span>
+<span class="fc" id="L153">        .findByIdForSubscribedTopic(postId, userId)</span>
+<span class="fc" id="L154">        .orElseThrow(</span>
+            () -&gt;
+<span class="fc" id="L156">                new ApiException(</span>
+                    HttpStatus.NOT_FOUND,
+                    ApiErrorCode.RESOURCE_NOT_FOUND,
+<span class="fc" id="L159">                    properties.getMessages().getErrors().getResourceNotFound()));</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

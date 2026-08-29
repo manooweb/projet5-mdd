@@ -136,7 +136,7 @@
               "coverageReporters": ["html", "lcov", "text-summary", "json"],
               "runnerConfig": "vitest.unit.config.ts",
               "reporters": ["default", "json"],
-              "outputFile": "../coverage/front-vitest-unit/test-results.json"
+              "outputFile": "../docs/reports/coverage/front-vitest-unit/test-results.json"
             },
             "integration": {
               "include": ["**/*.integration.spec.ts"],
@@ -154,7 +154,7 @@
               "coverageReporters": ["html", "lcov", "text-summary", "json"],
               "runnerConfig": "vitest.integration.config.ts",
               "reporters": ["default", "json"],
-              "outputFile": "../coverage/front-vitest-integration/test-results.json"
+              "outputFile": "../docs/reports/coverage/front-vitest-integration/test-results.json"
             }
           }
         },

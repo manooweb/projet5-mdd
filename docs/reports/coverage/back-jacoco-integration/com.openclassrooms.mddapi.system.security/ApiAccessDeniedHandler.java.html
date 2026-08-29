@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ApiAccessDeniedHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mdd-api</a> &gt; <a href="index.source.html" class="el_package">com.openclassrooms.mddapi.system.security</a> &gt; <span class="el_source">ApiAccessDeniedHandler.java</span></div><h1>ApiAccessDeniedHandler.java</h1><pre class="source lang-java linenums">package com.openclassrooms.mddapi.system.security;
+
+import com.openclassrooms.mddapi.system.config.MddProperties;
+import com.openclassrooms.mddapi.system.error.ApiErrorCode;
+import com.openclassrooms.mddapi.system.error.ApiErrorResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import tools.jackson.databind.ObjectMapper;
+
+/** Writes the JSON {@code 403 Forbidden} response for denied authenticated API requests. */
+public class ApiAccessDeniedHandler implements AccessDeniedHandler {
+
+  private final ObjectMapper objectMapper;
+  private final MddProperties properties;
+
+<span class="fc" id="L22">  public ApiAccessDeniedHandler(ObjectMapper objectMapper, MddProperties properties) {</span>
+<span class="fc" id="L23">    this.objectMapper = objectMapper;</span>
+<span class="fc" id="L24">    this.properties = properties;</span>
+<span class="fc" id="L25">  }</span>
+
+  @Override
+  /**
+   * Writes a client-safe access-denied response.
+   *
+   * @param request denied request
+   * @param response HTTP response to populate
+   * @param accessDeniedException Spring Security denial
+   * @throws IOException when the JSON response cannot be written
+   */
+  public void handle(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      AccessDeniedException accessDeniedException)
+      throws IOException {
+<span class="nc" id="L41">    writeErrorResponse(</span>
+        request,
+        response,
+        HttpStatus.FORBIDDEN,
+        ApiErrorCode.ACCESS_DENIED,
+<span class="nc" id="L46">        properties.getMessages().getErrors().getAccessDenied());</span>
+<span class="nc" id="L47">  }</span>
+
+  private void writeErrorResponse(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      HttpStatus status,
+      ApiErrorCode messageCode,
+      String message)
+      throws IOException {
+<span class="nc" id="L56">    response.setStatus(status.value());</span>
+<span class="nc" id="L57">    response.setContentType(MediaType.APPLICATION_JSON_VALUE);</span>
+<span class="nc" id="L58">    response.setCharacterEncoding(StandardCharsets.UTF_8.name());</span>
+<span class="nc" id="L59">    objectMapper.writeValue(</span>
+<span class="nc" id="L60">        response.getOutputStream(),</span>
+        new ApiErrorResponse(
+<span class="nc" id="L62">            status.value(),</span>
+<span class="nc" id="L63">            status.getReasonPhrase(),</span>
+<span class="nc" id="L64">            messageCode.name(),</span>
+            message,
+<span class="nc" id="L66">            request.getRequestURI()));</span>
+<span class="nc" id="L67">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

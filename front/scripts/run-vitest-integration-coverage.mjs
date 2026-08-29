@@ -13,7 +13,7 @@ if (integrationTestFiles.length > 0) {
     process.exitCode = code ?? 1;
   });
 } else {
-  const reportDirectory = path.resolve('../coverage/front-vitest-integration');
+  const reportDirectory = path.resolve('../docs/reports/coverage/front-vitest-integration');
   await rm(reportDirectory, { recursive: true, force: true });
   await mkdir(reportDirectory, { recursive: true });
   await Promise.all([

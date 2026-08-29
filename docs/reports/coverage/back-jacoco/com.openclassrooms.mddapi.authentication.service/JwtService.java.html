@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JwtService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mdd-api</a> &gt; <a href="index.source.html" class="el_package">com.openclassrooms.mddapi.authentication.service</a> &gt; <span class="el_source">JwtService.java</span></div><h1>JwtService.java</h1><pre class="source lang-java linenums">package com.openclassrooms.mddapi.authentication.service;
+
+import com.openclassrooms.mddapi.authentication.domain.UserAccount;
+import com.openclassrooms.mddapi.system.config.MddProperties;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import java.time.Instant;
+import java.util.Date; // NOSONAR: JJWT exposes Date for JWT temporal claims.
+import java.util.Optional;
+import javax.crypto.SecretKey;
+import org.springframework.stereotype.Service;
+
+/** Creates and validates signed JWTs bound to an account session version. */
+@Service
+public class JwtService {
+
+  private final MddProperties properties;
+  private final SecretKey signingKey;
+
+<span class="fc" id="L23">  public JwtService(MddProperties properties) {</span>
+<span class="fc" id="L24">    this.properties = properties;</span>
+<span class="fc" id="L25">    signingKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(properties.getJwt().getSecret()));</span>
+<span class="fc" id="L26">  }</span>
+
+  /**
+   * Creates a signed JWT for an account's current session version.
+   *
+   * @param user authenticated account
+   * @return compact signed JWT
+   */
+  public String createToken(UserAccount user) {
+<span class="fc" id="L35">    Instant now = Instant.now();</span>
+
+<span class="fc" id="L37">    return Jwts.builder()</span>
+<span class="fc" id="L38">        .subject(user.getId().toString())</span>
+<span class="fc" id="L39">        .claim(&quot;username&quot;, user.getUsername())</span>
+<span class="fc" id="L40">        .claim(&quot;sessionVersion&quot;, user.getSessionVersion())</span>
+<span class="fc" id="L41">        .issuedAt(Date.from(now))</span>
+<span class="fc" id="L42">        .expiration(Date.from(now.plus(properties.getJwt().getExpiration())))</span>
+<span class="fc" id="L43">        .signWith(signingKey)</span>
+<span class="fc" id="L44">        .compact();</span>
+  }
+
+  /**
+   * Extracts the account identifier from a valid JWT.
+   *
+   * @param token compact JWT to validate
+   * @return account identifier, or empty when the token is invalid
+   */
+  public Optional&lt;Long&gt; findUserId(String token) {
+<span class="fc" id="L54">    return findAuthentication(token).map(AuthenticationToken::userId);</span>
+  }
+
+  /**
+   * Extracts the account identifier and session version from a valid JWT.
+   *
+   * @param token compact JWT to validate
+   * @return authenticated token data, or empty when the token is invalid or expired
+   */
+  public Optional&lt;AuthenticationToken&gt; findAuthentication(String token) {
+    try {
+      Claims claims =
+<span class="fc" id="L66">          Jwts.parser().verifyWith(signingKey).build().parseSignedClaims(token).getPayload();</span>
+<span class="fc" id="L67">      Number sessionVersion = claims.get(&quot;sessionVersion&quot;, Number.class);</span>
+<span class="fc" id="L68">      return Optional.of(</span>
+          new AuthenticationToken(
+<span class="fc" id="L70">              Long.valueOf(claims.getSubject()),</span>
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">              sessionVersion == null ? 0 : sessionVersion.longValue()));</span>
+<span class="fc" id="L72">    } catch (JwtException | IllegalArgumentException _) {</span>
+<span class="fc" id="L73">      return Optional.empty();</span>
+    }
+  }
+
+  /**
+   * Authenticated account identifier and session version extracted from a valid JWT.
+   *
+   * @param userId persistent authenticated account identifier
+   * @param sessionVersion version used to invalidate older JWTs
+   */
+<span class="fc" id="L83">  public record AuthenticationToken(Long userId, long sessionVersion) {}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

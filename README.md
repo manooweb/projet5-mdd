@@ -13,7 +13,7 @@ The technical foundation is in place. The backend currently provides the technic
 | [`front/`](front/README.md) | Angular single-page application |
 | `back/` | Spring Boot REST API, database migrations, and backend tests |
 | [`bruno/`](bruno/) | Local API collection for Bruno |
-| [`coverage/`](coverage/README.md) | Generated Java, Angular, and end-to-end coverage reports |
+| [`docs/reports/coverage/`](docs/reports/coverage/README.md) | Generated Java, Angular, and end-to-end coverage reports |
 
 ## Technical stack
 
@@ -130,14 +130,12 @@ Run frontend checks from `front/`:
 | Check formatting | `npm run format:check` |
 | Apply formatting | `npm run format` |
 
-Coverage report entry points are available in [`coverage/index.html`](coverage/index.html). Regeneration commands and the scope of each report are documented in [`coverage/README.md`](coverage/README.md).
-
-The current Cypress scripts still wait for port `4200`, while the Angular development configuration listens on `4400`. They must be aligned before they can be documented as a reliable end-to-end command.
+Coverage report entry points are available in [`docs/reports/coverage/index.html`](docs/reports/coverage/index.html). Regeneration commands and the scope of each report are documented in [`docs/reports/coverage/README.md`](docs/reports/coverage/README.md).
 
 ## Additional documentation
 
 - [`front/README.md`](front/README.md): frontend-specific setup and commands.
-- [`coverage/README.md`](coverage/README.md): generated coverage reports.
+- [`docs/reports/coverage/README.md`](docs/reports/coverage/README.md): generated coverage reports.
 - Swagger UI: endpoint details and request/response examples for the running backend.
 
 This README is updated as each MVP vertical is completed. It documents only configuration, commands, endpoints, and results that are present in the repository.

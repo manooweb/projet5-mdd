@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthenticationCookieService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mdd-api</a> &gt; <a href="index.source.html" class="el_package">com.openclassrooms.mddapi.authentication.service</a> &gt; <span class="el_source">AuthenticationCookieService.java</span></div><h1>AuthenticationCookieService.java</h1><pre class="source lang-java linenums">package com.openclassrooms.mddapi.authentication.service;
+
+import com.openclassrooms.mddapi.system.config.MddProperties;
+import java.time.Duration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import org.springframework.stereotype.Service;
+
+/** Builds the secure, HttpOnly cookie used to transport the MDD authentication JWT. */
+@Service
+public class AuthenticationCookieService {
+
+  public static final String COOKIE_NAME = &quot;MDD_AUTH_TOKEN&quot;;
+
+  private final MddProperties properties;
+
+<span class="nc" id="L17">  public AuthenticationCookieService(MddProperties properties) {</span>
+<span class="nc" id="L18">    this.properties = properties;</span>
+<span class="nc" id="L19">  }</span>
+
+  /**
+   * Adds a persistent authentication cookie to response headers.
+   *
+   * @param headers response headers to update
+   * @param token signed JWT; it is never exposed to JavaScript
+   */
+  public void addAuthenticationCookie(HttpHeaders headers, String token) {
+<span class="nc" id="L28">    ResponseCookie cookie =</span>
+<span class="nc" id="L29">        ResponseCookie.from(COOKIE_NAME, token)</span>
+<span class="nc" id="L30">            .httpOnly(true)</span>
+<span class="nc" id="L31">            .secure(properties.getJwt().isSecureCookie())</span>
+<span class="nc" id="L32">            .path(&quot;/&quot;)</span>
+<span class="nc" id="L33">            .sameSite(&quot;Lax&quot;)</span>
+<span class="nc" id="L34">            .maxAge(properties.getJwt().getExpiration())</span>
+<span class="nc" id="L35">            .build();</span>
+<span class="nc" id="L36">    headers.add(HttpHeaders.SET_COOKIE, cookie.toString());</span>
+<span class="nc" id="L37">  }</span>
+
+  /**
+   * Adds an expired authentication cookie to response headers.
+   *
+   * @param headers response headers to update
+   */
+  public void removeAuthenticationCookie(HttpHeaders headers) {
+<span class="nc" id="L45">    ResponseCookie cookie =</span>
+<span class="nc" id="L46">        ResponseCookie.from(COOKIE_NAME, &quot;&quot;)</span>
+<span class="nc" id="L47">            .httpOnly(true)</span>
+<span class="nc" id="L48">            .secure(properties.getJwt().isSecureCookie())</span>
+<span class="nc" id="L49">            .path(&quot;/&quot;)</span>
+<span class="nc" id="L50">            .sameSite(&quot;Lax&quot;)</span>
+<span class="nc" id="L51">            .maxAge(Duration.ZERO)</span>
+<span class="nc" id="L52">            .build();</span>
+<span class="nc" id="L53">    headers.add(HttpHeaders.SET_COOKIE, cookie.toString());</span>
+<span class="nc" id="L54">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

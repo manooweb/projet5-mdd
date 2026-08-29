@@ -29,7 +29,7 @@
     "@hono/node-server": "2.1.0"
   },
   "nyc": {
-    "report-dir": "../coverage/front-e2e",
+    "report-dir": "../docs/reports/coverage/front-e2e",
     "reporter": [
       "html",
       "lcov",
