@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/** Exposes registration, login and logout endpoints backed by an HttpOnly JWT cookie. */
 @RestController
 public class AuthenticationController {
 
@@ -54,6 +55,13 @@ public class AuthenticationController {
   @ApiResponse(responseCode = "409", description = "Username or email is already used.")
   @ApiResponse(responseCode = "500", description = "Unexpected server error.")
   @PostMapping("/api/auth/register")
+  /**
+   * Creates an account and starts an authenticated session.
+   *
+   * @param request validated registration data; username and email must be unique
+   * @return a {@code 201 Created} response containing the authentication cookie
+   * @throws com.openclassrooms.mddapi.system.error.ApiException when the identity is already used
+   */
   ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
     String token = registrationService.register(request);
     HttpHeaders headers = new HttpHeaders();
@@ -82,6 +90,13 @@ public class AuthenticationController {
   @ApiResponse(responseCode = "403", description = "Missing or invalid CSRF token.")
   @ApiResponse(responseCode = "500", description = "Unexpected server error.")
   @PostMapping("/api/auth/login")
+  /**
+   * Authenticates an existing account and starts an authenticated session.
+   *
+   * @param request validated credentials, identified by username or email
+   * @return a {@code 204 No Content} response containing the authentication cookie
+   * @throws com.openclassrooms.mddapi.system.error.ApiException when credentials are invalid
+   */
   ResponseEntity<Void> login(@Valid @RequestBody LoginRequest request) {
     String token = loginService.login(request);
     HttpHeaders headers = new HttpHeaders();
@@ -108,6 +123,11 @@ public class AuthenticationController {
   @ApiResponse(responseCode = "403", description = "Missing or invalid CSRF token.")
   @ApiResponse(responseCode = "500", description = "Unexpected server error.")
   @PostMapping("/api/auth/logout")
+  /**
+   * Expires the current authentication cookie.
+   *
+   * @return a {@code 204 No Content} response with an expired cookie
+   */
   ResponseEntity<Void> logout() {
     HttpHeaders headers = new HttpHeaders();
     authenticationCookieService.removeAuthenticationCookie(headers);

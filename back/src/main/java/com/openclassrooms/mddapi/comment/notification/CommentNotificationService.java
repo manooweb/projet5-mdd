@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+/** Sends an article-author email after a comment transaction has been committed. */
 @Service
 public class CommentNotificationService {
 
@@ -18,6 +19,11 @@ public class CommentNotificationService {
     this.properties = properties;
   }
 
+  /**
+   * Sends the notification associated with a committed comment.
+   *
+   * @param event recipient address and post title
+   */
   @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
   public void notifyArticleAuthor(CommentCreatedEvent event) {
     SimpleMailMessage message = new SimpleMailMessage();

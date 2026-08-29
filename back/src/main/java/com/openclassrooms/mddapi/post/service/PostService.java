@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Implements post-feed, post-detail and comment business operations. */
 @Service
 public class PostService {
 
@@ -49,6 +50,13 @@ public class PostService {
     this.eventPublisher = eventPublisher;
   }
 
+  /**
+   * Creates a post for an existing user in an existing topic.
+   *
+   * @param userId authenticated author identifier
+   * @param request validated post content and target topic
+   * @throws ApiException when the user or topic does not exist
+   */
   @Transactional
   public void createPost(Long userId, CreatePostRequest request) {
     UserAccount author = findAuthor(userId);
@@ -56,6 +64,14 @@ public class PostService {
     postRepository.save(Post.create(author, topic, request.title(), request.content()));
   }
 
+  /**
+   * Returns posts from the topics followed by a user.
+   *
+   * @param userId authenticated user identifier
+   * @param sort chronological direction: {@code asc} or {@code desc}
+   * @return subscribed-topic posts ordered by creation date
+   * @throws ApiException when {@code sort} is not supported
+   */
   @Transactional(readOnly = true)
   public List<PostResponse> getPosts(Long userId, String sort) {
     Sort.Direction sortDirection =
@@ -74,6 +90,14 @@ public class PostService {
     return posts.stream().map(PostResponse::from).toList();
   }
 
+  /**
+   * Returns a post and its comments when it belongs to a subscribed topic.
+   *
+   * @param userId authenticated user identifier
+   * @param postId requested post identifier
+   * @return post detail and comments
+   * @throws ApiException when the post is not visible to the user
+   */
   @Transactional(readOnly = true)
   public PostDetailResponse getPost(Long userId, Long postId) {
     Post post = findSubscribedPost(userId, postId);
@@ -85,6 +109,14 @@ public class PostService {
     return PostDetailResponse.from(post, comments);
   }
 
+  /**
+   * Persists a comment and schedules an email notification after transaction commit.
+   *
+   * @param userId authenticated comment author identifier
+   * @param postId commented post identifier
+   * @param request validated comment content
+   * @throws ApiException when the user or post is not found or visible
+   */
   @Transactional
   public void createComment(Long userId, Long postId, CreateCommentRequest request) {
     UserAccount author = findAuthor(userId);

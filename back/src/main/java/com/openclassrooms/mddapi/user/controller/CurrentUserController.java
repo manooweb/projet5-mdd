@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/** Exposes the authenticated user's profile and profile-update operations. */
 @RestController
 public class CurrentUserController {
 
@@ -35,6 +36,12 @@ public class CurrentUserController {
   @ApiResponse(responseCode = "200", description = "Current user returned.")
   @ApiResponse(responseCode = "401", description = "No valid authenticated session.")
   @GetMapping("/api/users/me")
+  /**
+   * Returns the public profile of the authenticated user.
+   *
+   * @param authentication authenticated session containing the current user identifier
+   * @return current user profile
+   */
   CurrentUserResponse currentUser(Authentication authentication) {
     return currentUserService.getCurrentUser(Long.valueOf(authentication.getName()));
   }
@@ -54,6 +61,13 @@ public class CurrentUserController {
   @ApiResponse(responseCode = "403", description = "Missing or invalid CSRF token.")
   @ApiResponse(responseCode = "409", description = "Username or email is already used.")
   @PatchMapping("/api/users/me")
+  /**
+   * Updates the authenticated user's profile and refreshes the cookie after a password change.
+   *
+   * @param request validated profile data; password may be empty when unchanged
+   * @param authentication authenticated session containing the current user identifier
+   * @return a {@code 204 No Content} response, optionally with a refreshed authentication cookie
+   */
   ResponseEntity<Void> updateCurrentUser(
       @Valid @RequestBody UpdateCurrentUserRequest request, Authentication authentication) {
     HttpHeaders headers = new HttpHeaders();

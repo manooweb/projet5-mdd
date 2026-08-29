@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
+/** Builds the secure, HttpOnly cookie used to transport the MDD authentication JWT. */
 @Service
 public class AuthenticationCookieService {
 
@@ -17,6 +18,12 @@ public class AuthenticationCookieService {
     this.properties = properties;
   }
 
+  /**
+   * Adds a persistent authentication cookie to response headers.
+   *
+   * @param headers response headers to update
+   * @param token signed JWT; it is never exposed to JavaScript
+   */
   public void addAuthenticationCookie(HttpHeaders headers, String token) {
     ResponseCookie cookie =
         ResponseCookie.from(COOKIE_NAME, token)
@@ -29,6 +36,11 @@ public class AuthenticationCookieService {
     headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
   }
 
+  /**
+   * Adds an expired authentication cookie to response headers.
+   *
+   * @param headers response headers to update
+   */
   public void removeAuthenticationCookie(HttpHeaders headers) {
     ResponseCookie cookie =
         ResponseCookie.from(COOKIE_NAME, "")

@@ -3,6 +3,14 @@ package com.openclassrooms.mddapi.topic.dto;
 import com.openclassrooms.mddapi.topic.domain.Topic;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * Topic data enriched with the authenticated user's subscription status.
+ *
+ * @param id persistent topic identifier
+ * @param name topic display name
+ * @param description topic purpose
+ * @param subscribed whether the authenticated user follows the topic
+ */
 @Schema(description = "A topic with the subscription status of the authenticated user.")
 public record TopicResponse(
     @Schema(example = "1") Long id,

@@ -26,11 +26,13 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.filter.OncePerRequestFilter;
 import tools.jackson.databind.ObjectMapper;
 
+/** Configures JWT-cookie authentication, CSRF protection and JSON API security errors. */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(MddProperties.class)
 public class SecurityConfig {
 
   @Bean
+  /** Returns the BCrypt encoder used for account passwords. */
   PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
@@ -48,6 +50,7 @@ public class SecurityConfig {
   }
 
   @Bean
+  /** Builds the Spring Security filter chain for public and authenticated API routes. */
   SecurityFilterChain securityFilterChain(
       HttpSecurity http,
       ObjectProvider<JwtAuthenticationFilter> jwtAuthenticationFilterProvider,

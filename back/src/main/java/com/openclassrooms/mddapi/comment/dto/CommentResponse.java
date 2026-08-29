@@ -4,6 +4,13 @@ import com.openclassrooms.mddapi.comment.domain.Comment;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 
+/**
+ * Comment data displayed with its author and creation timestamp.
+ *
+ * @param author public display name of the comment author
+ * @param content comment text
+ * @param createdAt UTC creation timestamp
+ */
 @Schema(description = "A comment displayed below a post.")
 public record CommentResponse(
     @Schema(example = "demo") String author,

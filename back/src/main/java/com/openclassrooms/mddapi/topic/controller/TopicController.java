@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/** Exposes authenticated topic listing and subscription management endpoints. */
 @RestController
 public class TopicController {
 
@@ -26,6 +27,12 @@ public class TopicController {
   @ApiResponse(responseCode = "200", description = "Topics returned.")
   @ApiResponse(responseCode = "401", description = "No valid authenticated session.")
   @GetMapping("/api/topics")
+  /**
+   * Lists topics with subscription state for the current user.
+   *
+   * @param authentication authenticated session containing the current user identifier
+   * @return all available topics and their subscription state
+   */
   List<TopicResponse> getTopics(Authentication authentication) {
     return topicService.getTopics(Long.valueOf(authentication.getName()));
   }
@@ -36,6 +43,13 @@ public class TopicController {
   @ApiResponse(responseCode = "403", description = "Missing or invalid CSRF token.")
   @ApiResponse(responseCode = "404", description = "Topic not found.")
   @PostMapping("/api/topics/{topicId}/subscription")
+  /**
+   * Subscribes the current user to a topic.
+   *
+   * @param topicId existing topic identifier
+   * @param authentication authenticated session containing the current user identifier
+   * @return a {@code 204 No Content} response
+   */
   ResponseEntity<Void> subscribe(@PathVariable Long topicId, Authentication authentication) {
     topicService.subscribe(Long.valueOf(authentication.getName()), topicId);
     return ResponseEntity.noContent().build();
@@ -46,6 +60,13 @@ public class TopicController {
   @ApiResponse(responseCode = "401", description = "No valid authenticated session.")
   @ApiResponse(responseCode = "403", description = "Missing or invalid CSRF token.")
   @DeleteMapping("/api/topics/{topicId}/subscription")
+  /**
+   * Removes the current user's subscription from a topic.
+   *
+   * @param topicId topic identifier
+   * @param authentication authenticated session containing the current user identifier
+   * @return a {@code 204 No Content} response
+   */
   ResponseEntity<Void> unsubscribe(@PathVariable Long topicId, Authentication authentication) {
     topicService.unsubscribe(Long.valueOf(authentication.getName()), topicId);
     return ResponseEntity.noContent().build();

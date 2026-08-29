@@ -6,6 +6,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 import java.util.List;
 
+/**
+ * Detailed post representation including its visible comments.
+ *
+ * @param id persistent post identifier
+ * @param title post title
+ * @param content post body
+ * @param author public display name of the author
+ * @param topic topic name
+ * @param createdAt UTC creation timestamp
+ * @param comments comments visible on the post
+ */
 @Schema(description = "A post with its comments.")
 public record PostDetailResponse(
     @Schema(example = "1") Long id,

@@ -6,6 +6,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+/**
+ * Validated data required to create an MDD account.
+ *
+ * @param username required unique display name
+ * @param email required unique email address in a valid format
+ * @param password required password meeting the configured complexity rules
+ */
 public record RegisterRequest(
     @Schema(example = "demo") @NotBlank @Size(max = 255) String username,
     @Schema(example = "demo@mdd.net") @NotBlank @Email @Size(max = 255) String email,

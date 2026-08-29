@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
+/** Binds and validates the application settings under the {@code mdd} configuration prefix. */
 @Getter
 @Setter
 @Validated
@@ -22,6 +23,7 @@ public class MddProperties {
 
   @Getter
   @Setter
+  /** JWT signing and cookie settings. */
   public static class Jwt {
 
     @NotBlank private String secret;
@@ -33,6 +35,7 @@ public class MddProperties {
 
   @Getter
   @Setter
+  /** Outgoing email sender settings. */
   public static class Mail {
 
     @NotBlank private String from;
@@ -40,6 +43,7 @@ public class MddProperties {
 
   @Getter
   @Setter
+  /** Localized application messages exposed by API errors. */
   public static class Messages {
 
     @NotBlank private String duplicateIdentity;
@@ -53,6 +57,7 @@ public class MddProperties {
 
   @Getter
   @Setter
+  /** Messages associated with invalid request data. */
   public static class Validation {
 
     @NotBlank private String invalidRequest;
@@ -74,6 +79,7 @@ public class MddProperties {
 
   @Getter
   @Setter
+  /** Messages associated with API and security failures. */
   public static class Errors {
 
     @NotBlank private String authenticationRequired;

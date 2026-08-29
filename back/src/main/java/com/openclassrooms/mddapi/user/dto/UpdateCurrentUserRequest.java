@@ -7,6 +7,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+/**
+ * Validated profile-update payload; an empty password preserves the current password.
+ *
+ * @param username required unique display name
+ * @param email required unique email address in a valid format
+ * @param password empty to preserve it, otherwise a password meeting the configured complexity
+ *     rules
+ */
 public record UpdateCurrentUserRequest(
     @Schema(example = "demo") @NotBlank @Size(max = 255) String username,
     @Schema(example = "demo@mdd.net") @NotBlank @Email @Size(max = 255) String email,

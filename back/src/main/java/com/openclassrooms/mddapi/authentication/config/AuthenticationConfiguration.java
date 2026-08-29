@@ -6,6 +6,7 @@ import com.openclassrooms.mddapi.authentication.service.JwtService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/** Registers authentication-specific Spring beans. */
 @Configuration(proxyBeanMethods = false)
 public class AuthenticationConfiguration {
 

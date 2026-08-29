@@ -4,6 +4,16 @@ import com.openclassrooms.mddapi.post.domain.Post;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 
+/**
+ * Compact post representation displayed in the subscribed-post feed.
+ *
+ * @param id persistent post identifier
+ * @param title post title
+ * @param content post body
+ * @param author public display name of the author
+ * @param topic topic name
+ * @param createdAt UTC creation timestamp
+ */
 @Schema(description = "A post displayed in the articles list.")
 public record PostResponse(
     @Schema(example = "1") Long id,

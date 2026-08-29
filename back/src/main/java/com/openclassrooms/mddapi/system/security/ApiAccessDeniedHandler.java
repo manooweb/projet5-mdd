@@ -13,6 +13,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import tools.jackson.databind.ObjectMapper;
 
+/** Writes the JSON {@code 403 Forbidden} response for denied authenticated API requests. */
 public class ApiAccessDeniedHandler implements AccessDeniedHandler {
 
   private final ObjectMapper objectMapper;
@@ -24,6 +25,14 @@ public class ApiAccessDeniedHandler implements AccessDeniedHandler {
   }
 
   @Override
+  /**
+   * Writes a client-safe access-denied response.
+   *
+   * @param request denied request
+   * @param response HTTP response to populate
+   * @param accessDeniedException Spring Security denial
+   * @throws IOException when the JSON response cannot be written
+   */
   public void handle(
       HttpServletRequest request,
       HttpServletResponse response,

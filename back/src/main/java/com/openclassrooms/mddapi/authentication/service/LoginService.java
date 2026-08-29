@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Verifies credentials and creates a JWT for a valid existing account. */
 @Service
 public class LoginService {
 
@@ -30,6 +31,13 @@ public class LoginService {
     this.properties = properties;
   }
 
+  /**
+   * Authenticates a user by username or email.
+   *
+   * @param request validated login credentials
+   * @return a signed JWT for the authenticated account
+   * @throws ApiException when the account does not exist or the password does not match
+   */
   @Transactional(readOnly = true)
   public String login(LoginRequest request) {
     UserAccount user =

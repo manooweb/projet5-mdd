@@ -13,6 +13,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import tools.jackson.databind.ObjectMapper;
 
+/** Writes the JSON {@code 401 Unauthorized} response for unauthenticated API requests. */
 public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
   private final ObjectMapper objectMapper;
@@ -24,6 +25,14 @@ public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
   }
 
   @Override
+  /**
+   * Writes a client-safe authentication-required response.
+   *
+   * @param request rejected request
+   * @param response HTTP response to populate
+   * @param authenticationException Spring Security failure
+   * @throws IOException when the JSON response cannot be written
+   */
   public void commence(
       HttpServletRequest request,
       HttpServletResponse response,

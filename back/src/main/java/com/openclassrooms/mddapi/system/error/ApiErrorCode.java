@@ -1,5 +1,6 @@
 package com.openclassrooms.mddapi.system.error;
 
+/** Stable error codes used by {@link ApiErrorResponse} and client-side error handling. */
 public enum ApiErrorCode {
   DUPLICATE_IDENTITY,
   INVALID_CREDENTIALS,

@@ -13,6 +13,7 @@ import java.util.Optional;
 import javax.crypto.SecretKey;
 import org.springframework.stereotype.Service;
 
+/** Creates and validates signed JWTs bound to an account session version. */
 @Service
 public class JwtService {
 
@@ -24,6 +25,12 @@ public class JwtService {
     signingKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(properties.getJwt().getSecret()));
   }
 
+  /**
+   * Creates a signed JWT for an account's current session version.
+   *
+   * @param user authenticated account
+   * @return compact signed JWT
+   */
   public String createToken(UserAccount user) {
     Instant now = Instant.now();
 
@@ -37,10 +44,22 @@ public class JwtService {
         .compact();
   }
 
+  /**
+   * Extracts the account identifier from a valid JWT.
+   *
+   * @param token compact JWT to validate
+   * @return account identifier, or empty when the token is invalid
+   */
   public Optional<Long> findUserId(String token) {
     return findAuthentication(token).map(AuthenticationToken::userId);
   }
 
+  /**
+   * Extracts the account identifier and session version from a valid JWT.
+   *
+   * @param token compact JWT to validate
+   * @return authenticated token data, or empty when the token is invalid or expired
+   */
   public Optional<AuthenticationToken> findAuthentication(String token) {
     try {
       Claims claims =
@@ -55,5 +74,11 @@ public class JwtService {
     }
   }
 
+  /**
+   * Authenticated account identifier and session version extracted from a valid JWT.
+   *
+   * @param userId persistent authenticated account identifier
+   * @param sessionVersion version used to invalidate older JWTs
+   */
   public record AuthenticationToken(Long userId, long sessionVersion) {}
 }

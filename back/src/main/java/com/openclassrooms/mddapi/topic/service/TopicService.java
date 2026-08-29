@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Handles topic retrieval and idempotent subscription changes. */
 @Service
 public class TopicService {
 
@@ -29,6 +30,12 @@ public class TopicService {
     this.properties = properties;
   }
 
+  /**
+   * Retrieves all topics and decorates them with a user's subscription status.
+   *
+   * @param userId authenticated user identifier
+   * @return topics ordered by identifier
+   */
   @Transactional(readOnly = true)
   public List<TopicResponse> getTopics(Long userId) {
     Set<Long> subscribedTopicIds = subscriptionRepository.findTopicIdsByUserId(userId);
@@ -37,6 +44,13 @@ public class TopicService {
         .toList();
   }
 
+  /**
+   * Creates a subscription when it does not already exist.
+   *
+   * @param userId authenticated user identifier
+   * @param topicId existing topic identifier
+   * @throws ApiException when the topic does not exist
+   */
   @Transactional
   public void subscribe(Long userId, Long topicId) {
     if (!topicRepository.existsById(topicId)) {
@@ -51,6 +65,12 @@ public class TopicService {
     }
   }
 
+  /**
+   * Removes a subscription when it exists.
+   *
+   * @param userId authenticated user identifier
+   * @param topicId topic identifier
+   */
   @Transactional
   public void unsubscribe(Long userId, Long topicId) {
     subscriptionRepository.deleteByUserIdAndTopicId(userId, topicId);

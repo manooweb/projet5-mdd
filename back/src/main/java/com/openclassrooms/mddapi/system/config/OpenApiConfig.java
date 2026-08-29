@@ -9,10 +9,16 @@ import io.swagger.v3.oas.models.responses.ApiResponses;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/** Configures the OpenAPI document exposed by the MDD REST API. */
 @Configuration(proxyBeanMethods = false)
 public class OpenApiConfig {
 
   @Bean
+  /**
+   * Builds the OpenAPI metadata and documents the CSRF-initialization endpoint.
+   *
+   * @return MDD OpenAPI definition
+   */
   OpenAPI mddOpenApi() {
     return new OpenAPI()
         .info(

@@ -3,6 +3,13 @@ package com.openclassrooms.mddapi.user.dto;
 import com.openclassrooms.mddapi.authentication.domain.UserAccount;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * Public profile fields returned for the authenticated user.
+ *
+ * @param id persistent user identifier
+ * @param username public display name
+ * @param email account email address
+ */
 @Schema(description = "The authenticated user's public profile.")
 public record CurrentUserResponse(
     @Schema(example = "1") Long id,

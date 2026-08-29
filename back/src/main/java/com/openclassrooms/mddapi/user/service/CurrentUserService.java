@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Retrieves and updates the profile attached to the authenticated account. */
 @Service
 public class CurrentUserService {
 
@@ -33,11 +34,26 @@ public class CurrentUserService {
     this.properties = properties;
   }
 
+  /**
+   * Returns the current user's public profile.
+   *
+   * @param userId authenticated user identifier
+   * @return profile data safe to expose to the client
+   * @throws ApiException when the authenticated account no longer exists
+   */
   @Transactional(readOnly = true)
   public CurrentUserResponse getCurrentUser(Long userId) {
     return CurrentUserResponse.from(findCurrentUser(userId));
   }
 
+  /**
+   * Updates profile data and invalidates older sessions when the password changes.
+   *
+   * @param userId authenticated user identifier
+   * @param request validated profile data
+   * @return a refreshed JWT only when the password changed
+   * @throws ApiException when the identity conflicts with another account
+   */
   @Transactional
   public Optional<String> updateCurrentUser(Long userId, UpdateCurrentUserRequest request) {
     UserAccount currentUser = findCurrentUser(userId);

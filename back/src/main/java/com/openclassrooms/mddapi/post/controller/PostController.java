@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/** Provides authenticated access to the subscribed-post feed, posts and comments. */
 @RestController
 public class PostController {
 
@@ -37,6 +38,13 @@ public class PostController {
   @ApiResponse(responseCode = "400", description = "Invalid sort direction.")
   @ApiResponse(responseCode = "401", description = "No valid authenticated session.")
   @GetMapping("/api/posts")
+  /**
+   * Lists posts from topics followed by the authenticated user.
+   *
+   * @param sort chronological direction, either {@code asc} or {@code desc}
+   * @param authentication authenticated session containing the current user identifier
+   * @return posts ordered by their creation date
+   */
   List<PostResponse> getPosts(
       @Parameter(
               description = "Chronological sort direction.",
@@ -56,6 +64,13 @@ public class PostController {
   @ApiResponse(responseCode = "401", description = "No valid authenticated session.")
   @ApiResponse(responseCode = "404", description = "Post not found or topic not followed.")
   @GetMapping("/api/posts/{postId}")
+  /**
+   * Returns a subscribed post and its comments.
+   *
+   * @param postId identifier of the requested post
+   * @param authentication authenticated session containing the current user identifier
+   * @return the post detail response
+   */
   PostDetailResponse getPost(@PathVariable Long postId, Authentication authentication) {
     return postService.getPost(Long.valueOf(authentication.getName()), postId);
   }
@@ -67,6 +82,14 @@ public class PostController {
   @ApiResponse(responseCode = "403", description = "Missing or invalid CSRF token.")
   @ApiResponse(responseCode = "404", description = "Post not found or topic not followed.")
   @PostMapping("/api/posts/{postId}/comments")
+  /**
+   * Adds a comment to a post visible to the authenticated user.
+   *
+   * @param postId identifier of the commented post
+   * @param request validated comment content
+   * @param authentication authenticated session containing the author identifier
+   * @return a {@code 201 Created} response
+   */
   ResponseEntity<Void> createComment(
       @PathVariable Long postId,
       @Valid @RequestBody CreateCommentRequest request,
@@ -82,6 +105,13 @@ public class PostController {
   @ApiResponse(responseCode = "403", description = "Missing or invalid CSRF token.")
   @ApiResponse(responseCode = "404", description = "Topic not found.")
   @PostMapping("/api/posts")
+  /**
+   * Creates a post on behalf of the authenticated user.
+   *
+   * @param request validated title, content and topic identifier
+   * @param authentication authenticated session containing the author identifier
+   * @return a {@code 201 Created} response
+   */
   ResponseEntity<Void> createPost(
       @Valid @RequestBody CreatePostRequest request, Authentication authentication) {
     postService.createPost(Long.valueOf(authentication.getName()), request);

@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Creates accounts after validating that their username and email are unique. */
 @Service
 public class RegistrationService {
 
@@ -30,6 +31,13 @@ public class RegistrationService {
     this.properties = properties;
   }
 
+  /**
+   * Persists a new account and creates its first authenticated session.
+   *
+   * @param request validated registration data
+   * @return a signed JWT for the new account
+   * @throws ApiException when the username or email is already used
+   */
   @Transactional
   public String register(RegisterRequest request) {
     if (userAccountRepository.existsByUsername(request.username())
