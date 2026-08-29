@@ -19,8 +19,10 @@ class SubscriptionIdTest {
     SubscriptionId subscriptionId = new SubscriptionId(12L, 34L);
     SubscriptionId sameSubscriptionId = new SubscriptionId(12L, 34L);
 
-    assertThat(subscriptionId).isEqualTo(subscriptionId).isEqualTo(sameSubscriptionId);
-    assertThat(subscriptionId).hasSameHashCodeAs(sameSubscriptionId);
+    assertThat(subscriptionId)
+        .isEqualTo(subscriptionId)
+        .isEqualTo(sameSubscriptionId)
+        .hasSameHashCodeAs(sameSubscriptionId);
   }
 
   @Test
