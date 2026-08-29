@@ -6,7 +6,6 @@ import { ButtonDirective } from 'primeng/button';
   selector: 'app-home',
   imports: [ButtonDirective, RouterLink],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {}

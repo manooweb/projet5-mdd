@@ -11,7 +11,6 @@ import { AccountForm } from './account-form';
   selector: 'app-account-fields',
   imports: [AutoFocus, FormValidationFeedbackComponent, InputText, Password, ReactiveFormsModule],
   templateUrl: './account-fields.component.html',
-  styleUrl: './account-fields.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountFieldsComponent {

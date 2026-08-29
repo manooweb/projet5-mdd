@@ -26,7 +26,6 @@ import { ApiErrorComponent } from '../../shared/api-error/api-error.component';
     ReactiveFormsModule,
   ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {

@@ -6,7 +6,6 @@ import { HeaderComponent } from '../shared/header/header.component';
   selector: 'app-not-found',
   imports: [HeaderComponent, RouterLink],
   templateUrl: './not-found.component.html',
-  styleUrl: './not-found.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotFoundComponent {}

@@ -24,7 +24,6 @@ type PostDetailState =
     ProgressSpinner,
   ],
   templateUrl: './post-detail.component.html',
-  styleUrl: './post-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PostDetailComponent {

@@ -24,7 +24,6 @@ import { TopicService } from '../../topic/topic.service';
     ReactiveFormsModule,
   ],
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileComponent {

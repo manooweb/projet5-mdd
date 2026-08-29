@@ -9,7 +9,6 @@ import { NavigationLinksComponent } from '../navigation-links/navigation-links.c
   selector: 'app-header',
   imports: [RouterLink, LogoutButtonComponent, MobileNavigationComponent, NavigationLinksComponent],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {

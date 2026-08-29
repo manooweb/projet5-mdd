@@ -15,7 +15,6 @@ import { PostService } from '../post.service';
   selector: 'app-post-comments',
   imports: [ReactiveFormsModule],
   templateUrl: './post-comments.component.html',
-  styleUrl: './post-comments.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PostCommentsComponent {

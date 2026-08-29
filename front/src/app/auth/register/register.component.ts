@@ -23,7 +23,6 @@ import { AuthenticationService } from '../authentication.service';
     ReactiveFormsModule,
   ],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterComponent {

@@ -6,7 +6,6 @@ import { ArrowLeft } from '@primeicons/angular/arrow-left';
   selector: 'app-back-button',
   imports: [ArrowLeft, RouterLink],
   templateUrl: './back-button.component.html',
-  styleUrl: './back-button.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BackButtonComponent {

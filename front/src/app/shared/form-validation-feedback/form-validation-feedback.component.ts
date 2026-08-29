@@ -4,7 +4,6 @@ import { AbstractControl } from '@angular/forms';
 @Component({
   selector: 'app-form-validation-feedback',
   templateUrl: './form-validation-feedback.component.html',
-  styleUrl: './form-validation-feedback.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormValidationFeedbackComponent {

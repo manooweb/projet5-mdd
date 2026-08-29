@@ -4,7 +4,6 @@ import { ApiError } from './api-error';
 @Component({
   selector: 'app-api-error',
   templateUrl: './api-error.component.html',
-  styleUrl: './api-error.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApiErrorComponent {

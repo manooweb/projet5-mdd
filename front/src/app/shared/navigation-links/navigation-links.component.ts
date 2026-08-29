@@ -6,7 +6,6 @@ import { ProfileIconComponent } from '../icons/profile-icon/profile-icon.compone
   selector: 'app-navigation-links',
   imports: [ProfileIconComponent, RouterLink, RouterLinkActive],
   templateUrl: './navigation-links.component.html',
-  styleUrl: './navigation-links.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavigationLinksComponent {

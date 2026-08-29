@@ -11,7 +11,6 @@ import { TopicService } from '../topic.service';
   selector: 'app-topics-list',
   imports: [AsyncPipe, HeaderComponent, ProgressSpinner],
   templateUrl: './topics-list.component.html',
-  styleUrl: './topics-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TopicsListComponent {

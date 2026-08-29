@@ -13,7 +13,6 @@ import { PostService } from '../post.service';
   selector: 'app-post-create',
   imports: [AsyncPipe, BackButtonComponent, ButtonDirective, HeaderComponent, ReactiveFormsModule],
   templateUrl: './post-create.component.html',
-  styleUrl: './post-create.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PostCreateComponent {
