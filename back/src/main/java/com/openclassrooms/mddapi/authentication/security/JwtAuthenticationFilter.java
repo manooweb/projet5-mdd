@@ -1,5 +1,6 @@
 package com.openclassrooms.mddapi.authentication.security;
 
+import com.openclassrooms.mddapi.authentication.domain.UserAccount;
 import com.openclassrooms.mddapi.authentication.repository.UserAccountRepository;
 import com.openclassrooms.mddapi.authentication.service.AuthenticationCookieService;
 import com.openclassrooms.mddapi.authentication.service.JwtService;
@@ -41,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                   userAccountRepository
                       .findById(token.userId())
                       .filter(user -> user.getSessionVersion() == token.sessionVersion())
-                      .map(user -> user.getId()))
+                      .map(UserAccount::getId))
           .ifPresent(userId -> authenticate(userId, request));
     }
 
