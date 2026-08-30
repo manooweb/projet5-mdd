@@ -70,7 +70,7 @@ Ces pages nécessitent une session active. Connectez-vous puis réessayez. Si le
 
 ### La page demandée est introuvable. Que faire ?
 
-Utilisez le lien **Retour aux articles** proposé par l'application, ou revenez à l'accueil. Un article peut aussi être indisponible s'il n'existe pas à l'adresse demandée.
+Utilisez le lien **Retour aux articles** proposé par l'application ou sélectionnez le logo dans l'en-tête pour revenir au fil. Un article peut aussi être indisponible s'il n'existe pas à l'adresse demandée.
 
 ## Données et sécurité
 

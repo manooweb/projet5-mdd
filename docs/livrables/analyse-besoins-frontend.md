@@ -47,7 +47,7 @@ L'objectif du frontend est de fournir ces parcours de manière simple, responsiv
 | Fil | Seuls les articles des thèmes suivis sont chargés ; le tri chronologique peut être inversé ; chaque carte ouvre le détail. |
 | Article et commentaire | Un membre choisit un thème, saisit un titre et un contenu pour publier ; le détail affiche les commentaires et permet d'en ajouter un. |
 | Profil | Le membre visualise et modifie son nom d'utilisateur, son adresse e-mail et, s'il le souhaite, son mot de passe. |
-| Responsive et navigation | Les écrans fonctionnent sur desktop et mobile ; les liens de navigation sont partagés entre les deux présentations et le menu mobile est accessible au clavier. |
+| Responsive et navigation | Les écrans fonctionnent sur desktop et mobile ; les liens de navigation sont partagés entre les deux présentations, le logo ramène systématiquement au fil et le menu mobile est accessible au clavier. |
 
 Les captures correspondantes sont disponibles dans [`captures-ecran/`](captures-ecran/), avec huit écrans desktop et neuf captures mobile, dont le menu mobile ouvert.
 
@@ -55,7 +55,7 @@ Les captures correspondantes sont disponibles dans [`captures-ecran/`](captures-
 
 Les routes publiques sont `/`, `/login` et `/register`. Les routes `/posts`, `/posts/create`, `/posts/:postId`, `/topics` et `/profile` nécessitent une session. Les écrans sont organisés par domaines Angular : `auth`, `topic`, `post` et `user`, avec des composants communs pour l'en-tête, la navigation, les formulaires, les erreurs et les icônes.
 
-Sur desktop, la navigation est directement visible. Sur mobile, elle est regroupée dans un panneau ouvert par le bouton "burger". Les mêmes liens fonctionnels sont utilisés dans les deux présentations. Les formulaires possèdent des libellés, des messages d'erreur annoncés et un indicateur de focus visible.
+Sur desktop, la navigation est directement visible. Sur mobile, elle est regroupée dans un panneau ouvert par le bouton "burger". Les mêmes liens fonctionnels sont utilisés dans les deux présentations. Le logo de l'en-tête est un lien permanent vers le fil : il permet de retrouver rapidement la liste des articles depuis n'importe quel écran authentifié. Les formulaires possèdent des libellés, des messages d'erreur annoncés et un indicateur de focus visible.
 
 ## 6. Contrat frontend-backend et sécurité
 
