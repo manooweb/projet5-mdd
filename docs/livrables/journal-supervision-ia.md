@@ -47,7 +47,7 @@ Cette méthode a notamment conduit à demander des tests avant plusieurs implém
 
 ### Ne pas ajouter une couche sans responsabilité réelle
 
-L'IA a été interrogée sur l'usage systématique d'une façade Angular. Après analyse, la décision a été de ne créer une façade que lorsqu'un écran coordonne réellement plusieurs états, actions ou navigations. Une couche de simple délégation a donc été écartée.
+L'IA a été interrogée sur l'usage systématique d'une façade Angular. Après analyse, aucune façade n'a été implémentée : les écrans concernés ne nécessitaient pas de coordonner plusieurs états, actions ou navigations. Une couche de simple délégation a donc été écartée.
 
 ### Ne pas exposer le cookie d'authentification au frontend
 
