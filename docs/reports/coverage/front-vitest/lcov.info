@@ -65,7 +65,7 @@ FNDA:5,logout
 FNDA:5,(anonymous_5)
 FNDA:12,csrfToken
 DA:17,56
-DA:18,82
+DA:18,81
 DA:21,3
 DA:22,3
 DA:27,4
@@ -74,9 +74,9 @@ DA:33,5
 DA:37,12
 LF:8
 LH:8
-BRDA:17,0,0,26
-BRDA:17,0,1,26
-BRDA:17,0,2,26
+BRDA:17,0,0,25
+BRDA:17,0,1,25
+BRDA:17,0,2,25
 BRF:3
 BRH:3
 end_of_record
@@ -133,8 +133,8 @@ FNDA:7,updateCurrentUser
 FNDA:5,(anonymous_6)
 FNDA:5,clearSession
 DA:13,80
-DA:14,109
-DA:16,109
+DA:14,110
+DA:16,110
 DA:19,11
 DA:20,6
 DA:21,6
@@ -153,9 +153,9 @@ BRDA:23,0,0,4
 BRDA:23,0,1,1
 BRDA:38,1,0,5
 BRDA:38,1,1,0
-BRDA:13,2,0,29
-BRDA:13,2,1,29
-BRDA:13,2,2,29
+BRDA:13,2,0,30
+BRDA:13,2,1,30
+BRDA:13,2,2,30
 BRF:7
 BRH:6
 end_of_record
