@@ -10,4 +10,4 @@ Ce dossier accueillera les sources Markdown en français des annexes demandées 
 - [journal de supervision IA](journal-supervision-ia.md) ;
 - [captures d'écran utilisées pour illustrer ces documents](captures-ecran/README.md).
 
-Les fichiers finaux destinés au dépôt sur la plateforme OpenClassrooms seront regroupés dans `deliverables/` après la finalisation du document Writer et des exports PDF.
+Les fichiers finaux destinés au dépôt sur la plateforme OpenClassrooms seront regroupés dans `deliverables/`.
