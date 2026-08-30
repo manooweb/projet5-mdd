@@ -2,11 +2,13 @@
 
 <main class="mx-auto w-full max-w-3xl p-6 md:p-8">
   <section class="mx-auto w-full max-w-2xl">
-    <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center">
-      <app-back-button target="/posts" label="Retour aux articles" />
-      <h1 class="text-center text-2xl font-bold text-black md:text-left">
-        Créer un nouvel article
-      </h1>
+    <div class="relative mb-8">
+      <app-back-button
+        class="mb-4 block md:absolute md:top-0 md:left-0 md:mb-0 md:-translate-x-16"
+        target="/posts"
+        label="Retour aux articles"
+      />
+      <h1 class="text-left text-2xl font-bold text-black">Créer un nouvel article</h1>
     </div>
 
     <form [formGroup]="postForm" class="flex flex-col gap-5" novalidate (ngSubmit)="create()">
@@ -14,7 +16,7 @@
         <span class="sr-only">Thème</span>
         <select
           id="topicId"
-          class="h-12 rounded-lg border border-gray-300 bg-white px-4 text-black outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+          class="h-12 rounded-lg border border-black bg-white px-4 text-black outline-none focus:border-primary focus:ring-1 focus:ring-primary"
           formControlName="topicId"
         >
           <option value="" disabled>Sélectionner un thème</option>
@@ -30,7 +32,7 @@
         <span class="sr-only">Titre</span>
         <input
           id="title"
-          class="h-12 rounded-lg border border-gray-300 px-4 text-black outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+          class="h-12 rounded-lg border border-black px-4 text-black outline-none focus:border-primary focus:ring-1 focus:ring-primary"
           formControlName="title"
           type="text"
           placeholder="Titre de l'article"
@@ -41,7 +43,7 @@
         <span class="sr-only">Contenu</span>
         <textarea
           id="content"
-          class="min-h-52 resize-y rounded-lg border border-gray-300 p-4 text-black outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+          class="min-h-52 resize-y rounded-lg border border-black p-4 text-black outline-none focus:border-primary focus:ring-1 focus:ring-primary"
           style="resize: vertical"
           formControlName="content"
           placeholder="Contenu de l'article"
