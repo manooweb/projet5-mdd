@@ -4,7 +4,7 @@ Ce dossier accueillera les sources Markdown en français des annexes demandées 
 
 - [analyse des besoins frontend](analyse-besoins-frontend.md) ;
 - [définition des données](definition-donnees.md) ;
-- rapport de tests et de couverture ;
+- [rapport de tests et de couverture](rapport-tests-couverture.md) ;
 - [rapport de revue technique](rapport-revue-technique.md) ;
 - [FAQ utilisateur](faq-utilisateur.md) ;
 - [journal de supervision IA](journal-supervision-ia.md) ;
