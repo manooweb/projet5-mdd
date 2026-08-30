@@ -69,8 +69,9 @@ Passwords are hashed with BCrypt. A signed JWT is stored in the `HttpOnly` `MDD_
 | Check Java formatting | `./mvnw spotless:check` |
 | Apply Java formatting | `./mvnw spotless:apply` |
 | Generate Javadoc | `./mvnw javadoc:javadoc` |
+| Run the SonarQube Cloud scan workflow | `node scripts/run-sonar-scan.mjs` |
 
-Integration tests use an isolated MySQL Testcontainers instance, so Docker must be available. Surefire runs `*Test` classes; Failsafe runs `*IT` classes during `verify`.
+Integration tests use an isolated MySQL Testcontainers instance, so Docker must be available. Surefire runs `*Test` classes; Failsafe runs `*IT` classes during `verify`. The SonarQube Cloud workflow requires `SONAR_TOKEN` in the repository-root `.env` file and runs `clean verify` before the analysis.
 
 ## Related documentation
 

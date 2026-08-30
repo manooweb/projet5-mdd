@@ -43,6 +43,7 @@ The project contains an Angular single-page application and a Spring Boot REST A
 - Java 25, preferably Temurin 25.0.4.
 - Node.js 22.22.3 or a later 22.x release.
 - Docker Engine with Docker Compose. It is required for the local MySQL and Mailpit services, Testcontainers, and the isolated Bruno checks.
+- A Linux or compatible Unix-like environment. The isolated Bruno workflow uses a Bash script; on Windows, use WSL.
 
 ## Configuration
 
@@ -142,6 +143,7 @@ Run backend checks from `back/`:
 | Generate Javadoc | `./mvnw javadoc:javadoc` |
 | Check Java formatting | `./mvnw spotless:check` |
 | Apply Java formatting | `./mvnw spotless:apply` |
+| Run the backend SonarQube Cloud scan workflow | `node scripts/run-sonar-scan.mjs` |
 
 `verify` runs `*Test` classes with Surefire and `*IT` classes with Failsafe. Integration tests use an isolated MySQL Testcontainers instance, so Docker must be available.
 
@@ -157,6 +159,8 @@ Run frontend checks from `front/`:
 | Check formatting | `npm run format:check` |
 | Apply formatting | `npm run format` |
 | Run the frontend SonarQube scan workflow | `npm run sonar` |
+
+Both SonarQube Cloud workflows require `SONAR_TOKEN` in the repository-root `.env` file. The backend workflow also runs `clean verify` before sending its analysis.
 
 Run Bruno checks from the repository root:
 
