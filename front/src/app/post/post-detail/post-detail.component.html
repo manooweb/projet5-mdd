@@ -3,9 +3,13 @@
 <main class="mx-auto w-full max-w-3xl p-6 md:p-8">
   @if (postState$ | async; as state) {
     @if (state.status === 'loaded') {
-      <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center">
-        <app-back-button target="/posts" label="Retour aux articles" />
-        <h1 class="text-center text-2xl font-bold text-black md:text-left">
+      <div class="relative mb-8">
+        <app-back-button
+          class="mb-4 block md:absolute md:top-0 md:left-0 md:mb-0 md:-translate-x-16"
+          target="/posts"
+          label="Retour aux articles"
+        />
+        <h1 class="text-left text-2xl font-bold text-black">
           {{ state.post.title }}
         </h1>
       </div>
